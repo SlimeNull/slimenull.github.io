@@ -1,0 +1,801 @@
+<!doctype html><html lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='通过各种方式, 查询 Windows 中以安装的 Win32 和 UWP 应用, 包括使用 WinAPI, 注册表, COM, 以及 Win SDK'><title>[.NET] 查询当前已安装所有 Win32 与 UWP 应用</title>
+<link rel=canonical href=https://slimenull.com/p/20240117143332/><link rel=stylesheet href=/scss/style.min.73438a911857e6d491e39369614d0dd0c0302dcacfb43e15034e0e48cac08c07.css><meta property='og:title' content='[.NET] 查询当前已安装所有 Win32 与 UWP 应用'><meta property='og:description' content='通过各种方式, 查询 Windows 中以安装的 Win32 和 UWP 应用, 包括使用 WinAPI, 注册表, COM, 以及 Win SDK'><meta property='og:url' content='https://slimenull.com/p/20240117143332/'><meta property='og:site_name' content='SlimeNull Blogs'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='dotnet'><meta property='article:tag' content='win32'><meta property='article:tag' content='csharp'><meta property='article:published_time' content='2024-01-17T14:33:32+08:00'><meta property='article:modified_time' content='2024-01-17T14:33:32+08:00'><meta name=twitter:title content="[.NET] 查询当前已安装所有 Win32 与 UWP 应用"><meta name=twitter:description content="通过各种方式, 查询 Windows 中以安装的 Win32 和 UWP 应用, 包括使用 WinAPI, 注册表, COM, 以及 Win SDK"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_huc8456e525e5d066dd09f75fb4b271186_40528_300x0_resize_q75_box.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>SlimeNull Blogs</a></h1><h2 class=site-description>为了更好的开源世界~</h2></div></header><ol class=social-menu><li><a href=https://github.com/SlimeNull target=_blank title=GitHub rel=me><!doctype html><svg t="1702542119184" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="4136" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M692.906667 938.666667A42.666667 42.666667.0 01650.24 896V785.066667A91.733333 91.733333.0 00627.2 714.24a42.666667 42.666667.0 0126.026667-71.253333c104.106666-12.373334 200.106666-45.653334 200.106666-226.133334a170.666667 170.666667.0 00-28.586666-94.72A117.333333 117.333333.0 01807.253333 234.24a158.293333 158.293333.0 000-60.16A326.4 326.4.0 00718.08 220.586667a42.666667 42.666667.0 01-35.84 6.4 433.066667 433.066667.0 00-235.52.0 42.666667 42.666667.0 01-35.84-6.4A315.733333 315.733333.0 00320.853333 174.08a150.186667 150.186667.0 000 60.16 121.173333 121.173333.0 01-18.346666 88.746667A173.653333 173.653333.0 00273.92 418.133333C273.92 584.106666 354.133333 628.48 474.453333 643.84A42.666667 42.666667.0 01509.44 672a42.666667 42.666667.0 01-8.96 42.666667 87.893333 87.893333.0 00-23.466667 66.56V896A42.666667 42.666667.0 01391.68 896v-24.32a256 256 0 01-224.853333-89.173333A166.4 166.4.0 00117.333333 744.96a42.666667 42.666667.0 1121.333334-82.773333A210.346667 210.346667.0 01224 720.213333c42.666667 42.666667 85.333333 80.213333 166.4 64.853334a165.973333 165.973333.0 019.813333-67.413334C312.32 695.466666 186.88 632.32 186.88 418.986667a256 256 0 0142.666667-142.08 36.266667 36.266667.0 005.546666-26.453334 242.773333 242.773333.0 0114.08-136.96 42.666667 42.666667.0 0126.88-24.32c14.506667-4.266667 66.56-12.8 165.12 51.2a518.826667 518.826667.0 01242.773334.0c98.56-64 150.613333-55.893333 164.693333-51.2a42.666667 42.666667.0 0126.88 24.32A243.626667 243.626667.0 01889.6 250.88a32 32 0 004.693333 24.32A256 256 0 01936.96 417.706667c0 216.32-124.586667 279.04-213.333333 298.666666a182.613333 182.613333.0 019.386666 71.253334V896a42.666667 42.666667.0 01-40.106666 42.666667z" fill="#666" p-id="4137"/></svg></a></li><li><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili rel=me><!doctype html><svg t="1702541966104" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="16981" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M306.005333 117.632 444.330667 256h135.296l138.368-138.325333A42.666667 42.666667.0 01778.368 178.048L700.330667 256H789.333333A149.333333 149.333333.0 01938.666667 405.333333v341.333334A149.333333 149.333333.0 01789.333333 896H234.666667A149.333333 149.333333.0 0185.333333 746.666667V405.333333A149.333333 149.333333.0 01234.666667 256h88.96L245.632 177.962667a42.666667 42.666667.0 0160.373333-60.373334zm483.328 223.701333H234.666667a64 64 0 00-63.701334 57.856L170.666667 405.333333v341.333334a64 64 0 0057.856 63.701333L234.666667 810.666667h554.666666a64 64 0 0063.701334-57.856L853.333333 746.666667V405.333333a64 64 0 00-64-64zm-448 128A42.666667 42.666667.0 01384 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666666-42.666667zm341.333334.0A42.666667 42.666667.0 01725.333333 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666667-42.666667z" fill="#666" p-id="16982"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://slimenull.com/ selected></option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#查询-win32-应用>查询 Win32 应用</a><ol><li><a href=#通过注册表查询>通过注册表查询</a></li><li><a href=#通过开始菜单目录查询>通过开始菜单目录查询</a></li></ol></li><li><a href=#查询-uwp-应用>查询 UWP 应用</a><ol><li><a href=#通过-windows-sdk-查询>通过 Windows SDK 查询</a></li><li><a href=#通过防火墙-api-查询>通过防火墙 API 查询</a></li><li><a href=#通过注册表查询-1>通过注册表查询</a></li></ol></li><li><a href=#查询-appsfolder>查询 AppsFolder</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/dotnet/ style=background-color:#512cd4;color:#fff>.NET
+</a><a href=/categories/note/ style=background-color:#fdf0c4;color:#3d3d3d>笔记</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/20240117143332/>[.NET] 查询当前已安装所有 Win32 与 UWP 应用</a></h2><h3 class=article-subtitle>通过各种方式, 查询 Windows 中以安装的 Win32 和 UWP 应用, 包括使用 WinAPI, 注册表, COM, 以及 Win SDK</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Jan 17, 2024</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 8 分钟</time></div></footer></div></header><section class=article-content><p>为了获取当前设备用户已安装的所有应用程序,
+一般来讲有两种方案. 一种是通过查询 &ldquo;shell:AppsFolder&rdquo; 目录下所有项,
+一种是从开始菜单中获取所有快捷方式, 然后加上查询所有已安装的 UWP 应用, 最后得到总列表.</p><blockquote><p>如需代码参考, 请看 <a class=link href=https://github.com/SlimeNull/WindowsAppsQuery target=_blank rel=noopener>github.com/SlimeNull/WindowsAppsQuery</a> 以及 <a class=link href=https://github.com/OrgEleCho/CurvaLauncher target=_blank rel=noopener>github.com/OrgEleCho/CurvaLauncher</a> 中的 &lsquo;Run Applictions&rsquo; 部分.</p></blockquote><h2 id=查询-win32-应用>查询 Win32 应用</h2><p>查询已安装 Win32 应用程序, 目前有两种常用方式.</p><ul><li>查询注册表中 &ldquo;卸载&rdquo; 的子键</li><li>搜寻开始菜单目录</li></ul><h3 id=通过注册表查询>通过注册表查询</h3><p>注册表中, <code>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall</code> 中列举了当前计算机的所有可卸载应用程序
+如果是仅安装在当前用户中的应用程序, 则存储在 <code>HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Uninstall</code> 下.</p><p><img src=/images/20240201220018.png loading=lazy></p><p>根据微软官方文档 <a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/uninstall-registry-key target=_blank rel=noopener>Win32/MSI/卸载注册表键</a> 中介绍, 上述注册表键的子键中, 属性与 MSI 中的属性有以下对应关系:</p><div class=table-wrapper><table><thead><tr><th>值</th><th>Windows Installer 属性</th></tr></thead><tbody><tr><td>DisplayName</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/productname target=_blank rel=noopener><strong>ProductName</strong></a> 属性</td></tr><tr><td>DisplayVersion</td><td>派生自 <a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/productversion target=_blank rel=noopener><strong>ProductVersion</strong></a> 属性</td></tr><tr><td>Publisher</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/manufacturer target=_blank rel=noopener><strong>Manufacturer</strong></a> 属性</td></tr><tr><td>VersionMinor</td><td>派生自 <a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/productversion target=_blank rel=noopener><strong>ProductVersion</strong></a> 属性</td></tr><tr><td>VersionMajor</td><td>派生自 <a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/productversion target=_blank rel=noopener><strong>ProductVersion</strong></a> 属性</td></tr><tr><td>Version</td><td>派生自 <a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/productversion target=_blank rel=noopener><strong>ProductVersion</strong></a> 属性</td></tr><tr><td>HelpLink</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arphelplink target=_blank rel=noopener><strong>ARPHELPLINK</strong></a> 属性</td></tr><tr><td>HelpTelephone</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arphelptelephone target=_blank rel=noopener><strong>ARPHELPTELEPHONE</strong></a> 属性</td></tr><tr><td>InstallDate</td><td>此产品最后一次接受服务的时间。 每次从产品应用或移除修补程序或使用 /v <a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/command-line-options target=_blank rel=noopener>命令行选项</a>修复产品时，都会替换此属性的值。 如果产品未接受任何修复或修补，则此属性包含在此计算机上安装该产品的时间。</td></tr><tr><td>InstallLocation</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpinstalllocation target=_blank rel=noopener><strong>ARPINSTALLLOCATION</strong></a> 属性</td></tr><tr><td>InstallSource</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/sourcedir target=_blank rel=noopener><strong>SourceDir</strong></a> 属性</td></tr><tr><td>URLInfoAbout</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpurlinfoabout target=_blank rel=noopener><strong>ARPURLINFOABOUT</strong></a> 属性</td></tr><tr><td>URLUpdateInfo</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpurlupdateinfo target=_blank rel=noopener><strong>ARPURLUPDATEINFO</strong></a> 属性</td></tr><tr><td>AuthorizedCDFPrefix</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpauthorizedcdfprefix target=_blank rel=noopener><strong>ARPAUTHORIZEDCDFPREFIX</strong></a> 属性</td></tr><tr><td>Comments</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpcomments target=_blank rel=noopener><strong>ARPCOMMENTS</strong></a> 属性<br>提供给“添加或删除程序”控制面板的注释。</td></tr><tr><td>Contact</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpcontact target=_blank rel=noopener><strong>ARPCONTACT</strong></a> 属性<br>提供给“添加或删除程序”控制面板的联系人。</td></tr><tr><td>EstimatedSize</td><td>由 Windows Installer 确定和设置。</td></tr><tr><td>Language</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/productlanguage target=_blank rel=noopener><strong>ProductLanguage</strong></a> 属性</td></tr><tr><td>ModifyPath</td><td>由 Windows Installer 确定和设置。</td></tr><tr><td>Readme</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/arpreadme target=_blank rel=noopener><strong>ARPREADME</strong></a> 属性<br>提供给“添加或删除程序”控制面板的自述文件。</td></tr><tr><td>UninstallString</td><td>由 Windows Installer 确定和设置。</td></tr><tr><td>SettingsIdentifier</td><td><a class=link href=https://learn.microsoft.com/zh-cn/windows/win32/msi/msiarpsettingsidentifier target=_blank rel=noopener><strong>MSIARPSETTINGSIDENTIFIER</strong></a> 属性</td></tr></tbody></table></div><h3 id=通过开始菜单目录查询>通过开始菜单目录查询</h3><p>如果是搜寻开始菜单目录, 则是以下路径:</p><p>当前用户的开始菜单程序列表: <code>C:\Users\slime\AppData\Roaming\Microsoft\Windows\Start Menu\Programs</code>
+所有用户公共的开始菜单程序列表: <code>C:\ProgramData\Microsoft\Windows\Start Menu\Programs</code></p><blockquote><p>通过 <code>Environment.GetFolderPath</code> 方法即可获取上述两个路径. 参数分别是 <code>Programs</code> 枚举和 <code>CommonPrograms</code> 枚举</p></blockquote><p>所有正常安装的 Win32 程序一般都会创建开始菜单项, 所以可以通过这个粗略的获取所有 Win32 应用程序列表.</p><p><img src=/images/20240201220106.png loading=lazy></p><p>然后, 所有的应用程序都是通过快捷方式存在于开始菜单中的, 所以你需要有解析快捷方式的方案, 第一种是通过 Shell API, 但这挺麻烦的.
+笔者这边推荐的方式是通过 <a class=link href=https://github.com/securifybv/ShellLink target=_blank rel=noopener>Securify.ShellLink</a> 这个库来解析.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=c1>// 从文件读取快捷方式信息</span>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>shortcut</span> <span class=p>=</span> <span class=n>Shortcut</span><span class=p>.</span><span class=n>ReadFromFile</span><span class=p>(</span><span class=s>@&#34;C:\ProgramData\Microsoft\Windows\Start Menu\Programs\Accessories\Paint.lnk&#34;</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>需要注意的是, 快捷方式的结构是很复杂的, 你想要的 &ldquo;目标路径&rdquo; 可能在快捷方式中不一定哪个属性中, 可以参考以下的 Fallback 顺序:</p><ul><li>ExtraData.EnvironmentVariableDataBlock.TargetUnicode</li><li>LinkTargetIDList.Path</li><li>LinkTargetIDList.DisplayName</li></ul><p>在获取这些属性时, 记得对属性进行判空, 以免遇到 NullReferenceException</p><p>如果要获取其他信息, 诸如命令行参数, 工作目录, 图标此类, 直接获取快捷方式的对应属性即可.
+至于以管理员权限身份运行, 这个直接判断 LinkFlags 是否有 <code>RunAsUser</code> 这个标志就可以了.</p><br><h2 id=查询-uwp-应用>查询 UWP 应用</h2><p>查询已安装的 UWP 应用程序, 有你能轻易在网上找到的三种查询方式, 以及笔者自己找到的第四种方式.</p><ul><li>使用 Windows SDK 中的 <code>PackageManager</code> 类进行最正规的查询</li><li>使用防火墙的 API, 通过查询 UWP 容器列表, 实现查找所有 UWP 应用</li><li>调用 PowerShell, 执行 <code>Get-AppxPackage</code></li><li>查注册表</li></ul><h3 id=通过-windows-sdk-查询>通过 Windows SDK 查询</h3><p>第一种方案, <code>PackageManager</code> 并不是你可以直接使用到的类, 而是需要使用 Windows SDK 才可以用的. 对项目的配置方式也简单.</p><p>如果你是 .NET CoreCLR 的项目, 例如 .NET8 的, 那么直接右键项目, 打开属性, 将目标 OS 改为 Windows, 目标 OS 版本改为你的目标系统版本, 支持的 OS 版本则是最低 OS 版本.
+这里建议 1904 什么的, 例如 10.0.19041.0, 选择更低的版本, 可以支持更多系统.</p><p><img src=/images/20240201215116.png loading=lazy></p><p>如果你是 .NET Framework 的项目, 那么你需要知道你的 Windows SDK 安装在哪, 在它下面会有一个 Windows.winmd 动态链接库, 它大概在一个叫 &lsquo;UnionMetadata&rsquo; 的目录下, 右键你的项目, 添加引用, 然后把这个 winmd 库添加进去即可.</p><p><img src=/images/20240201215808.png loading=lazy></p><p>配置完之后, 你就可以使用 &lsquo;PackageManager&rsquo; 进行查询了, 查询当前用户的所有已安装的包不需要什么特殊权限, 代码如下:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Security.Principal</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>Windows.Management.Deployment</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>PackageManager</span> <span class=n>packageManager</span> <span class=p>=</span> <span class=k>new</span> <span class=n>PackageManager</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=kt>var</span> <span class=n>packages</span> <span class=p>=</span> <span class=n>packageManager</span><span class=p>.</span><span class=n>FindPackagesForUser</span><span class=p>(</span><span class=n>WindowsIdentity</span><span class=p>.</span><span class=n>GetCurrent</span><span class=p>().</span><span class=n>User</span><span class=p>!.</span><span class=n>Value</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><h3 id=通过防火墙-api-查询>通过防火墙 API 查询</h3><p>第二种方案, 通过 WinAPI NetworkIsolationEnumAppContainers 枚举所有的应用程序容器, 进而实现查询 UWP 应用程序.</p><p>非托管函数声明以及结构体定义</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=kd>static</span> <span class=k>class</span> <span class=nc>NativeDll</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 加载资源文本</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;pszSource&#34;&gt;资源标识符&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;pszOutBuf&#34;&gt;输出的缓冲区&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;cchOutBuf&#34;&gt;缓冲区大小&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;ppvReserved&#34;&gt;保留, 固定0&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [DllImport(&#34;shlwapi.dll&#34;, BestFitMapping = false, CharSet = CharSet.Unicode, ExactSpelling = true, ThrowOnUnmappableChar = true)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kd>extern</span> <span class=kd>unsafe</span> <span class=kt>uint</span> <span class=n>SHLoadIndirectString</span><span class=p>(</span><span class=kt>string</span> <span class=n>pszSource</span><span class=p>,</span> <span class=k>ref</span> <span class=kt>char</span> <span class=n>pszOutBuf</span><span class=p>,</span> <span class=kt>int</span> <span class=n>cchOutBuf</span><span class=p>,</span> <span class=n>IntPtr</span> <span class=n>ppvReserved</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [DllImport(&#34;FirewallAPI.dll&#34;)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kd>extern</span> <span class=kt>uint</span> <span class=n>NetworkIsolationEnumAppContainers</span><span class=p>(</span><span class=kt>uint</span> <span class=n>Flags</span><span class=p>,</span> <span class=k>out</span> <span class=kt>uint</span> <span class=n>pdwCntPublicACs</span><span class=p>,</span> <span class=k>out</span> <span class=n>IntPtr</span> <span class=n>ppPublicACs</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [DllImport(&#34;FirewallAPI.dll&#34;)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kd>extern</span> <span class=k>void</span> <span class=n>NetworkIsolationFreeAppContainers</span><span class=p>(</span><span class=n>IntPtr</span> <span class=n>pACs</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>string?</span> <span class=n>GetIndirectString</span><span class=p>(</span><span class=kt>string</span> <span class=n>str</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>Span</span><span class=p>&lt;</span><span class=kt>char</span><span class=p>&gt;</span> <span class=n>buffer</span> <span class=p>=</span> <span class=k>stackalloc</span> <span class=kt>char</span><span class=p>[</span><span class=m>4096</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>SHLoadIndirectString</span><span class=p>(</span><span class=n>str</span><span class=p>,</span> <span class=k>ref</span> <span class=n>buffer</span><span class=p>[</span><span class=m>0</span><span class=p>],</span> <span class=n>buffer</span><span class=p>.</span><span class=n>Length</span><span class=p>,</span> <span class=m>0</span><span class=p>)</span> <span class=p>!=</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>null</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=k>new</span> <span class=kt>string</span><span class=p>(</span><span class=n>buffer</span><span class=p>.</span><span class=n>TrimEnd</span><span class=p>(</span><span class=sc>&#39;\0&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=k>struct</span> <span class=nc>INET_FIREWALL_APP_CONTAINER</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=n>IntPtr</span> <span class=n>appContainerSid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=n>IntPtr</span> <span class=n>userSid</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [MarshalAs(UnmanagedType.LPWStr)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=kt>string</span> <span class=n>appContainerName</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [MarshalAs(UnmanagedType.LPWStr)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=kt>string</span> <span class=n>displayName</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [MarshalAs(UnmanagedType.LPWStr)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=kt>string</span> <span class=n>description</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=n>INET_FIREWALL_AC_CAPABILITIES</span> <span class=n>capabilities</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=n>INET_FIREWALL_AC_BINARIES</span> <span class=n>binaries</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [MarshalAs(UnmanagedType.LPWStr)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=kt>string</span> <span class=n>workingDirectory</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [MarshalAs(UnmanagedType.LPWStr)]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>internal</span> <span class=kt>string</span> <span class=n>packageFullName</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=k>struct</span> <span class=nc>INET_FIREWALL_AC_CAPABILITIES</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>uint</span> <span class=n>count</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>IntPtr</span> <span class=n>capabilities</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=k>struct</span> <span class=nc>INET_FIREWALL_AC_BINARIES</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>uint</span> <span class=n>count</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>IntPtr</span> <span class=n>binaries</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>简单封装一下应用容器类:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Runtime.InteropServices</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>internal</span> <span class=k>record</span> <span class=nc>class</span> <span class=n>AppContainer</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>DisplayName</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>Description</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>PackageFullName</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span><span class=p>[]</span> <span class=n>Binaries</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=p>[];</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>WorkingDirectory</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>AppContainer</span><span class=p>(</span><span class=n>INET_FIREWALL_APP_CONTAINER</span> <span class=n>info</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>PackageFullName</span> <span class=p>=</span> <span class=n>info</span><span class=p>.</span><span class=n>packageFullName</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>WorkingDirectory</span> <span class=p>=</span> <span class=n>info</span><span class=p>.</span><span class=n>workingDirectory</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>uint</span> <span class=n>HRESULT</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>Span</span><span class=p>&lt;</span><span class=kt>char</span><span class=p>&gt;</span> <span class=n>buffer</span> <span class=p>=</span> <span class=k>stackalloc</span> <span class=kt>char</span><span class=p>[</span><span class=m>4096</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>        <span class=n>HRESULT</span> <span class=p>=</span> <span class=n>NativeDll</span><span class=p>.</span><span class=n>SHLoadIndirectString</span><span class=p>(</span><span class=n>info</span><span class=p>.</span><span class=n>displayName</span><span class=p>,</span> <span class=k>ref</span> <span class=n>buffer</span><span class=p>[</span><span class=m>0</span><span class=p>],</span> <span class=n>buffer</span><span class=p>.</span><span class=n>Length</span><span class=p>,</span> <span class=m>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>HRESULT</span> <span class=p>==</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>DisplayName</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>string</span><span class=p>(</span><span class=n>buffer</span><span class=p>.</span><span class=n>TrimEnd</span><span class=p>(</span><span class=sc>&#39;\0&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>            <span class=n>DisplayName</span> <span class=p>=</span> <span class=n>info</span><span class=p>.</span><span class=n>displayName</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>buffer</span><span class=p>.</span><span class=n>Clear</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>NativeDll</span><span class=p>.</span><span class=n>SHLoadIndirectString</span><span class=p>(</span><span class=n>info</span><span class=p>.</span><span class=n>description</span><span class=p>,</span> <span class=k>ref</span> <span class=n>buffer</span><span class=p>[</span><span class=m>0</span><span class=p>],</span> <span class=n>buffer</span><span class=p>.</span><span class=n>Length</span><span class=p>,</span> <span class=m>0</span><span class=p>)</span> <span class=p>==</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>Description</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>string</span><span class=p>(</span><span class=n>buffer</span><span class=p>.</span><span class=n>TrimEnd</span><span class=p>(</span><span class=sc>&#39;\0&#39;</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>            <span class=n>Description</span> <span class=p>=</span> <span class=n>info</span><span class=p>.</span><span class=n>description</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>buffer</span><span class=p>.</span><span class=n>Clear</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>INET_FIREWALL_AC_BINARIES</span> <span class=n>inet_FIREWALL_AC_BINARIES</span> <span class=p>=</span> <span class=n>info</span><span class=p>.</span><span class=n>binaries</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>inet_FIREWALL_AC_BINARIES</span><span class=p>.</span><span class=n>count</span> <span class=p>&gt;</span> <span class=m>0</span> <span class=p>&amp;&amp;</span> <span class=n>inet_FIREWALL_AC_BINARIES</span><span class=p>.</span><span class=n>binaries</span> <span class=p>!=</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Binaries</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>string</span><span class=p>[</span><span class=n>inet_FIREWALL_AC_BINARIES</span><span class=p>.</span><span class=n>count</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>inet_FIREWALL_AC_BINARIES</span><span class=p>.</span><span class=n>count</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>var</span> <span class=n>str</span> <span class=p>=</span> <span class=n>Marshal</span><span class=p>.</span><span class=n>PtrToStringUni</span><span class=p>(</span><span class=n>Marshal</span><span class=p>.</span><span class=n>ReadIntPtr</span><span class=p>(</span><span class=n>inet_FIREWALL_AC_BINARIES</span><span class=p>.</span><span class=n>binaries</span> <span class=p>+</span> <span class=n>nint</span><span class=p>.</span><span class=n>Size</span> <span class=p>*</span> <span class=n>i</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>                <span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>str</span><span class=p>?.</span><span class=n>StartsWith</span><span class=p>(</span><span class=s>@&#34;\\?\&#34;</span><span class=p>)</span> <span class=p>==</span> <span class=kc>true</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>str</span> <span class=p>=</span> <span class=n>str</span><span class=p>[</span><span class=m>4.</span><span class=p>.];</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>str</span> <span class=p>!=</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Binaries</span><span class=p>[</span><span class=n>i</span><span class=p>]</span> <span class=p>=</span> <span class=n>str</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>调用:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>var</span> <span class=n>enumResult</span> <span class=p>=</span> <span class=n>NativeDll</span><span class=p>.</span><span class=n>NetworkIsolationEnumAppContainers</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=k>out</span> <span class=kt>var</span> <span class=n>num</span><span class=p>,</span> <span class=k>out</span> <span class=kt>var</span> <span class=n>ptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=k>if</span> <span class=p>(</span><span class=n>enumResult</span> <span class=p>!=</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=k>throw</span> <span class=k>new</span> <span class=n>Win32Exception</span><span class=p>((</span><span class=kt>int</span><span class=p>)</span><span class=n>enumResult</span><span class=p>,</span> <span class=n>Marshal</span><span class=p>.</span><span class=n>GetLastPInvokeErrorMessage</span><span class=p>());</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>List</span><span class=p>&lt;</span><span class=n>AppContainer</span><span class=p>&gt;</span> <span class=n>appContainers</span> <span class=p>=</span> <span class=k>new</span><span class=p>((</span><span class=kt>int</span><span class=p>)</span><span class=n>num</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>num</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>info</span> <span class=p>=</span> <span class=n>Marshal</span><span class=p>.</span><span class=n>PtrToStructure</span><span class=p>&lt;</span><span class=n>INET_FIREWALL_APP_CONTAINER</span><span class=p>&gt;(</span><span class=n>ptr</span> <span class=p>+</span> <span class=n>Marshal</span><span class=p>.</span><span class=n>SizeOf</span><span class=p>&lt;</span><span class=n>INET_FIREWALL_APP_CONTAINER</span><span class=p>&gt;()</span> <span class=p>*</span> <span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>appContainers</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>AppContainer</span><span class=p>(</span><span class=n>info</span><span class=p>));</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=n>NativeDll</span><span class=p>.</span><span class=n>NetworkIsolationFreeAppContainers</span><span class=p>(</span><span class=n>ptr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>foreach</span> <span class=p>(</span><span class=kt>var</span> <span class=n>appContainer</span> <span class=k>in</span> <span class=n>appContainers</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>appContainer</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>这种方式调用也有一点缺点, 你无法获取应用程序的图标.
+以上代码来自于 <a class=link href=https://github.com/ilyfairy target=_blank rel=noopener>Ilyfairy</a></p></blockquote><h3 id=通过注册表查询-1>通过注册表查询</h3><p>第三种方案, 在注册表的 &ldquo;HKEY_CURRENT_USER\Software\Classes\Local Settings\Software\Microsoft\Windows\CurrentVersion\AppModel\Repository\Packages&rdquo; 下, 你可以看到所有已安装包的部分信息</p><p><img src=/images/20240201232429.png loading=lazy></p><p>其中 &ldquo;PackageId&rdquo; 是该包的 ID, 而 &ldquo;PackageRootFolder&rdquo; 直接给出了包的根文件夹, 而这个文件夹中, 我们可以找到包的清单文件 &ldquo;AppxManifest.xml&rdquo;</p><p><img src=/images/20240201232706.png loading=lazy></p><p>清单中列出了所有该包内所有应用程序的信息, 包括应用名称, LOGO, 以及该应用是否对用户可见(展示在开始菜单中)</p><p><img src=/images/20240201233019.png loading=lazy></p><p>部分应用程序, 在 Manifest 中, 应用程序的显示名称是直接以文本形式存在的, 但是也有一些是通过资源路径的形式存在的. 我们需要加载这个文本资源, 来获取其实际文本.</p><p>这里再次用到了 &ldquo;SHLoadIndirectString&rdquo; 这个 API:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=na>[DllImport(&#34;shlwapi.dll&#34;, BestFitMapping = false, CharSet = CharSet.Unicode, ExactSpelling = true, ThrowOnUnmappableChar = true)]</span>
+</span></span><span class=line><span class=cl><span class=kd>static</span> <span class=kd>extern</span> <span class=kd>unsafe</span> <span class=kt>uint</span> <span class=n>SHLoadIndirectString</span><span class=p>(</span><span class=kt>string</span> <span class=n>pszSource</span><span class=p>,</span> <span class=k>ref</span> <span class=kt>char</span> <span class=n>pszOutBuf</span><span class=p>,</span> <span class=kt>int</span> <span class=n>cchOutBuf</span><span class=p>,</span> <span class=n>IntPtr</span> <span class=n>ppvReserved</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><p>通过一个键获取其对应所有应用程序的逻辑如下:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=c1>// 类型定义</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=kd>abstract</span> <span class=k>record</span> <span class=nc>class</span> <span class=n>AppInfo</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>string?</span> <span class=n>_queryRoot</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>Name</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>QueryRoot</span> <span class=p>{</span> <span class=k>get</span> <span class=p>=&gt;</span> <span class=n>_queryRoot</span> <span class=p>??</span> <span class=n>Name</span><span class=p>;</span> <span class=k>set</span> <span class=p>=&gt;</span> <span class=n>_queryRoot</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span><span class=p>[]?</span> <span class=n>AlterQueryRoots</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>record</span> <span class=nc>class</span> <span class=n>UwpAppInfo</span> <span class=p>:</span> <span class=n>AppInfo</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>PackageId</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>FamilyID</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>PackageRootFolder</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>AppxManifestPath</span> <span class=p>=&gt;</span> <span class=n>Path</span><span class=p>.</span><span class=n>Combine</span><span class=p>(</span><span class=n>PackageRootFolder</span><span class=p>,</span> <span class=s>&#34;AppxManifest.xml&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>string</span> <span class=n>ApplicationId</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>UwpAppLogo</span><span class=p>[]</span> <span class=n>AppLogos</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=n>Array</span><span class=p>.</span><span class=n>Empty</span><span class=p>&lt;</span><span class=n>UwpAppLogo</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>required</span> <span class=kt>string</span> <span class=n>OriginRegistryKeyName</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kt>string</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>record</span> <span class=nc>struct</span> <span class=n>UwpAppLogo</span><span class=p>(</span><span class=kt>int</span> <span class=n>Size</span><span class=p>,</span> <span class=kt>string</span> <span class=n>Path</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1>// 方法定义</span>
+</span></span><span class=line><span class=cl><span class=kd>private</span> <span class=n>IEnumerable</span><span class=p>&lt;</span><span class=n>UwpAppInfo</span><span class=p>&gt;</span> <span class=n>GetUwpApps</span><span class=p>(</span><span class=n>RegistryKey</span> <span class=n>subKey</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>subKey</span><span class=p>.</span><span class=n>GetValue</span><span class=p>(</span><span class=s>&#34;PackageID&#34;</span><span class=p>)</span> <span class=k>is</span> <span class=n>not</span> <span class=kt>string</span> <span class=n>packageId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>string</span> <span class=n>packageFamilyId</span> <span class=p>=</span> <span class=n>Regex</span><span class=p>.</span><span class=n>Replace</span><span class=p>(</span><span class=n>packageId</span><span class=p>,</span> <span class=s>&#34;_.*__&#34;</span><span class=p>,</span> <span class=s>&#34;_&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>subKey</span><span class=p>.</span><span class=n>GetValue</span><span class=p>(</span><span class=s>&#34;PackageRootFolder&#34;</span><span class=p>)</span> <span class=k>is</span> <span class=n>not</span> <span class=kt>string</span> <span class=n>packageRootFolder</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>string</span> <span class=n>packageManifestPath</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>Combine</span><span class=p>(</span><span class=n>packageRootFolder</span><span class=p>,</span> <span class=s>&#34;AppxManifest.xml&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(!</span><span class=n>System</span><span class=p>.</span><span class=n>IO</span><span class=p>.</span><span class=n>File</span><span class=p>.</span><span class=n>Exists</span><span class=p>(</span><span class=n>packageManifestPath</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>appxManifestContent</span> <span class=p>=</span> <span class=n>File</span><span class=p>.</span><span class=n>ReadAllText</span><span class=p>(</span><span class=n>packageManifestPath</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>XmlDocument</span> <span class=n>xml</span> <span class=p>=</span> <span class=k>new</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>xml</span><span class=p>.</span><span class=n>LoadXml</span><span class=p>(</span><span class=n>appxManifestContent</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>XmlNamespaceManager</span> <span class=n>nsManager</span> <span class=p>=</span> <span class=k>new</span> <span class=n>XmlNamespaceManager</span><span class=p>(</span><span class=n>xml</span><span class=p>.</span><span class=n>NameTable</span><span class=p>);</span><span class=c1>//这一步实例化一个xml命名空间管理器</span>
+</span></span><span class=line><span class=cl>    <span class=n>nsManager</span><span class=p>.</span><span class=n>AddNamespace</span><span class=p>(</span><span class=s>&#34;ns&#34;</span><span class=p>,</span> <span class=s>&#34;http://schemas.microsoft.com/appx/manifest/foundation/windows10&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=n>nsManager</span><span class=p>.</span><span class=n>AddNamespace</span><span class=p>(</span><span class=s>&#34;uap&#34;</span><span class=p>,</span> <span class=s>&#34;http://schemas.microsoft.com/appx/manifest/uap/windows10&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>idNode</span> <span class=p>=</span> <span class=n>xml</span><span class=p>.</span><span class=n>SelectSingleNode</span><span class=p>(</span><span class=s>&#34;/ns:Package/ns:Identity&#34;</span><span class=p>,</span> <span class=n>nsManager</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kt>var</span> <span class=n>appNodes</span> <span class=p>=</span> <span class=n>xml</span><span class=p>.</span><span class=n>SelectNodes</span><span class=p>(</span><span class=s>&#34;/ns:Package/ns:Applications/ns:Application&#34;</span><span class=p>,</span> <span class=n>nsManager</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>appNodes</span> <span class=p>==</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>foreach</span> <span class=p>(</span><span class=n>XmlNode</span> <span class=n>appNode</span> <span class=k>in</span> <span class=n>appNodes</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>visualElementsNode</span> <span class=p>=</span> <span class=n>appNode</span><span class=p>.</span><span class=n>SelectSingleNode</span><span class=p>(</span><span class=s>&#34;uap:VisualElements&#34;</span><span class=p>,</span> <span class=n>nsManager</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>visualElementsNode</span> <span class=p>==</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>visualElementsNode</span><span class=p>?.</span><span class=n>Attributes</span><span class=p>?[</span><span class=s>&#34;AppListEntry&#34;</span><span class=p>]?.</span><span class=n>Value</span> <span class=k>is</span> <span class=kt>string</span> <span class=n>appListEntry</span> <span class=p>&amp;&amp;</span>
+</span></span><span class=line><span class=cl>            <span class=n>appListEntry</span><span class=p>.</span><span class=n>Equals</span><span class=p>(</span><span class=s>&#34;none&#34;</span><span class=p>,</span> <span class=n>StringComparison</span><span class=p>.</span><span class=n>OrdinalIgnoreCase</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>visualElementsNode</span><span class=p>?.</span><span class=n>Attributes</span><span class=p>?[</span><span class=s>&#34;DisplayName&#34;</span><span class=p>]?.</span><span class=n>Value</span> <span class=k>is</span> <span class=n>not</span> <span class=kt>string</span> <span class=n>displayName</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>UwpAppInfo</span> <span class=n>info</span> <span class=p>=</span> <span class=k>new</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>OriginRegistryKeyName</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>GetFileName</span><span class=p>(</span><span class=n>subKey</span><span class=p>.</span><span class=n>Name</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>};</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>info</span><span class=p>.</span><span class=n>PackageId</span> <span class=p>=</span> <span class=n>packageId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>info</span><span class=p>.</span><span class=n>FamilyID</span> <span class=p>=</span> <span class=n>packageFamilyId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>info</span><span class=p>.</span><span class=n>PackageRootFolder</span> <span class=p>=</span> <span class=n>packageRootFolder</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>logoNode</span> <span class=p>=</span> <span class=n>xml</span><span class=p>.</span><span class=n>SelectSingleNode</span><span class=p>(</span><span class=s>&#34;/ns:Package/ns:Properties/ns:Logo&#34;</span><span class=p>,</span> <span class=n>nsManager</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>appNode</span> <span class=p>==</span> <span class=kc>null</span> <span class=p>||</span>
+</span></span><span class=line><span class=cl>            <span class=n>appNode</span><span class=p>.</span><span class=n>Attributes</span><span class=p>?[</span><span class=s>&#34;Id&#34;</span><span class=p>]?.</span><span class=n>Value</span> <span class=k>is</span> <span class=n>not</span> <span class=kt>string</span> <span class=n>appId</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>info</span><span class=p>.</span><span class=n>ApplicationId</span> <span class=p>=</span> <span class=n>appId</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>displayName</span><span class=p>.</span><span class=n>StartsWith</span><span class=p>(</span><span class=n>resourcePrefix</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>string</span> <span class=n>resourcePath</span> <span class=p>=</span> <span class=n>displayName</span><span class=p>.</span><span class=n>Substring</span><span class=p>(</span><span class=n>resourcePrefix</span><span class=p>.</span><span class=n>Length</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 非绝对路径, 且能够找到 Identity 节点</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(!</span><span class=n>resourcePath</span><span class=p>.</span><span class=n>StartsWith</span><span class=p>(</span><span class=s>&#34;//&#34;</span><span class=p>)</span> <span class=p>&amp;&amp;</span>
+</span></span><span class=line><span class=cl>                <span class=n>idNode</span><span class=p>?.</span><span class=n>Attributes</span><span class=p>?[</span><span class=s>&#34;Name&#34;</span><span class=p>]?.</span><span class=n>Value</span> <span class=k>is</span> <span class=kt>string</span> <span class=n>id</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// 不是引用其他资源, 则添加 &#39;Resource&#39; 前缀</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(!</span><span class=n>resourcePath</span><span class=p>.</span><span class=n>Contains</span><span class=p>(</span><span class=s>&#34;Resources&#34;</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                    <span class=n>resourcePath</span> <span class=p>=</span> <span class=s>$&#34;Resources/{resourcePath}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// 转为绝对资源</span>
+</span></span><span class=line><span class=cl>                <span class=n>resourcePath</span> <span class=p>=</span> <span class=s>$&#34;//{id}/{resourcePath}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>string</span> <span class=n>resourceStr</span> <span class=p>=</span> <span class=s>$&#34;@{{{packageId}?ms-resource:{resourcePath}}}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=kt>uint</span> <span class=n>errCode</span> <span class=p>=</span> <span class=n>SHLoadIndirectString</span><span class=p>(</span><span class=n>resourceStr</span><span class=p>,</span> <span class=k>ref</span> <span class=n>displayNameBuffer</span><span class=p>[</span><span class=m>0</span><span class=p>],</span> <span class=n>displayNameBuffer</span><span class=p>.</span><span class=n>Length</span><span class=p>,</span> <span class=m>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>endIndex</span> <span class=p>=</span> <span class=n>Array</span><span class=p>.</span><span class=n>IndexOf</span><span class=p>(</span><span class=n>displayNameBuffer</span><span class=p>,</span> <span class=sc>&#39;\0&#39;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>displayName</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>string</span><span class=p>(</span><span class=n>displayNameBuffer</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>endIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>errCode</span> <span class=p>!=</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=kt>string</span><span class=p>.</span><span class=n>IsNullOrWhiteSpace</span><span class=p>(</span><span class=n>displayName</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>info</span><span class=p>.</span><span class=n>Name</span> <span class=p>=</span> <span class=n>displayName</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>string?</span> <span class=n>logoPath</span> <span class=p>=</span> <span class=n>logoNode</span><span class=p>?.</span><span class=n>InnerText</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>logoPath</span> <span class=k>is</span> <span class=n>not</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>logoFullPath</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>Combine</span><span class=p>(</span><span class=n>info</span><span class=p>.</span><span class=n>PackageRootFolder</span><span class=p>,</span> <span class=n>logoPath</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>logoFileName</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>GetFileNameWithoutExtension</span><span class=p>(</span><span class=n>logoPath</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>logoExtension</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>GetExtension</span><span class=p>(</span><span class=n>logoPath</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>logoFilesDir</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>GetDirectoryName</span><span class=p>(</span><span class=n>logoFullPath</span><span class=p>)</span> <span class=p>??</span> <span class=s>&#34;.&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>logoFilesPattern</span> <span class=p>=</span> <span class=s>$&#34;{logoFileName}*{logoExtension}&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>Directory</span><span class=p>.</span><span class=n>Exists</span><span class=p>(</span><span class=n>logoFilesDir</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>var</span> <span class=n>regex</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Regex</span><span class=p>(</span><span class=s>$@&#34;{Regex.Escape(logoFileName)}(\.scale-(?&lt;scale&gt;\d+))?{Regex.Escape(logoExtension)}&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=n>List</span><span class=p>&lt;</span><span class=n>UwpAppInfo</span><span class=p>.</span><span class=n>UwpAppLogo</span><span class=p>&gt;</span> <span class=n>logos</span> <span class=p>=</span> <span class=k>new</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>                <span class=k>foreach</span> <span class=p>(</span><span class=kt>var</span> <span class=n>searchedLogoFile</span> <span class=k>in</span> <span class=n>Directory</span><span class=p>.</span><span class=n>EnumerateFiles</span><span class=p>(</span><span class=n>logoFilesDir</span><span class=p>,</span> <span class=n>logoFilesPattern</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>var</span> <span class=n>searchedLogoFileName</span> <span class=p>=</span> <span class=n>Path</span><span class=p>.</span><span class=n>GetFileName</span><span class=p>(</span><span class=n>searchedLogoFile</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>var</span> <span class=n>match</span> <span class=p>=</span> <span class=n>regex</span><span class=p>.</span><span class=n>Match</span><span class=p>(</span><span class=n>searchedLogoFileName</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(!</span><span class=n>match</span><span class=p>.</span><span class=n>Success</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=k>continue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>scale</span> <span class=p>=</span> <span class=m>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=kt>int</span><span class=p>.</span><span class=n>TryParse</span><span class=p>(</span><span class=n>match</span><span class=p>.</span><span class=n>Groups</span><span class=p>[</span><span class=s>&#34;scale&#34;</span><span class=p>].</span><span class=n>Value</span><span class=p>,</span> <span class=k>out</span> <span class=kt>var</span> <span class=n>parsedScale</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scale</span> <span class=p>=</span> <span class=n>parsedScale</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=n>logos</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=k>new</span> <span class=n>UwpAppInfo</span><span class=p>.</span><span class=n>UwpAppLogo</span><span class=p>(</span><span class=m>44</span> <span class=p>*</span> <span class=n>scale</span><span class=p>,</span> <span class=n>searchedLogoFile</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=n>info</span><span class=p>.</span><span class=n>AppLogos</span> <span class=p>=</span> <span class=n>logos</span><span class=p>.</span><span class=n>ToArray</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>yield</span> <span class=k>return</span> <span class=n>info</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><blockquote><p>上述代码来自于 <a class=link href=https://github.com/OrgEleCho/CurvaLauncher target=_blank rel=noopener>github.com/OrgEleCho/CurvaLauncher</a> 中 &lsquo;Run Application&rsquo; 的 UWP 应用索引逻辑</p></blockquote><br><h2 id=查询-appsfolder>查询 AppsFolder</h2><p>使用 &lsquo;运行&rsquo; 对话框, 打开 <code>shell:AppsFolder</code>, 你可以打开一个同时包含 Win32 和 UWP 应用的文件夹,
+但这个文件夹实际上是不存在的, 它是 Shell 抽象出来的, 本质上是开始菜单的 <code>CommonPrograms</code> 和 <code>Programs</code> 目录, 以及所有 UWP 应用程序加起来, 构成的一个虚拟目录.</p><p><img src=/images/20240201215927.png loading=lazy></p><p>不过, 我们仍然可以通过编程手段来遍历这个 &ldquo;目录&rdquo;, 获取所有已安装的应用程序. 下面是通过 COM 查询 AppsFolder 的 C++ 代码.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-cpp data-lang=cpp><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;Windows.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;ShlObj.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;fcntl.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;io.h&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp>#include</span> <span class=cpf>&lt;iostream&gt;</span><span class=cp>
+</span></span></span><span class=line><span class=cl><span class=cp></span><span class=k>using</span> <span class=k>namespace</span> <span class=n>std</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kt>int</span> <span class=nf>main</span><span class=p>()</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>_setmode</span><span class=p>(</span><span class=n>_fileno</span><span class=p>(</span><span class=n>stdout</span><span class=p>),</span> <span class=n>_O_U16TEXT</span><span class=p>)</span> <span class=o>==</span> <span class=o>-</span><span class=mi>1</span><span class=p>)</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;Failed to set stdout to UTF-16&#34;</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>HRESULT</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>result</span> <span class=o>=</span> <span class=n>CoInitializeEx</span><span class=p>(</span><span class=k>nullptr</span><span class=p>,</span> <span class=n>COINIT_APARTMENTTHREADED</span> <span class=o>|</span> <span class=n>COINIT_DISABLE_OLE1DDE</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;CoInitializeEx failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>IShellItem</span><span class=o>*</span> <span class=n>appsFolder</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>result</span> <span class=o>=</span> <span class=n>SHGetKnownFolderItem</span><span class=p>(</span><span class=n>FOLDERID_AppsFolder</span><span class=p>,</span> <span class=n>KF_FLAG_DEFAULT</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>,</span> <span class=n>IID_PPV_ARGS</span><span class=p>(</span><span class=o>&amp;</span><span class=n>appsFolder</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;SHGetKnownFolderItem failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>IEnumShellItems</span><span class=o>*</span> <span class=n>appsFolderEnum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>result</span> <span class=o>=</span> <span class=n>appsFolder</span><span class=o>-&gt;</span><span class=n>BindToHandler</span><span class=p>(</span><span class=k>nullptr</span><span class=p>,</span> <span class=n>BHID_EnumItems</span><span class=p>,</span> <span class=n>IID_PPV_ARGS</span><span class=p>(</span><span class=o>&amp;</span><span class=n>appsFolderEnum</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;BindToHandler failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>for</span> <span class=p>(</span><span class=n>IShellItem</span><span class=o>*</span> <span class=n>app</span><span class=p>;</span> <span class=n>appsFolderEnum</span><span class=o>-&gt;</span><span class=n>Next</span><span class=p>(</span><span class=mi>1</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>app</span><span class=p>,</span> <span class=k>nullptr</span><span class=p>)</span> <span class=o>==</span> <span class=n>S_OK</span><span class=p>;</span> <span class=n>app</span><span class=o>-&gt;</span><span class=n>Release</span><span class=p>())</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 获取应用程序的名称
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>PWSTR</span> <span class=n>name</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span> <span class=o>=</span> <span class=n>app</span><span class=o>-&gt;</span><span class=n>GetDisplayName</span><span class=p>(</span><span class=n>SIGDN_NORMALDISPLAY</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;GetDisplayName failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=n>name</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34; -&gt; &#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>CoTaskMemFree</span><span class=p>(</span><span class=n>name</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 获取应用程序的路径
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>PWSTR</span> <span class=n>path</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span> <span class=o>=</span> <span class=n>app</span><span class=o>-&gt;</span><span class=n>GetDisplayName</span><span class=p>(</span><span class=n>SIGDN_PARENTRELATIVEPARSING</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>path</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;GetDisplayName failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=n>path</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34; = &#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>CoTaskMemFree</span><span class=p>(</span><span class=n>path</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 获取应用程序的图标
+</span></span></span><span class=line><span class=cl><span class=c1></span>        <span class=n>IShellItemImageFactory</span><span class=o>*</span> <span class=n>imageFactory</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span> <span class=o>=</span> <span class=n>app</span><span class=o>-&gt;</span><span class=n>QueryInterface</span><span class=p>(</span><span class=n>IID_PPV_ARGS</span><span class=p>(</span><span class=o>&amp;</span><span class=n>imageFactory</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;QueryInterface failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>HBITMAP</span> <span class=n>bitmap</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>result</span> <span class=o>=</span> <span class=n>imageFactory</span><span class=o>-&gt;</span><span class=n>GetImage</span><span class=p>(</span><span class=n>SIZE</span> <span class=p>{</span> <span class=mi>64</span><span class=p>,</span> <span class=mi>64</span> <span class=p>},</span> <span class=n>SIIGBF_ICONONLY</span><span class=p>,</span> <span class=o>&amp;</span><span class=n>bitmap</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>FAILED</span><span class=p>(</span><span class=n>result</span><span class=p>))</span> <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=sa>L</span><span class=s>&#34;GetImage failed: &#34;</span> <span class=o>&lt;&lt;</span> <span class=n>hex</span> <span class=o>&lt;&lt;</span> <span class=n>result</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=o>-</span><span class=mi>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>wcout</span> <span class=o>&lt;&lt;</span> <span class=n>bitmap</span> <span class=o>&lt;&lt;</span> <span class=n>endl</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>DeleteObject</span><span class=p>(</span><span class=n>bitmap</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>imageFactory</span><span class=o>-&gt;</span><span class=n>Release</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>appsFolderEnum</span><span class=o>-&gt;</span><span class=n>Release</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>appsFolder</span><span class=o>-&gt;</span><span class=n>Release</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=n>CoUninitialize</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 原神, 启动!
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=c1>// ShellExecuteW(nullptr, L&#34;open&#34;, L&#34;explorer&#34;, L&#34;shell:AppsFolder\\Kingsoft.Office.ET&#34;, nullptr, SW_NORMAL);
+</span></span></span><span class=line><span class=cl><span class=c1></span>    <span class=k>return</span> <span class=mi>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div></section><footer class=article-footer><section class=article-tags><a href=/tags/dotnet/>Dotnet</a>
+<a href=/tags/win32/>Win32</a>
+<a href=/tags/csharp/>Csharp</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/20210219152833/><div class=article-details><h2 class=article-title>[C#] IEnumerable拼接! 将枚举器串起来~</h2></div></a></article><article><a href=/p/20210219070741/><div class=article-details><h2 class=article-title>[C#] Range函数, 好用就完事儿了!</h2></div></a></article><article><a href=/p/20210209080535/><div class=article-details><h2 class=article-title>[C#/C/C++] GetShortPathName详解, 长路径转换为短路径</h2></div></a></article><article><a href=/p/20231208192209/><div class=article-details><h2 class=article-title>[C#] 基于 yield 语句的迭代器逻辑懒执行</h2></div></a></article><article><a href=/p/20230818143649/><div class=article-details><h2 class=article-title>[.NET/WPF] CommunityToolkit.Mvvm 异步指令</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=SlimeNull/slimenull.github.io issue-term=pathname label=BlogComment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 SlimeNull Blogs</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.21.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

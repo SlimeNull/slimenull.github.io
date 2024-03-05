@@ -1,0 +1,1260 @@
+<!doctype html><html lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='啥是幻影坦克? 幻影坦克就是, 一张黑白图片, 在黑色背景下和白色背景下能够显示出不同的图像.首先, 我可以明确的告诉你, 它的原理就是控制像素的颜色和Alpha通道(不透明度), 来使显示的图像在不同背景下显示不同的颜色.最基本的, 就是, 一张半透明的黑色薄膜, 如果在黑色的纸上, 你什么也看不出来, 但如果在白色纸上, 你可以看见, 它是灰色.本文中, Alpha 统一拟定为 0 ~ 1 的浮点数, 像素亮度统一为 0 ~ 1 即像素’白的程度’, 例如纯白为1, 纯黑则0.注意:本项'><title>[C#] 好耶! 是幻影坦克! 原理讲解, 完整类库, 现成代码.</title>
+<link rel=canonical href=https://slimenull.com/p/20210303164409/><link rel=stylesheet href=/scss/style.min.73438a911857e6d491e39369614d0dd0c0302dcacfb43e15034e0e48cac08c07.css><meta property='og:title' content='[C#] 好耶! 是幻影坦克! 原理讲解, 完整类库, 现成代码.'><meta property='og:description' content='啥是幻影坦克? 幻影坦克就是, 一张黑白图片, 在黑色背景下和白色背景下能够显示出不同的图像.首先, 我可以明确的告诉你, 它的原理就是控制像素的颜色和Alpha通道(不透明度), 来使显示的图像在不同背景下显示不同的颜色.最基本的, 就是, 一张半透明的黑色薄膜, 如果在黑色的纸上, 你什么也看不出来, 但如果在白色纸上, 你可以看见, 它是灰色.本文中, Alpha 统一拟定为 0 ~ 1 的浮点数, 像素亮度统一为 0 ~ 1 即像素’白的程度’, 例如纯白为1, 纯黑则0.注意:本项'><meta property='og:url' content='https://slimenull.com/p/20210303164409/'><meta property='og:site_name' content='SlimeNull Blogs'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='csharp'><meta property='article:tag' content='csharp'><meta property='article:tag' content='dotnet'><meta property='article:tag' content='图像处理'><meta property='article:tag' content='幻影坦克'><meta property='article:published_time' content='2021-03-03T16:44:09+08:00'><meta property='article:modified_time' content='2021-03-03T16:44:09+08:00'><meta name=twitter:title content="[C#] 好耶! 是幻影坦克! 原理讲解, 完整类库, 现成代码."><meta name=twitter:description content="啥是幻影坦克? 幻影坦克就是, 一张黑白图片, 在黑色背景下和白色背景下能够显示出不同的图像.首先, 我可以明确的告诉你, 它的原理就是控制像素的颜色和Alpha通道(不透明度), 来使显示的图像在不同背景下显示不同的颜色.最基本的, 就是, 一张半透明的黑色薄膜, 如果在黑色的纸上, 你什么也看不出来, 但如果在白色纸上, 你可以看见, 它是灰色.本文中, Alpha 统一拟定为 0 ~ 1 的浮点数, 像素亮度统一为 0 ~ 1 即像素’白的程度’, 例如纯白为1, 纯黑则0.注意:本项"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_huc8456e525e5d066dd09f75fb4b271186_40528_300x0_resize_q75_box.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>SlimeNull Blogs</a></h1><h2 class=site-description>为了更好的开源世界~</h2></div></header><ol class=social-menu><li><a href=https://github.com/SlimeNull target=_blank title=GitHub rel=me><!doctype html><svg t="1702542119184" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="4136" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M692.906667 938.666667A42.666667 42.666667.0 01650.24 896V785.066667A91.733333 91.733333.0 00627.2 714.24a42.666667 42.666667.0 0126.026667-71.253333c104.106666-12.373334 200.106666-45.653334 200.106666-226.133334a170.666667 170.666667.0 00-28.586666-94.72A117.333333 117.333333.0 01807.253333 234.24a158.293333 158.293333.0 000-60.16A326.4 326.4.0 00718.08 220.586667a42.666667 42.666667.0 01-35.84 6.4 433.066667 433.066667.0 00-235.52.0 42.666667 42.666667.0 01-35.84-6.4A315.733333 315.733333.0 00320.853333 174.08a150.186667 150.186667.0 000 60.16 121.173333 121.173333.0 01-18.346666 88.746667A173.653333 173.653333.0 00273.92 418.133333C273.92 584.106666 354.133333 628.48 474.453333 643.84A42.666667 42.666667.0 01509.44 672a42.666667 42.666667.0 01-8.96 42.666667 87.893333 87.893333.0 00-23.466667 66.56V896A42.666667 42.666667.0 01391.68 896v-24.32a256 256 0 01-224.853333-89.173333A166.4 166.4.0 00117.333333 744.96a42.666667 42.666667.0 1121.333334-82.773333A210.346667 210.346667.0 01224 720.213333c42.666667 42.666667 85.333333 80.213333 166.4 64.853334a165.973333 165.973333.0 019.813333-67.413334C312.32 695.466666 186.88 632.32 186.88 418.986667a256 256 0 0142.666667-142.08 36.266667 36.266667.0 005.546666-26.453334 242.773333 242.773333.0 0114.08-136.96 42.666667 42.666667.0 0126.88-24.32c14.506667-4.266667 66.56-12.8 165.12 51.2a518.826667 518.826667.0 01242.773334.0c98.56-64 150.613333-55.893333 164.693333-51.2a42.666667 42.666667.0 0126.88 24.32A243.626667 243.626667.0 01889.6 250.88a32 32 0 004.693333 24.32A256 256 0 01936.96 417.706667c0 216.32-124.586667 279.04-213.333333 298.666666a182.613333 182.613333.0 019.386666 71.253334V896a42.666667 42.666667.0 01-40.106666 42.666667z" fill="#666" p-id="4137"/></svg></a></li><li><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili rel=me><!doctype html><svg t="1702541966104" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="16981" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M306.005333 117.632 444.330667 256h135.296l138.368-138.325333A42.666667 42.666667.0 01778.368 178.048L700.330667 256H789.333333A149.333333 149.333333.0 01938.666667 405.333333v341.333334A149.333333 149.333333.0 01789.333333 896H234.666667A149.333333 149.333333.0 0185.333333 746.666667V405.333333A149.333333 149.333333.0 01234.666667 256h88.96L245.632 177.962667a42.666667 42.666667.0 0160.373333-60.373334zm483.328 223.701333H234.666667a64 64 0 00-63.701334 57.856L170.666667 405.333333v341.333334a64 64 0 0057.856 63.701333L234.666667 810.666667h554.666666a64 64 0 0063.701334-57.856L853.333333 746.666667V405.333333a64 64 0 00-64-64zm-448 128A42.666667 42.666667.0 01384 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666666-42.666667zm341.333334.0A42.666667 42.666667.0 01725.333333 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666667-42.666667z" fill="#666" p-id="16982"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://slimenull.com/ selected></option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#注意>注意:</a></li><li><a href=#基本原理>基本原理:</a></li><li><a href=#幻影坦克>幻影坦克:</a></li><li><a href=#解决方案>解决方案:</a></li><li><a href=#完整代码>完整代码:</a></li><li><a href=#downarrow-点个赞再走呗-downarrow>$\downarrow$ 点个赞再走呗! $\downarrow$</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/%E7%B1%BB%E5%BA%93/>类库
+</a><a href=/categories/%E5%9B%BE%E7%89%87%E5%A4%84%E7%90%86/>图片处理
+</a><a href=/categories/%E7%AE%97%E6%B3%95/>算法</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/20210303164409/>[C#] 好耶! 是幻影坦克! 原理讲解, 完整类库, 现成代码.</a></h2><h3 class=article-subtitle>啥是幻影坦克? 幻影坦克就是, 一张黑白图片, 在黑色背景下和白色背景下能够显示出不同的图像.首先, 我可以明确的告诉你, 它的原理就是控制像素的颜色和Alpha通道(不透明度), 来使显示的图像在不同背景下显示不同的颜色.最基本的, 就是, 一张半透明的黑色薄膜, 如果在黑色的纸上, 你什么也看不出来, 但如果在白色纸上, 你可以看见, 它是灰色.本文中, Alpha 统一拟定为 0 ~ 1 的浮点数, 像素亮度统一为 0 ~ 1 即像素’白的程度’, 例如纯白为1, 纯黑则0.注意:本项</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Mar 03, 2021</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 9 分钟</time></div></footer></div></header><section class=article-content><p>啥是幻影坦克? 幻影坦克就是, 一张黑白图片, 在黑色背景下和白色背景下能够显示出不同的图像.</p><p><img src=/images/20210303103019196.png loading=lazy>
+首先, 我可以明确的告诉你, 它的原理就是控制像素的颜色和Alpha通道(不透明度), 来使显示的图像在不同背景下显示不同的颜色.</p><p>最基本的, 就是, 一张半透明的黑色薄膜, 如果在黑色的纸上, 你什么也看不出来, 但如果在白色纸上, 你可以看见, 它是灰色.</p><blockquote><p>本文中, Alpha 统一拟定为 0 ~ 1 的浮点数, 像素亮度统一为 0 ~ 1 即像素&rsquo;白的程度&rsquo;, 例如纯白为1, 纯黑则0.</p></blockquote><h2 id=注意>注意:</h2><p>本项目已经在 <a class=link href=https://github.com/SlimeNull/Null.PhantomTank target=_blank rel=noopener>github.com/SlimeNull/Null.PhantomTank</a> 开源. 你可以直接 clone 下来以查看源码.</p><p>幻影坦克合成库, NullLib.PhantomTank 已经发布到 <a class=link href=https://www.nuget.org/packages/NullLib.PhantomTank/ target=_blank rel=noopener>nuget.org</a>, 你可以直接在 VS 的 nuget 包管理器中直接安装本库</p><h2 id=基本原理>基本原理:</h2><p>像素在某背景下最终显示出来的公式如下:</p><blockquote><p>设: 这个图像的背景亮度为 $bc$, 这个像素的亮度为 $pc$, 不透明度为 $pa$, 则最终显示的颜色 $oc$ 就是:
+$$
+oc = pc * pa + bc * (1 - pa)
+$$</p></blockquote><p>理解起来也简单, 还拿刚刚的例子来讲, 例如一个纯黑的半透明薄膜, 那他肯定:</p><ol><li>只有一半的黑色能显示出来, 即 $pc * pa$</li><li>而背景色, 也有一半的颜色能够透过来. 即: $bc * (1 - pa)$</li><li>总的颜色加起来, 也就是 $pc * pa + bc * (1 - pa)$</li></ol><h2 id=幻影坦克>幻影坦克:</h2><p>而当一个像素为白色背景时, 能够显示出一个特定的颜色 $x$, 当黑色背景时, 显示出 $y$, 也可得出一个公式,</p><ul><li><p>设: 颜色 $x$ 的亮度为 $xc$, 颜色 $y$ 的亮度为 $yc$, 这个像素的亮度为 $zx$, 不透明度为 $za$, 则满足:
+$$
+\begin{cases}
+xc = za \times zc + (1 - za) \
+yc = za \times zc
+\end{cases}
+$$</p></li><li><p>稍微处理一下, 可得到下面的公式:
+$$
+\begin{cases}
+xc = yc + 1 \times (1 - za) \
+yc = xc - 1 \times (1 - za) \
+za = -[(xc - yc) \div 1] + 1 \
+\end{cases}
+\ \downarrow \
+\begin{cases}
+xc = yc + 1 - za \
+yc = xc + za - 1 \
+za = yc - xc + 1 \
+\end{cases}
+$$</p></li><li><p>由于 $xc$, $yc$, $zc$, $za$ 都是小于等于1, 大于等于0的值, 所以:
+$$
+\begin{cases}
+1 \geq xc \geq 0 \
+1 \geq yc \geq 0 \
+1 \geq za \geq 0 \
+\end{cases}
+\ \downarrow \
+\begin{cases}
+1 \geq yc + 1 - za \geq 0 \
+1 \geq xc + za - 1 \geq 0 \
+1 \geq yc - xc + 1 \geq 0 \
+\end{cases}
+\ \downarrow \
+\begin{cases}
+0 \geq yc - za \geq -1 \
+2 \geq yc + za \geq 1 \
+0 \geq yc - xc \geq -1 \
+\end{cases}
+\ \downarrow \
+\begin{cases}
+za \geq yc \
+xc + za \geq 1 \
+xc \geq yc
+\end{cases}
+\ \
+_\text{最终得到的不等式, 则是我们的 x 和 y 需要满足的条件.} \\
+_\text{只有 x 和 y 像素满足这些条件, za 和 zc 才有值}
+$$</p></li><li><p>最终我们需要的算式是这些:
+$$
+\begin{cases}
+zc = yc \div za \
+za = yc - xc + 1
+\end{cases}
+$$</p></li><li><p>而 ARGB 通道的值是 0 ~ 255, 所以需要进行转换一下:
+$$
+\begin{cases}
+zc = yc \div (za \div 255) = yc \times 255 \div za \
+za = yc - xc + 255
+\end{cases}
+$$</p></li><li><p>而刚刚我们需要满足的条件, 其中只有一个是我们真正需要进行处理的, 即:
+$$
+xc \geq yc
+$$</p></li></ul><h2 id=解决方案>解决方案:</h2><p>关于 $xc \geq yc$ 的条件, 很简单, $xc$ 与 $yc$ 的值是在 $0$ 到 $255$ 之内的, 那我们只需要将其压制到 $128$ 到 $255$ 之间, 将 $yc$ 压制到 $0$ 到 $127$ 之间, 即可解决. 然后就可以直接用我们得出的公式来运算了.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>Color</span> <span class=n>CalcPixel</span><span class=p>(</span><span class=n>Color</span> <span class=n>x</span><span class=p>,</span> <span class=n>Color</span> <span class=n>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span>
+</span></span><span class=line><span class=cl>        <span class=n>xc</span> <span class=p>=</span> <span class=p>(</span><span class=n>x</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>x</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>x</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>/</span> <span class=m>3</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>yc</span> <span class=p>=</span> <span class=p>(</span><span class=n>y</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>y</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>z</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>/</span> <span class=m>3</span><span class=p>;</span>   <span class=c1>// 获取亮度</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=n>xc</span> <span class=p>=</span> <span class=p>(</span><span class=n>xc</span> <span class=p>/</span> <span class=m>255f</span><span class=p>)</span> <span class=p>*</span> <span class=m>127</span> <span class=p>+</span> <span class=m>128</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>yc</span> <span class=p>=</span> <span class=p>(</span><span class=n>yc</span> <span class=p>/</span> <span class=m>255f</span><span class=p>)</span> <span class=p>*</span> <span class=m>127</span><span class=p>;</span>           <span class=c1>// 压制颜色</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span>
+</span></span><span class=line><span class=cl>        <span class=n>za</span> <span class=p>=</span> <span class=n>yc</span> <span class=p>-</span> <span class=n>xc</span> <span class=p>+</span> <span class=m>255</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>zc</span> <span class=p>=</span> <span class=n>za</span> <span class=p>==</span> <span class=m>0</span> <span class=p>?</span> <span class=m>0</span> <span class=p>:</span> <span class=n>yc</span> <span class=p>*</span> <span class=m>255</span> <span class=p>/</span> <span class=n>za</span><span class=p>;</span>           <span class=c1>// 运算结果颜色</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>ya</span><span class=p>,</span> <span class=n>yc</span><span class=p>,</span> <span class=n>yc</span><span class=p>,</span> <span class=n>yc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>我们还可以加点功能, 就是 x 与 y 的颜色占用比例, 例如, 刚刚的就是 1:1, 如果是 10 : 245, 则 x 占用 245 ~ 255, y 占用 0 ~ 245.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=c1>// src1ColorRatio 为 x 的占用比例, 值域是0~1</span>
+</span></span><span class=line><span class=cl><span class=n>Color</span> <span class=n>CalcPixel</span><span class=p>(</span><span class=n>Color</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>src2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>src1ColorRatio</span> <span class=p>=</span> <span class=m>0.5f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>src2ColorRatio</span> <span class=p>=</span> <span class=m>1</span> <span class=p>-</span> <span class=n>src1ColorRatio</span><span class=p>;</span>   <span class=c1>// 运算出 y 的占用比例</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span>
+</span></span><span class=line><span class=cl>        <span class=n>xc</span> <span class=p>=</span> <span class=p>(</span><span class=kt>int</span><span class=p>)((</span><span class=n>src1</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>src1</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>src1</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>*</span> <span class=n>src1ColorRatio</span> <span class=p>/</span> <span class=m>3</span> <span class=p>+</span> <span class=n>src2ColorRatio</span> <span class=p>*</span> <span class=m>255</span> <span class=p>+</span> <span class=m>1</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>        <span class=n>yc</span> <span class=p>=</span> <span class=p>(</span><span class=kt>int</span><span class=p>)((</span><span class=n>src2</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>src2</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>src2</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>*</span> <span class=n>src2ColorRatio</span> <span class=p>/</span> <span class=m>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>za</span> <span class=p>=</span> <span class=n>yc</span> <span class=p>-</span> <span class=n>xc</span> <span class=p>+</span> <span class=m>255</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>zc</span> <span class=p>=</span> <span class=n>za</span> <span class=p>==</span> <span class=m>0</span> <span class=p>?</span> <span class=m>0</span> <span class=p>:</span> <span class=p>(</span><span class=n>yc</span> <span class=p>*</span> <span class=m>255</span> <span class=p>/</span> <span class=n>za</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>return</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>za</span><span class=p>,</span> <span class=n>zc</span><span class=p>,</span> <span class=n>zc</span><span class=p>,</span> <span class=n>zc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=完整代码>完整代码:</h2><blockquote><p>需要的库:</p><ol><li>System.Drawing 程序集或 System.Drawing.Common 包.</li></ol></blockquote><p>LockBitmap 源码:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>using</span> <span class=nn>System</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Drawing</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Drawing.Imaging</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Runtime.InteropServices</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>Null.PhantomTank.Library</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>class</span> <span class=nc>LockBitmap</span> <span class=p>:</span> <span class=n>IDisposable</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>Bitmap</span> <span class=n>source</span> <span class=p>=</span> <span class=kc>null</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>IntPtr</span> <span class=n>Iptr</span> <span class=p>=</span> <span class=n>IntPtr</span><span class=p>.</span><span class=n>Zero</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>BitmapData</span> <span class=n>bitmapData</span> <span class=p>=</span> <span class=kc>null</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>byte</span><span class=p>[]</span> <span class=n>Pixels</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>int</span> <span class=n>Depth</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>int</span> <span class=n>Width</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>int</span> <span class=n>Height</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>bool</span> <span class=n>IsLocked</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>private</span> <span class=n>Func</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>,</span> <span class=n>Color</span><span class=p>&gt;</span> <span class=n>colorGetter</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>private</span> <span class=n>Action</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>,</span> <span class=n>Color</span><span class=p>&gt;</span> <span class=n>colorSetter</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=n>LockBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>source</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>this</span><span class=p>.</span><span class=n>source</span> <span class=p>=</span> <span class=n>source</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>LockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Lock bitmap data</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=k>void</span> <span class=n>LockBits</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// Get width and height of bitmap</span>
+</span></span><span class=line><span class=cl>                <span class=n>Width</span> <span class=p>=</span> <span class=n>source</span><span class=p>.</span><span class=n>Width</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>Height</span> <span class=p>=</span> <span class=n>source</span><span class=p>.</span><span class=n>Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// get total locked pixels count</span>
+</span></span><span class=line><span class=cl>                <span class=c1>//int PixelCount = Width * Height;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// Create rectangle to lock</span>
+</span></span><span class=line><span class=cl>                <span class=n>System</span><span class=p>.</span><span class=n>Drawing</span><span class=p>.</span><span class=n>Rectangle</span> <span class=n>rect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>System</span><span class=p>.</span><span class=n>Drawing</span><span class=p>.</span><span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>Width</span><span class=p>,</span> <span class=n>Height</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// get source bitmap pixel format size</span>
+</span></span><span class=line><span class=cl>                <span class=n>Depth</span> <span class=p>=</span> <span class=n>System</span><span class=p>.</span><span class=n>Drawing</span><span class=p>.</span><span class=n>Bitmap</span><span class=p>.</span><span class=n>GetPixelFormatSize</span><span class=p>(</span><span class=n>source</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// Check if bpp (Bits Per Pixel) is 8, 24, or 32</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>Depth</span> <span class=p>==</span> <span class=m>8</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>colorGetter</span> <span class=p>=</span> <span class=p>(</span><span class=n>offset</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>colorSetter</span> <span class=p>=</span> <span class=p>(</span><span class=n>offset</span><span class=p>,</span> <span class=n>color</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>B</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>};</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>Depth</span> <span class=p>==</span> <span class=m>24</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>colorGetter</span> <span class=p>=</span> <span class=p>(</span><span class=n>offset</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>2</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>1</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>colorSetter</span> <span class=p>=</span> <span class=p>(</span><span class=n>offset</span><span class=p>,</span> <span class=n>color</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>B</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>1</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>G</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>2</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>R</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>};</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>Depth</span> <span class=p>==</span> <span class=m>32</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>colorGetter</span> <span class=p>=</span> <span class=p>(</span><span class=n>offset</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>3</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>2</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>1</span><span class=p>],</span> <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>]);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>colorSetter</span> <span class=p>=</span> <span class=p>(</span><span class=n>offset</span><span class=p>,</span> <span class=n>color</span><span class=p>)</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>{</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>B</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>1</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>G</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>2</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>R</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                        <span class=n>Pixels</span><span class=p>[</span><span class=n>offset</span> <span class=p>+</span> <span class=m>3</span><span class=p>]</span> <span class=p>=</span> <span class=n>color</span><span class=p>.</span><span class=n>A</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=p>};</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentException</span><span class=p>(</span><span class=s>&#34;Only 8, 24 and 32 bpp images are supported.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// Lock bitmap and return bitmap data</span>
+</span></span><span class=line><span class=cl>                <span class=n>bitmapData</span> <span class=p>=</span> <span class=n>source</span><span class=p>.</span><span class=n>LockBits</span><span class=p>(</span><span class=n>rect</span><span class=p>,</span> <span class=n>ImageLockMode</span><span class=p>.</span><span class=n>ReadWrite</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                                             <span class=n>source</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// create byte array to copy pixel values</span>
+</span></span><span class=line><span class=cl>                <span class=kt>int</span> <span class=n>step</span> <span class=p>=</span> <span class=n>Depth</span> <span class=p>/</span> <span class=m>8</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>Pixels</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>byte</span><span class=p>[</span><span class=n>bitmapData</span><span class=p>.</span><span class=n>Stride</span> <span class=p>*</span> <span class=n>Height</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>                <span class=n>Iptr</span> <span class=p>=</span> <span class=n>bitmapData</span><span class=p>.</span><span class=n>Scan0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=n>IsLocked</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// Copy data from pointer to array</span>
+</span></span><span class=line><span class=cl>                <span class=n>Marshal</span><span class=p>.</span><span class=n>Copy</span><span class=p>(</span><span class=n>Iptr</span><span class=p>,</span> <span class=n>Pixels</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>Pixels</span><span class=p>.</span><span class=n>Length</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>catch</span> <span class=p>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=n>ex</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Unlock bitmap data</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=k>void</span> <span class=n>UnlockBits</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>try</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// Copy data from byte array to pointer</span>
+</span></span><span class=line><span class=cl>                <span class=n>Marshal</span><span class=p>.</span><span class=n>Copy</span><span class=p>(</span><span class=n>Pixels</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>Iptr</span><span class=p>,</span> <span class=n>Pixels</span><span class=p>.</span><span class=n>Length</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// Unlock bitmap data</span>
+</span></span><span class=line><span class=cl>                <span class=n>source</span><span class=p>.</span><span class=n>UnlockBits</span><span class=p>(</span><span class=n>bitmapData</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=n>IsLocked</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>catch</span> <span class=p>(</span><span class=n>Exception</span> <span class=n>ex</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=n>ex</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Get the color of the specified pixel</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;x&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;y&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=n>Color</span> <span class=n>GetPixel</span><span class=p>(</span><span class=kt>int</span> <span class=n>x</span><span class=p>,</span> <span class=kt>int</span> <span class=n>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Color</span> <span class=n>clr</span> <span class=p>=</span> <span class=n>Color</span><span class=p>.</span><span class=n>Empty</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// Get color components count</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>cCount</span> <span class=p>=</span> <span class=n>Depth</span> <span class=p>/</span> <span class=m>8</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// Get start index of the specified pixel</span>
+</span></span><span class=line><span class=cl>            <span class=c1>//int i = ((y * Width) + x) * cCount;</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=n>y</span> <span class=p>*</span> <span class=n>bitmapData</span><span class=p>.</span><span class=n>Stride</span> <span class=p>+</span> <span class=n>x</span> <span class=p>*</span> <span class=n>cCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>i</span> <span class=p>&gt;</span> <span class=n>Pixels</span><span class=p>.</span><span class=n>Length</span> <span class=p>-</span> <span class=n>cCount</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=k>new</span> <span class=n>IndexOutOfRangeException</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// Get color by array index</span>
+</span></span><span class=line><span class=cl>            <span class=n>clr</span> <span class=p>=</span> <span class=n>colorGetter</span><span class=p>.</span><span class=n>Invoke</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>clr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Set the color of the specified pixel</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;x&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;y&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;color&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=k>void</span> <span class=n>SetPixel</span><span class=p>(</span><span class=kt>int</span> <span class=n>x</span><span class=p>,</span> <span class=kt>int</span> <span class=n>y</span><span class=p>,</span> <span class=n>Color</span> <span class=n>color</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// Get color components count</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>cCount</span> <span class=p>=</span> <span class=n>Depth</span> <span class=p>/</span> <span class=m>8</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// Get start index of the specified pixel</span>
+</span></span><span class=line><span class=cl>            <span class=c1>//int i = ((y * Width) + x) * cCount;</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=n>y</span> <span class=p>*</span> <span class=n>bitmapData</span><span class=p>.</span><span class=n>Stride</span> <span class=p>+</span> <span class=n>x</span> <span class=p>*</span> <span class=n>cCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// Set color by array index and color object</span>
+</span></span><span class=line><span class=cl>            <span class=n>colorSetter</span><span class=p>.</span><span class=n>Invoke</span><span class=p>(</span><span class=n>i</span><span class=p>,</span> <span class=n>color</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>bool</span> <span class=n>IsValidCoordinate</span><span class=p>(</span><span class=kt>int</span> <span class=n>x</span><span class=p>,</span> <span class=kt>int</span> <span class=n>y</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>x</span> <span class=p>&gt;=</span> <span class=m>0</span> <span class=p>&amp;&amp;</span> <span class=n>x</span> <span class=p>&lt;</span> <span class=k>this</span><span class=p>.</span><span class=n>Width</span> <span class=p>&amp;&amp;</span> <span class=n>y</span> <span class=p>&gt;</span> <span class=m>0</span> <span class=p>&amp;&amp;</span> <span class=n>y</span> <span class=p>&lt;</span> <span class=k>this</span><span class=p>.</span><span class=n>Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cp>#region</span> <span class=n>IDisposable</span> <span class=n>Support</span>
+</span></span><span class=line><span class=cl>        <span class=kd>private</span> <span class=kt>bool</span> <span class=n>disposedValue</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span> <span class=c1>// 要检测冗余调用</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>protected</span> <span class=k>virtual</span> <span class=k>void</span> <span class=n>Dispose</span><span class=p>(</span><span class=kt>bool</span> <span class=n>disposing</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(!</span><span class=n>disposedValue</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>disposing</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=c1>// TODO: 释放托管状态(托管对象)。</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                <span class=c1>// TODO: 释放未托管的资源(未托管的对象)并在以下内容中替代终结器。</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// TODO: 将大型字段设置为 null。</span>
+</span></span><span class=line><span class=cl>                <span class=n>UnlockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>                <span class=n>disposedValue</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// TODO: 仅当以上 Dispose(bool disposing) 拥有用于释放未托管资源的代码时才替代终结器。</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// ~LockBitmap() {</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//   // 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。</span>
+</span></span><span class=line><span class=cl>        <span class=c1>//   Dispose(false);</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// }</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 添加此代码以正确实现可处置模式。</span>
+</span></span><span class=line><span class=cl>        <span class=k>void</span> <span class=n>IDisposable</span><span class=p>.</span><span class=n>Dispose</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 请勿更改此代码。将清理代码放入以上 Dispose(bool disposing) 中。</span>
+</span></span><span class=line><span class=cl>            <span class=n>Dispose</span><span class=p>(</span><span class=kc>true</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// TODO: 如果在以上内容中替代了终结器，则取消注释以下行。</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// GC.SuppressFinalize(this);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=cp>#endregion</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>幻影坦克制作源码:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span><span class=lnt>107
+</span><span class=lnt>108
+</span><span class=lnt>109
+</span><span class=lnt>110
+</span><span class=lnt>111
+</span><span class=lnt>112
+</span><span class=lnt>113
+</span><span class=lnt>114
+</span><span class=lnt>115
+</span><span class=lnt>116
+</span><span class=lnt>117
+</span><span class=lnt>118
+</span><span class=lnt>119
+</span><span class=lnt>120
+</span><span class=lnt>121
+</span><span class=lnt>122
+</span><span class=lnt>123
+</span><span class=lnt>124
+</span><span class=lnt>125
+</span><span class=lnt>126
+</span><span class=lnt>127
+</span><span class=lnt>128
+</span><span class=lnt>129
+</span><span class=lnt>130
+</span><span class=lnt>131
+</span><span class=lnt>132
+</span><span class=lnt>133
+</span><span class=lnt>134
+</span><span class=lnt>135
+</span><span class=lnt>136
+</span><span class=lnt>137
+</span><span class=lnt>138
+</span><span class=lnt>139
+</span><span class=lnt>140
+</span><span class=lnt>141
+</span><span class=lnt>142
+</span><span class=lnt>143
+</span><span class=lnt>144
+</span><span class=lnt>145
+</span><span class=lnt>146
+</span><span class=lnt>147
+</span><span class=lnt>148
+</span><span class=lnt>149
+</span><span class=lnt>150
+</span><span class=lnt>151
+</span><span class=lnt>152
+</span><span class=lnt>153
+</span><span class=lnt>154
+</span><span class=lnt>155
+</span><span class=lnt>156
+</span><span class=lnt>157
+</span><span class=lnt>158
+</span><span class=lnt>159
+</span><span class=lnt>160
+</span><span class=lnt>161
+</span><span class=lnt>162
+</span><span class=lnt>163
+</span><span class=lnt>164
+</span><span class=lnt>165
+</span><span class=lnt>166
+</span><span class=lnt>167
+</span><span class=lnt>168
+</span><span class=lnt>169
+</span><span class=lnt>170
+</span><span class=lnt>171
+</span><span class=lnt>172
+</span><span class=lnt>173
+</span><span class=lnt>174
+</span><span class=lnt>175
+</span><span class=lnt>176
+</span><span class=lnt>177
+</span><span class=lnt>178
+</span><span class=lnt>179
+</span><span class=lnt>180
+</span><span class=lnt>181
+</span><span class=lnt>182
+</span><span class=lnt>183
+</span><span class=lnt>184
+</span><span class=lnt>185
+</span><span class=lnt>186
+</span><span class=lnt>187
+</span><span class=lnt>188
+</span><span class=lnt>189
+</span><span class=lnt>190
+</span><span class=lnt>191
+</span><span class=lnt>192
+</span><span class=lnt>193
+</span><span class=lnt>194
+</span><span class=lnt>195
+</span><span class=lnt>196
+</span><span class=lnt>197
+</span><span class=lnt>198
+</span><span class=lnt>199
+</span><span class=lnt>200
+</span><span class=lnt>201
+</span><span class=lnt>202
+</span><span class=lnt>203
+</span><span class=lnt>204
+</span><span class=lnt>205
+</span><span class=lnt>206
+</span><span class=lnt>207
+</span><span class=lnt>208
+</span><span class=lnt>209
+</span><span class=lnt>210
+</span><span class=lnt>211
+</span><span class=lnt>212
+</span><span class=lnt>213
+</span><span class=lnt>214
+</span><span class=lnt>215
+</span><span class=lnt>216
+</span><span class=lnt>217
+</span><span class=lnt>218
+</span><span class=lnt>219
+</span><span class=lnt>220
+</span><span class=lnt>221
+</span><span class=lnt>222
+</span><span class=lnt>223
+</span><span class=lnt>224
+</span><span class=lnt>225
+</span><span class=lnt>226
+</span><span class=lnt>227
+</span><span class=lnt>228
+</span><span class=lnt>229
+</span><span class=lnt>230
+</span><span class=lnt>231
+</span><span class=lnt>232
+</span><span class=lnt>233
+</span><span class=lnt>234
+</span><span class=lnt>235
+</span><span class=lnt>236
+</span><span class=lnt>237
+</span><span class=lnt>238
+</span><span class=lnt>239
+</span><span class=lnt>240
+</span><span class=lnt>241
+</span><span class=lnt>242
+</span><span class=lnt>243
+</span><span class=lnt>244
+</span><span class=lnt>245
+</span><span class=lnt>246
+</span><span class=lnt>247
+</span><span class=lnt>248
+</span><span class=lnt>249
+</span><span class=lnt>250
+</span><span class=lnt>251
+</span><span class=lnt>252
+</span><span class=lnt>253
+</span><span class=lnt>254
+</span><span class=lnt>255
+</span><span class=lnt>256
+</span><span class=lnt>257
+</span><span class=lnt>258
+</span><span class=lnt>259
+</span><span class=lnt>260
+</span><span class=lnt>261
+</span><span class=lnt>262
+</span><span class=lnt>263
+</span><span class=lnt>264
+</span><span class=lnt>265
+</span><span class=lnt>266
+</span><span class=lnt>267
+</span><span class=lnt>268
+</span><span class=lnt>269
+</span><span class=lnt>270
+</span><span class=lnt>271
+</span><span class=lnt>272
+</span><span class=lnt>273
+</span><span class=lnt>274
+</span><span class=lnt>275
+</span><span class=lnt>276
+</span><span class=lnt>277
+</span><span class=lnt>278
+</span><span class=lnt>279
+</span><span class=lnt>280
+</span><span class=lnt>281
+</span><span class=lnt>282
+</span><span class=lnt>283
+</span><span class=lnt>284
+</span><span class=lnt>285
+</span><span class=lnt>286
+</span><span class=lnt>287
+</span><span class=lnt>288
+</span><span class=lnt>289
+</span><span class=lnt>290
+</span><span class=lnt>291
+</span><span class=lnt>292
+</span><span class=lnt>293
+</span><span class=lnt>294
+</span><span class=lnt>295
+</span><span class=lnt>296
+</span><span class=lnt>297
+</span><span class=lnt>298
+</span><span class=lnt>299
+</span><span class=lnt>300
+</span><span class=lnt>301
+</span><span class=lnt>302
+</span><span class=lnt>303
+</span><span class=lnt>304
+</span><span class=lnt>305
+</span><span class=lnt>306
+</span><span class=lnt>307
+</span><span class=lnt>308
+</span><span class=lnt>309
+</span><span class=lnt>310
+</span><span class=lnt>311
+</span><span class=lnt>312
+</span><span class=lnt>313
+</span><span class=lnt>314
+</span><span class=lnt>315
+</span><span class=lnt>316
+</span><span class=lnt>317
+</span><span class=lnt>318
+</span><span class=lnt>319
+</span><span class=lnt>320
+</span><span class=lnt>321
+</span><span class=lnt>322
+</span><span class=lnt>323
+</span><span class=lnt>324
+</span><span class=lnt>325
+</span><span class=lnt>326
+</span><span class=lnt>327
+</span><span class=lnt>328
+</span><span class=lnt>329
+</span><span class=lnt>330
+</span><span class=lnt>331
+</span><span class=lnt>332
+</span><span class=lnt>333
+</span><span class=lnt>334
+</span><span class=lnt>335
+</span><span class=lnt>336
+</span><span class=lnt>337
+</span><span class=lnt>338
+</span><span class=lnt>339
+</span><span class=lnt>340
+</span><span class=lnt>341
+</span><span class=lnt>342
+</span><span class=lnt>343
+</span><span class=lnt>344
+</span><span class=lnt>345
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>using</span> <span class=nn>System</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Collections.Generic</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Drawing</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Linq</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>System.Text</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=k>using</span> <span class=nn>Null.PhantomTank.Library</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>Null.PhantomTank</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=k>class</span> <span class=nc>PhantomTank</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// 像素运算方式 变量 : 源色: Xc Yc, 输出: Za Zc</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///   其中: c表示Color, 即颜色亮度, a代表Alpha通道, 即不透明度</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///   备注: 值全部为0~1的比值</span>
+</span></span><span class=line><span class=cl>        <span class=c1>///</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Expr: | Xc = Za * Zc + 1 - Za</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       | Yc = Za * Zc</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// </span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Calc: | Xc = Yc + 1 - Za</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       | Yc = Xc + Za - 1</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       | Za = Yc - Xc + 1</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// </span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Need: | 1 &gt;= Yc + 1 - Za &gt;= 0, 0 &gt;= Yc - Za &gt;= -1;      Then: | Za &gt;= Yc</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       | 1 &gt;= Xc + Za - 1 &gt;= 0, 2 &gt;= Xc + Za &gt;= 1;       Then: | Xc + Za &gt;= 1</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       | 1 &gt;= Yc - Xc + 1 &gt;= 0, 0 &gt;= Yc - Xc &gt;= -1;      Then: | Xc &gt;= Yc</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// </span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// Root: | Zc = Yc / Za</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       | Za = Yc - Xc + 1</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       </span>
+</span></span><span class=line><span class=cl>        <span class=cs>///       Basic Root: | Zc = Yc / (Za / 255) = Yc * 255 / Za</span>
+</span></span><span class=line><span class=cl>        <span class=cs>///                   | Za = Yc - Xc + 255</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>private</span> <span class=kd>static</span> <span class=n>Color</span> <span class=n>CalcPixel</span><span class=p>(</span><span class=n>Color</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>src2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>src1ColorRatio</span> <span class=p>=</span> <span class=m>0.5f</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>float</span> <span class=n>src2ColorRatio</span> <span class=p>=</span> <span class=m>1</span> <span class=p>-</span> <span class=n>src1ColorRatio</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span>
+</span></span><span class=line><span class=cl>                <span class=n>xc</span> <span class=p>=</span> <span class=p>(</span><span class=kt>int</span><span class=p>)((</span><span class=n>src1</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>src1</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>src1</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>*</span> <span class=n>src1ColorRatio</span> <span class=p>/</span> <span class=m>3</span> <span class=p>+</span> <span class=n>src2ColorRatio</span> <span class=p>*</span> <span class=m>255</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=n>yc</span> <span class=p>=</span> <span class=p>(</span><span class=kt>int</span><span class=p>)((</span><span class=n>src2</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>src2</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>src2</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>*</span> <span class=n>src2ColorRatio</span> <span class=p>/</span> <span class=m>3</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span>
+</span></span><span class=line><span class=cl>                <span class=n>za</span> <span class=p>=</span> <span class=n>yc</span> <span class=p>-</span> <span class=n>xc</span> <span class=p>+</span> <span class=m>255</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>zc</span> <span class=p>=</span> <span class=n>za</span> <span class=p>==</span> <span class=m>0</span> <span class=p>?</span> <span class=m>0</span> <span class=p>:</span> <span class=p>(</span><span class=n>yc</span> <span class=p>*</span> <span class=m>255</span> <span class=p>/</span> <span class=n>za</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>za</span><span class=p>,</span> <span class=n>zc</span><span class=p>,</span> <span class=n>zc</span><span class=p>,</span> <span class=n>zc</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>private</span> <span class=kd>static</span> <span class=kt>float</span> <span class=n>ConvertRatio</span><span class=p>(</span><span class=kt>float</span> <span class=n>ratio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>ratio</span> <span class=p>/</span> <span class=p>(</span><span class=n>ratio</span> <span class=p>+</span> <span class=m>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>const</span> <span class=kt>float</span> <span class=n>DefaultRatio</span> <span class=p>=</span> <span class=m>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>ResizeBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>,</span> <span class=kt>int</span> <span class=n>newWidth</span><span class=p>,</span> <span class=kt>int</span> <span class=n>newHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Size</span> <span class=n>srcSize</span> <span class=p>=</span> <span class=n>src</span><span class=p>.</span><span class=n>Size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>srcWidth</span> <span class=p>=</span> <span class=n>srcSize</span><span class=p>.</span><span class=n>Width</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>srcHeight</span> <span class=p>=</span> <span class=n>srcSize</span><span class=p>.</span><span class=n>Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>result</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>newWidth</span><span class=p>,</span> <span class=n>newHeight</span><span class=p>,</span> <span class=n>src</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>Graphics</span> <span class=n>rstG</span> <span class=p>=</span> <span class=n>Graphics</span><span class=p>.</span><span class=n>FromImage</span><span class=p>(</span><span class=n>result</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>rstG</span><span class=p>.</span><span class=n>Clear</span><span class=p>(</span><span class=n>bgColor</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Size</span> <span class=n>destSize</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>Rectangle</span> <span class=n>srcRect</span><span class=p>,</span> <span class=n>destRect</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>switch</span><span class=p>(</span><span class=n>resize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>destRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>((</span><span class=n>newWidth</span> <span class=p>-</span> <span class=n>srcWidth</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>newHeight</span> <span class=p>-</span> <span class=n>srcHeight</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=n>srcWidth</span><span class=p>,</span> <span class=n>srcHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>rstG</span><span class=p>.</span><span class=n>DrawImageUnscaled</span><span class=p>(</span><span class=n>src</span><span class=p>,</span> <span class=n>destRect</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>Stretch</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>srcWidth</span><span class=p>,</span> <span class=n>srcHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>destRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>newWidth</span><span class=p>,</span> <span class=n>newHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>rstG</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src</span><span class=p>,</span> <span class=n>destRect</span><span class=p>,</span> <span class=n>srcRect</span><span class=p>,</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>Uniform</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>srcWidth</span><span class=p>,</span> <span class=n>srcHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>destSize</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>newWidth</span><span class=p>,</span> <span class=n>srcHeight</span> <span class=p>*</span> <span class=n>newWidth</span> <span class=p>/</span> <span class=n>srcWidth</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>destSize</span><span class=p>.</span><span class=n>Height</span> <span class=p>&gt;</span> <span class=n>newHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>destSize</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>srcWidth</span> <span class=p>*</span> <span class=n>newHeight</span> <span class=p>/</span> <span class=n>srcHeight</span><span class=p>,</span> <span class=n>newHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>destRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=k>new</span> <span class=n>Point</span><span class=p>((</span><span class=n>newWidth</span> <span class=p>-</span> <span class=n>destSize</span><span class=p>.</span><span class=n>Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>newHeight</span> <span class=p>-</span> <span class=n>destSize</span><span class=p>.</span><span class=n>Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>),</span> <span class=n>destSize</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>rstG</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src</span><span class=p>,</span> <span class=n>destRect</span><span class=p>,</span> <span class=n>srcRect</span><span class=p>,</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>UniformToFill</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>srcWidth</span><span class=p>,</span> <span class=n>srcHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>destSize</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>newWidth</span><span class=p>,</span> <span class=n>srcHeight</span> <span class=p>*</span> <span class=n>newWidth</span> <span class=p>/</span> <span class=n>srcWidth</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>destSize</span><span class=p>.</span><span class=n>Height</span> <span class=p>&lt;</span> <span class=n>newHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>destSize</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>srcWidth</span> <span class=p>*</span> <span class=n>newHeight</span> <span class=p>/</span> <span class=n>srcHeight</span><span class=p>,</span> <span class=n>newHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>destRect</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=k>new</span> <span class=n>Point</span><span class=p>((</span><span class=n>newWidth</span> <span class=p>-</span> <span class=n>destSize</span><span class=p>.</span><span class=n>Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>newHeight</span> <span class=p>-</span> <span class=n>destSize</span><span class=p>.</span><span class=n>Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>),</span> <span class=n>destSize</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>rstG</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src</span><span class=p>,</span> <span class=n>destRect</span><span class=p>,</span> <span class=n>srcRect</span><span class=p>,</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// 最基本的合成方法, 请保证图片尺寸是一致的</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;src1&#34;&gt;在白底下可以看到的图片&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;src2&#34;&gt;在黑底下可以看到的图片&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;returns&gt;合并后的黑白图像&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>BasicCombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>src1</span> <span class=p>==</span> <span class=kc>null</span> <span class=p>||</span> <span class=n>src2</span> <span class=p>==</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentNullException</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>src1</span><span class=p>.</span><span class=n>Size</span> <span class=p>!=</span> <span class=n>src2</span><span class=p>.</span><span class=n>Size</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=k>throw</span> <span class=k>new</span> <span class=n>ArgumentOutOfRangeException</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Size</span> <span class=n>srcSize</span> <span class=p>=</span> <span class=n>src1</span><span class=p>.</span><span class=n>Size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>width</span> <span class=p>=</span> <span class=n>srcSize</span><span class=p>.</span><span class=n>Width</span><span class=p>,</span> <span class=n>height</span> <span class=p>=</span> <span class=n>srcSize</span><span class=p>.</span><span class=n>Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>result</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>width</span><span class=p>,</span> <span class=n>height</span><span class=p>,</span> <span class=n>src1</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>result</span><span class=p>.</span><span class=n>SetResolution</span><span class=p>(</span><span class=n>src1</span><span class=p>.</span><span class=n>HorizontalResolution</span><span class=p>,</span> <span class=n>src1</span><span class=p>.</span><span class=n>VerticalResolution</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>LockBitmap</span> <span class=n>lbmp1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>LockBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>LockBitmap</span> <span class=n>lbmp2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>LockBitmap</span><span class=p>(</span><span class=n>src2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>LockBitmap</span> <span class=n>lrst</span> <span class=p>=</span> <span class=k>new</span> <span class=n>LockBitmap</span><span class=p>(</span><span class=n>result</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>float</span> <span class=n>whiteRatio</span> <span class=p>=</span> <span class=n>ConvertRatio</span><span class=p>(</span><span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>height</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>j</span> <span class=p>&lt;</span> <span class=n>width</span><span class=p>;</span> <span class=n>j</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Color</span>
+</span></span><span class=line><span class=cl>                        <span class=n>srcPixel1</span> <span class=p>=</span> <span class=n>lbmp1</span><span class=p>.</span><span class=n>GetPixel</span><span class=p>(</span><span class=n>j</span><span class=p>,</span> <span class=n>i</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                        <span class=n>srcPixel2</span> <span class=p>=</span> <span class=n>lbmp2</span><span class=p>.</span><span class=n>GetPixel</span><span class=p>(</span><span class=n>j</span><span class=p>,</span> <span class=n>i</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                        <span class=n>outPixel</span> <span class=p>=</span> <span class=n>CalcPixel</span><span class=p>(</span><span class=n>srcPixel1</span><span class=p>,</span> <span class=n>srcPixel2</span><span class=p>,</span> <span class=n>whiteRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>                    <span class=n>lrst</span><span class=p>.</span><span class=n>SetPixel</span><span class=p>(</span><span class=n>j</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>outPixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>lbmp1</span><span class=p>.</span><span class=n>UnlockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>lbmp2</span><span class=p>.</span><span class=n>UnlockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>lrst</span><span class=p>.</span><span class=n>UnlockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// 转换图片</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;src&#34;&gt;源图&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;param name=&#34;tankType&#34;&gt;坦克类型&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=cs>/// &lt;returns&gt;转换结果&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>ConvertBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src</span><span class=p>,</span> <span class=n>TankType</span> <span class=n>tankType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Size</span> <span class=n>srcSize</span> <span class=p>=</span> <span class=n>src</span><span class=p>.</span><span class=n>Size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span>
+</span></span><span class=line><span class=cl>                <span class=n>srcWidth</span> <span class=p>=</span> <span class=n>srcSize</span><span class=p>.</span><span class=n>Width</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>srcHeight</span> <span class=p>=</span> <span class=n>srcSize</span><span class=p>.</span><span class=n>Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>result</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>srcWidth</span><span class=p>,</span> <span class=n>srcHeight</span><span class=p>,</span> <span class=n>src</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>result</span><span class=p>.</span><span class=n>SetResolution</span><span class=p>(</span><span class=n>src</span><span class=p>.</span><span class=n>HorizontalResolution</span><span class=p>,</span> <span class=n>src</span><span class=p>.</span><span class=n>VerticalResolution</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>LockBitmap</span> <span class=n>lsrc</span> <span class=p>=</span> <span class=k>new</span> <span class=n>LockBitmap</span><span class=p>(</span><span class=n>src</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>LockBitmap</span> <span class=n>lrst</span> <span class=p>=</span> <span class=k>new</span> <span class=n>LockBitmap</span><span class=p>(</span><span class=n>result</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Func</span><span class=p>&lt;</span><span class=kt>int</span><span class=p>,</span> <span class=n>Color</span><span class=p>&gt;</span> <span class=n>pixelCalcFunc</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>switch</span> <span class=p>(</span><span class=n>tankType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>TankType</span><span class=p>.</span><span class=n>AppearOnBlack</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>pixelCalcFunc</span> <span class=p>=</span> <span class=p>(</span><span class=n>srcPixel</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=n>srcPixel</span><span class=p>,</span> <span class=m>255</span><span class=p>,</span> <span class=m>255</span><span class=p>,</span> <span class=m>255</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>TankType</span><span class=p>.</span><span class=n>AppearOnWhite</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>pixelCalcFunc</span> <span class=p>=</span> <span class=p>(</span><span class=n>srcPixel</span><span class=p>)</span> <span class=p>=&gt;</span> <span class=n>Color</span><span class=p>.</span><span class=n>FromArgb</span><span class=p>(</span><span class=m>255</span> <span class=p>-</span> <span class=n>srcPixel</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>default</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=k>throw</span> <span class=k>new</span> <span class=n>InvalidOperationException</span><span class=p>(</span><span class=s>&#34;Not supported.&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>srcHeight</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>j</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>j</span> <span class=p>&lt;</span> <span class=n>srcWidth</span><span class=p>;</span> <span class=n>j</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Color</span> <span class=n>pixel</span> <span class=p>=</span> <span class=n>lsrc</span><span class=p>.</span><span class=n>GetPixel</span><span class=p>(</span><span class=n>j</span><span class=p>,</span> <span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=kt>int</span> <span class=n>light</span> <span class=p>=</span> <span class=p>(</span><span class=n>pixel</span><span class=p>.</span><span class=n>R</span> <span class=p>+</span> <span class=n>pixel</span><span class=p>.</span><span class=n>G</span> <span class=p>+</span> <span class=n>pixel</span><span class=p>.</span><span class=n>B</span><span class=p>)</span> <span class=p>/</span> <span class=m>3</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                    <span class=n>lrst</span><span class=p>.</span><span class=n>SetPixel</span><span class=p>(</span><span class=n>j</span><span class=p>,</span> <span class=n>i</span><span class=p>,</span> <span class=n>pixelCalcFunc</span><span class=p>.</span><span class=n>Invoke</span><span class=p>(</span><span class=n>light</span><span class=p>));</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>lsrc</span><span class=p>.</span><span class=n>UnlockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>lrst</span><span class=p>.</span><span class=n>UnlockBits</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>ConvertImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src</span><span class=p>,</span> <span class=n>TankType</span> <span class=n>tankType</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>newSrc</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>src</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>result</span> <span class=p>=</span> <span class=n>ConvertBitmap</span><span class=p>(</span><span class=n>newSrc</span><span class=p>,</span> <span class=n>tankType</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>newSrc</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Size</span>
+</span></span><span class=line><span class=cl>                <span class=n>src1Size</span> <span class=p>=</span> <span class=n>src1</span><span class=p>.</span><span class=n>Size</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>src2Size</span> <span class=p>=</span> <span class=n>src2</span><span class=p>.</span><span class=n>Size</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>src1Width</span> <span class=p>=</span> <span class=n>src1Size</span><span class=p>.</span><span class=n>Width</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>src1Height</span> <span class=p>=</span> <span class=n>src1Size</span><span class=p>.</span><span class=n>Height</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>src2Width</span> <span class=p>=</span> <span class=n>src2Size</span><span class=p>.</span><span class=n>Width</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>src2Height</span> <span class=p>=</span> <span class=n>src2Size</span><span class=p>.</span><span class=n>Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span>
+</span></span><span class=line><span class=cl>                <span class=n>maxWidth</span> <span class=p>=</span> <span class=n>src1Width</span> <span class=p>&gt;</span> <span class=n>src2Width</span> <span class=p>?</span> <span class=n>src1Width</span> <span class=p>:</span> <span class=n>src2Width</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>                <span class=n>maxHeight</span> <span class=p>=</span> <span class=n>src1Height</span> <span class=p>&gt;</span> <span class=n>src2Height</span> <span class=p>?</span> <span class=n>src1Height</span> <span class=p>:</span> <span class=n>src2Height</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span>
+</span></span><span class=line><span class=cl>                <span class=n>newSrc1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>maxWidth</span><span class=p>,</span> <span class=n>maxHeight</span><span class=p>,</span> <span class=n>src1</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=n>newSrc2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>maxWidth</span><span class=p>,</span> <span class=n>maxHeight</span><span class=p>,</span> <span class=n>src2</span><span class=p>.</span><span class=n>PixelFormat</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Graphics</span>
+</span></span><span class=line><span class=cl>                <span class=n>srcG1</span> <span class=p>=</span> <span class=n>Graphics</span><span class=p>.</span><span class=n>FromImage</span><span class=p>(</span><span class=n>newSrc1</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=n>srcG2</span> <span class=p>=</span> <span class=n>Graphics</span><span class=p>.</span><span class=n>FromImage</span><span class=p>(</span><span class=n>newSrc2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>srcG1</span><span class=p>.</span><span class=n>Clear</span><span class=p>(</span><span class=n>bgColor1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>srcG2</span><span class=p>.</span><span class=n>Clear</span><span class=p>(</span><span class=n>bgColor2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 这里进行的是对图片的重新调整尺寸操作</span>
+</span></span><span class=line><span class=cl>            <span class=k>switch</span><span class=p>(</span><span class=n>resize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG1</span><span class=p>.</span><span class=n>DrawImageUnscaled</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=p>(</span><span class=n>maxWidth</span> <span class=p>-</span> <span class=n>src1Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxHeight</span> <span class=p>-</span> <span class=n>src1Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG2</span><span class=p>.</span><span class=n>DrawImageUnscaled</span><span class=p>(</span><span class=n>src2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxWidth</span> <span class=p>-</span> <span class=n>src2Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxHeight</span> <span class=p>-</span> <span class=n>src2Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>Stretch</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG1</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>maxWidth</span><span class=p>,</span> <span class=n>maxHeight</span><span class=p>),</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>src1Width</span><span class=p>,</span> <span class=n>src1Height</span><span class=p>),</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG2</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src2</span><span class=p>,</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>maxWidth</span><span class=p>,</span> <span class=n>maxHeight</span><span class=p>),</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>src2Width</span><span class=p>,</span> <span class=n>src2Height</span><span class=p>),</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>Uniform</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Size</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleSize1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>maxWidth</span><span class=p>,</span> <span class=p>(</span><span class=kt>int</span><span class=p>)(</span><span class=n>src1Height</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxWidth</span> <span class=p>/</span> <span class=n>src1Width</span><span class=p>))),</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleSize2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>maxWidth</span><span class=p>,</span> <span class=p>(</span><span class=kt>int</span><span class=p>)(</span><span class=n>src2Height</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxWidth</span> <span class=p>/</span> <span class=n>src2Width</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>scaleSize1</span><span class=p>.</span><span class=n>Height</span> <span class=p>&gt;</span> <span class=n>maxHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleSize1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>((</span><span class=kt>int</span><span class=p>)(</span><span class=n>src1Width</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxHeight</span> <span class=p>/</span> <span class=n>src1Height</span><span class=p>)),</span> <span class=n>maxHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>scaleSize2</span><span class=p>.</span><span class=n>Height</span> <span class=p>&gt;</span> <span class=n>maxHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleSize2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>((</span><span class=kt>int</span><span class=p>)(</span><span class=n>src2Width</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxHeight</span> <span class=p>/</span> <span class=n>src2Height</span><span class=p>)),</span> <span class=n>maxHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG1</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=k>new</span> <span class=n>Point</span><span class=p>((</span><span class=n>maxWidth</span> <span class=p>-</span> <span class=n>scaleSize1</span><span class=p>.</span><span class=n>Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxHeight</span> <span class=p>-</span> <span class=n>scaleSize1</span><span class=p>.</span><span class=n>Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>),</span> <span class=n>scaleSize1</span><span class=p>),</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>src1Width</span><span class=p>,</span> <span class=n>src1Height</span><span class=p>),</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG2</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src2</span><span class=p>,</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=k>new</span> <span class=n>Point</span><span class=p>((</span><span class=n>maxWidth</span> <span class=p>-</span> <span class=n>scaleSize2</span><span class=p>.</span><span class=n>Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxHeight</span> <span class=p>-</span> <span class=n>scaleSize2</span><span class=p>.</span><span class=n>Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>),</span> <span class=n>scaleSize2</span><span class=p>),</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>src2Width</span><span class=p>,</span> <span class=n>src2Height</span><span class=p>),</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>case</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>UniformToFill</span><span class=p>:</span>
+</span></span><span class=line><span class=cl>                    <span class=n>Size</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleFillSize1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>maxWidth</span><span class=p>,</span> <span class=p>(</span><span class=kt>int</span><span class=p>)(</span><span class=n>src1Height</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxWidth</span> <span class=p>/</span> <span class=n>src1Width</span><span class=p>))),</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleFillSize2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>(</span><span class=n>maxWidth</span><span class=p>,</span> <span class=p>(</span><span class=kt>int</span><span class=p>)(</span><span class=n>src2Height</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxWidth</span> <span class=p>/</span> <span class=n>src2Width</span><span class=p>)));</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>scaleFillSize1</span><span class=p>.</span><span class=n>Height</span> <span class=p>&lt;</span> <span class=n>maxHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleFillSize1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>((</span><span class=kt>int</span><span class=p>)(</span><span class=n>src1Width</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxHeight</span> <span class=p>/</span> <span class=n>src1Height</span><span class=p>)),</span> <span class=n>maxHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>if</span> <span class=p>(</span><span class=n>scaleFillSize2</span><span class=p>.</span><span class=n>Height</span> <span class=p>&lt;</span> <span class=n>maxHeight</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                        <span class=n>scaleFillSize2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Size</span><span class=p>((</span><span class=kt>int</span><span class=p>)(</span><span class=n>src2Width</span> <span class=p>*</span> <span class=p>((</span><span class=kt>float</span><span class=p>)</span><span class=n>maxHeight</span> <span class=p>/</span> <span class=n>src2Height</span><span class=p>)),</span> <span class=n>maxHeight</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG1</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=k>new</span> <span class=n>Point</span><span class=p>((</span><span class=n>maxWidth</span> <span class=p>-</span> <span class=n>scaleFillSize1</span><span class=p>.</span><span class=n>Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxHeight</span> <span class=p>-</span> <span class=n>scaleFillSize1</span><span class=p>.</span><span class=n>Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>),</span> <span class=n>scaleFillSize1</span><span class=p>),</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>src1Width</span><span class=p>,</span> <span class=n>src1Height</span><span class=p>),</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=n>srcG2</span><span class=p>.</span><span class=n>DrawImage</span><span class=p>(</span><span class=n>src2</span><span class=p>,</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=k>new</span> <span class=n>Point</span><span class=p>((</span><span class=n>maxWidth</span> <span class=p>-</span> <span class=n>scaleFillSize2</span><span class=p>.</span><span class=n>Width</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>,</span> <span class=p>(</span><span class=n>maxHeight</span> <span class=p>-</span> <span class=n>scaleFillSize2</span><span class=p>.</span><span class=n>Height</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>),</span> <span class=n>scaleFillSize2</span><span class=p>),</span> <span class=k>new</span> <span class=n>Rectangle</span><span class=p>(</span><span class=m>0</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>src2Width</span><span class=p>,</span> <span class=n>src2Height</span><span class=p>),</span> <span class=n>GraphicsUnit</span><span class=p>.</span><span class=n>Pixel</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                    <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>srcG1</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>srcG2</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>result</span> <span class=p>=</span> <span class=n>BasicCombineBitmap</span><span class=p>(</span><span class=n>newSrc1</span><span class=p>,</span> <span class=n>newSrc2</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>    <span class=c1>// 调用最终合成方法</span>
+</span></span><span class=line><span class=cl>            <span class=n>newSrc1</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>newSrc2</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=n>DefaultRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>,</span> <span class=n>DefaultRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=m>0</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>Bitmap</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Bitmap</span> <span class=n>src2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>,</span> <span class=n>DefaultRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span>
+</span></span><span class=line><span class=cl>                <span class=n>newSrc1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>src1</span><span class=p>),</span>
+</span></span><span class=line><span class=cl>                <span class=n>newSrc2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Bitmap</span><span class=p>(</span><span class=n>src2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>Bitmap</span> <span class=n>result</span> <span class=p>=</span> <span class=n>CombineBitmap</span><span class=p>(</span><span class=n>newSrc1</span><span class=p>,</span> <span class=n>newSrc2</span><span class=p>,</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>newSrc1</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=n>newSrc2</span><span class=p>.</span><span class=n>Dispose</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>result</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=n>DefaultRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor1</span><span class=p>,</span> <span class=n>Color</span> <span class=n>bgColor2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>,</span> <span class=n>ResizeMode</span> <span class=n>resize</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>resize</span><span class=p>,</span> <span class=n>DefaultRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>,</span> <span class=kt>float</span> <span class=n>colorRatio</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>,</span> <span class=n>colorRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=n>Bitmap</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>Image</span> <span class=n>src1</span><span class=p>,</span> <span class=n>Image</span> <span class=n>src2</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>CombineImage</span><span class=p>(</span><span class=n>src1</span><span class=p>,</span> <span class=n>src2</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>White</span><span class=p>,</span> <span class=n>Color</span><span class=p>.</span><span class=n>Black</span><span class=p>,</span> <span class=n>ResizeMode</span><span class=p>.</span><span class=n>NoResize</span><span class=p>,</span> <span class=n>DefaultRatio</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>enum</span> <span class=n>ResizeMode</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>NoResize</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>Stretch</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>Uniform</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>UniformToFill</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>enum</span> <span class=n>TankType</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>AppearOnBlack</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>        <span class=n>AppearOnWhite</span><span class=p>,</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=downarrow-点个赞再走呗-downarrow>$\downarrow$ 点个赞再走呗! $\downarrow$</h2></section><footer class=article-footer><section class=article-tags><a href=/tags/csharp/>Csharp</a>
+<a href=/tags/dotnet/>Dotnet</a>
+<a href=/tags/%E5%9B%BE%E5%83%8F%E5%A4%84%E7%90%86/>图像处理</a>
+<a href=/tags/%E5%B9%BB%E5%BD%B1%E5%9D%A6%E5%85%8B/>幻影坦克</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/20210219220053/><div class=article-details><h2 class=article-title>[C#] 绘制函数图像. 可拖动, 可缩放, 可调整精度</h2></div></a></article><article><a href=/p/20210219152833/><div class=article-details><h2 class=article-title>[C#] IEnumerable拼接! 将枚举器串起来~</h2></div></a></article><article><a href=/p/20210219070741/><div class=article-details><h2 class=article-title>[C#] Range函数, 好用就完事儿了!</h2></div></a></article><article><a href=/p/20201029114122/><div class=article-details><h2 class=article-title>[C#] 运算包含数学表达式的字符串</h2></div></a></article><article><a href=/p/20201028235244/><div class=article-details><h2 class=article-title>[C#] CHO.Json操作Json数据</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=SlimeNull/slimenull.github.io issue-term=pathname label=BlogComment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 SlimeNull Blogs</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.21.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>

@@ -1,0 +1,347 @@
+<!doctype html><html lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='今天我一个朋友, 突然问我, 在程序入口所用的类中, 为什么字段需要加static…好家伙, 一听就是没懂啥是面向对象! 我也看了网上的一大堆东西, 啊说啥继承, 多态, 反正我是菜鸟的时候是没听懂这些东西, 后来还是我自己摸索出来的 (嘤嘤嘤QAQ)好的, 我们使用 C# 来做演示, 大概了解一下类的最基本概念. 来整一个, 数组拓展.演示代码片:public class ArrayHelper{    public int[] Source;          // 字段    public st.'><title>[干货] 一篇文章完全搞懂面向对象基本概念</title>
+<link rel=canonical href=https://slimenull.com/p/20210307161550/><link rel=stylesheet href=/scss/style.min.73438a911857e6d491e39369614d0dd0c0302dcacfb43e15034e0e48cac08c07.css><meta property='og:title' content='[干货] 一篇文章完全搞懂面向对象基本概念'><meta property='og:description' content='今天我一个朋友, 突然问我, 在程序入口所用的类中, 为什么字段需要加static…好家伙, 一听就是没懂啥是面向对象! 我也看了网上的一大堆东西, 啊说啥继承, 多态, 反正我是菜鸟的时候是没听懂这些东西, 后来还是我自己摸索出来的 (嘤嘤嘤QAQ)好的, 我们使用 C# 来做演示, 大概了解一下类的最基本概念. 来整一个, 数组拓展.演示代码片:public class ArrayHelper{    public int[] Source;          // 字段    public st.'><meta property='og:url' content='https://slimenull.com/p/20210307161550/'><meta property='og:site_name' content='SlimeNull Blogs'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='编程语言'><meta property='article:tag' content='dotnet'><meta property='article:tag' content='csharp'><meta property='article:tag' content='java'><meta property='article:tag' content='面向对象编程'><meta property='article:published_time' content='2021-03-07T16:15:50+08:00'><meta property='article:modified_time' content='2021-03-07T16:15:50+08:00'><meta name=twitter:title content="[干货] 一篇文章完全搞懂面向对象基本概念"><meta name=twitter:description content="今天我一个朋友, 突然问我, 在程序入口所用的类中, 为什么字段需要加static…好家伙, 一听就是没懂啥是面向对象! 我也看了网上的一大堆东西, 啊说啥继承, 多态, 反正我是菜鸟的时候是没听懂这些东西, 后来还是我自己摸索出来的 (嘤嘤嘤QAQ)好的, 我们使用 C# 来做演示, 大概了解一下类的最基本概念. 来整一个, 数组拓展.演示代码片:public class ArrayHelper{    public int[] Source;          // 字段    public st."><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_huc8456e525e5d066dd09f75fb4b271186_40528_300x0_resize_q75_box.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>SlimeNull Blogs</a></h1><h2 class=site-description>为了更好的开源世界~</h2></div></header><ol class=social-menu><li><a href=https://github.com/SlimeNull target=_blank title=GitHub rel=me><!doctype html><svg t="1702542119184" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="4136" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M692.906667 938.666667A42.666667 42.666667.0 01650.24 896V785.066667A91.733333 91.733333.0 00627.2 714.24a42.666667 42.666667.0 0126.026667-71.253333c104.106666-12.373334 200.106666-45.653334 200.106666-226.133334a170.666667 170.666667.0 00-28.586666-94.72A117.333333 117.333333.0 01807.253333 234.24a158.293333 158.293333.0 000-60.16A326.4 326.4.0 00718.08 220.586667a42.666667 42.666667.0 01-35.84 6.4 433.066667 433.066667.0 00-235.52.0 42.666667 42.666667.0 01-35.84-6.4A315.733333 315.733333.0 00320.853333 174.08a150.186667 150.186667.0 000 60.16 121.173333 121.173333.0 01-18.346666 88.746667A173.653333 173.653333.0 00273.92 418.133333C273.92 584.106666 354.133333 628.48 474.453333 643.84A42.666667 42.666667.0 01509.44 672a42.666667 42.666667.0 01-8.96 42.666667 87.893333 87.893333.0 00-23.466667 66.56V896A42.666667 42.666667.0 01391.68 896v-24.32a256 256 0 01-224.853333-89.173333A166.4 166.4.0 00117.333333 744.96a42.666667 42.666667.0 1121.333334-82.773333A210.346667 210.346667.0 01224 720.213333c42.666667 42.666667 85.333333 80.213333 166.4 64.853334a165.973333 165.973333.0 019.813333-67.413334C312.32 695.466666 186.88 632.32 186.88 418.986667a256 256 0 0142.666667-142.08 36.266667 36.266667.0 005.546666-26.453334 242.773333 242.773333.0 0114.08-136.96 42.666667 42.666667.0 0126.88-24.32c14.506667-4.266667 66.56-12.8 165.12 51.2a518.826667 518.826667.0 01242.773334.0c98.56-64 150.613333-55.893333 164.693333-51.2a42.666667 42.666667.0 0126.88 24.32A243.626667 243.626667.0 01889.6 250.88a32 32 0 004.693333 24.32A256 256 0 01936.96 417.706667c0 216.32-124.586667 279.04-213.333333 298.666666a182.613333 182.613333.0 019.386666 71.253334V896a42.666667 42.666667.0 01-40.106666 42.666667z" fill="#666" p-id="4137"/></svg></a></li><li><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili rel=me><!doctype html><svg t="1702541966104" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="16981" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M306.005333 117.632 444.330667 256h135.296l138.368-138.325333A42.666667 42.666667.0 01778.368 178.048L700.330667 256H789.333333A149.333333 149.333333.0 01938.666667 405.333333v341.333334A149.333333 149.333333.0 01789.333333 896H234.666667A149.333333 149.333333.0 0185.333333 746.666667V405.333333A149.333333 149.333333.0 01234.666667 256h88.96L245.632 177.962667a42.666667 42.666667.0 0160.373333-60.373334zm483.328 223.701333H234.666667a64 64 0 00-63.701334 57.856L170.666667 405.333333v341.333334a64 64 0 0057.856 63.701333L234.666667 810.666667h554.666666a64 64 0 0063.701334-57.856L853.333333 746.666667V405.333333a64 64 0 00-64-64zm-448 128A42.666667 42.666667.0 01384 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666666-42.666667zm341.333334.0A42.666667 42.666667.0 01725.333333 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666667-42.666667z" fill="#666" p-id="16982"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://slimenull.com/ selected></option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#演示代码片>演示代码片:</a></li></ol><ol><li><a href=#1-啥是对象>1. 啥是对象:</a></li><li><a href=#2-编程中的类>2. 编程中的类:</a></li><li><a href=#3-构造函数>3. 构造函数:</a></li><li><a href=#4-对象的字段>4. 对象的字段</a></li><li><a href=#5-对象的方法>5. 对象的方法</a></li><li><a href=#6-类的字段>6. 类的字段:</a></li><li><a href=#7-类的方法>7. 类的方法:</a></li><li><a href=#8-析构函数>8. 析构函数:</a></li><li><a href=#9-this-关键字>9. this 关键字:</a></li><li><a href=#10-成员访问限制>10. 成员访问限制:</a></li><li><a href=#11-属性语法糖>11. 属性语法糖</a></li><li><a href=#12-对象引用>12. 对象引用</a></li><li><a href=#13-非托管对象>13. 非托管对象</a></li></ol><ol><li><a href=#1-静态与非静态成员访问>1. 静态与非静态成员访问:</a><ol><li><a href=#1-非静态成员可直接访问静态成员>1. 非静态成员可直接访问静态成员:</a></li><li><a href=#2-静态成员无法直接访问为静态成员>2. 静态成员无法直接访问为静态成员:</a></li><li><a href=#3-通过对象引用来访问非静态成员>3. 通过对象引用来访问非静态成员:</a></li></ol></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/note/ style=background-color:#fdf0c4;color:#3d3d3d>笔记
+</a><a href=/categories/%E6%88%90%E9%95%BF%E8%AE%B0%E5%BD%95/>成长记录
+</a><a href=/categories/dotnet/ style=background-color:#512cd4;color:#fff>.NET</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/20210307161550/>[干货] 一篇文章完全搞懂面向对象基本概念</a></h2><h3 class=article-subtitle>今天我一个朋友, 突然问我, 在程序入口所用的类中, 为什么字段需要加static…好家伙, 一听就是没懂啥是面向对象! 我也看了网上的一大堆东西, 啊说啥继承, 多态, 反正我是菜鸟的时候是没听懂这些东西, 后来还是我自己摸索出来的 (嘤嘤嘤QAQ)好的, 我们使用 C# 来做演示, 大概了解一下类的最基本概念. 来整一个, 数组拓展.演示代码片:public class ArrayHelper{ public int[] Source; // 字段 public st.</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Mar 07, 2021</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 8 分钟</time></div></footer></div></header><section class=article-content><blockquote><p>今天我一个朋友, 突然问我, 在程序入口所用的类中, 为什么字段需要加static&mldr;</p></blockquote><p>好家伙, 一听就是没懂啥是面向对象! 我也看了网上的一大堆东西, 啊说啥继承, 多态, 反正我是菜鸟的时候是没听懂这些东西, 后来还是我自己摸索出来的 (嘤嘤嘤QAQ)</p><p>好的, 我们使用 C# 来做演示, 大概了解一下类的最基本概念. 来整一个, 数组拓展.</p><h2 id=演示代码片>演示代码片:</h2><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>ArrayHelper</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span><span class=p>[]</span> <span class=n>Source</span><span class=p>;</span>          <span class=c1>// 字段</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>InsCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>Arrayhelper</span><span class=p>()</span>           <span class=c1>// 构造函数</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=n>Source</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>[]{};</span>
+</span></span><span class=line><span class=cl>        <span class=n>InsCount</span><span class=p>++;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>ArrayHelper</span><span class=p>(</span><span class=kt>int</span><span class=p>[]</span> <span class=n>arr</span><span class=p>)</span>  <span class=c1>// 有参数的构造函数</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=n>Source</span> <span class=p>=</span> <span class=n>arr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>InsCount</span><span class=p>++;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>~</span> <span class=n>ArrayHelper</span><span class=p>()</span>                <span class=c1>// 析构函数</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>InsCount</span><span class=p>--;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>ResetInsCount</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>InsCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>GetSum</span><span class=p>()</span>            <span class=c1>// 方法</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>int</span> <span class=n>sum</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=kt>var</span> <span class=n>i</span> <span class=k>in</span> <span class=n>Source</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>sum</span> <span class=p>+=</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>GetAverage</span><span class=p>()</span>        <span class=c1>// 方法</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>GetSum</span><span class=p>()</span> <span class=p>/</span> <span class=n>Source</span><span class=p>.</span><span class=n>Length</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h1 id=1-基本概念>1. 基本概念</h1><h2 id=1-啥是对象>1. 啥是对象:</h2><p>对象, 它的英文是 object, 咱也不懂为啥它被翻译成这种有歧义的词, 没错, 它跟 &lsquo;情人&rsquo; 没有任何关系. 意思接近为: &ldquo;物体&rdquo;, &ldquo;事物&rdquo;, 下面的句子中, &lsquo;对象&rsquo; 一词是最接近编程中的 &lsquo;对象&rsquo; 的.</p><ol><li>你要帮助的对象是谁?</li><li>我们本次整改所针对的对象, 是厂里干部遇事却不作为的事件.</li></ol><p>生活中一切东西都可成为对象, 例如一台电脑, 可以说是一个对象, 它有一些成员(字段, 属性, 方法), 例如所装载的硬件. 而对象都有自身的行为(方法), 例如, 汽车, 有点火这个行为.</p><h2 id=2-编程中的类>2. 编程中的类:</h2><p>编程中的类, 我们可以理解为模板, 或者生产机器, 通过它我们可以创建一个对象(类的实例化). 一个类产生的对象, 就是这个类的实例.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>();</span>   <span class=c1>// 实例化 ArrayHelper, helper 就是我们示例化产生的对象</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=3-构造函数>3. 构造函数:</h2><p>构造函数, 就是这个类在构造对象的时候会调用的函数, 例如刚刚 new ArrayHelper() 的时候, 必定会调用类中的这一片代码:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=n>Arrayhelper</span><span class=p>()</span>           <span class=c1>// 构造函数</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=n>Source</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>[]{};</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>我们可以声明多个构造函数, 以使用不同的方式来创建对象.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=n>ArrayHelper</span><span class=p>(</span><span class=kt>int</span><span class=p>[]</span> <span class=n>arr</span><span class=p>)</span>  <span class=c1>// 有参数的构造函数</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>this</span><span class=p>.</span><span class=n>Source</span> <span class=p>=</span> <span class=n>arr</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>让我们来使用下这个带参数的构造函数:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>int</span><span class=p>[]</span> <span class=n>myArray</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>[]</span> <span class=p>{</span><span class=m>1</span><span class=p>,</span> <span class=m>2</span><span class=p>,</span> <span class=m>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>(</span><span class=n>myArray</span><span class=p>);</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=4-对象的字段>4. 对象的字段</h2><p>在我们的实例代码中, 类中有写一个 int[] 类型的 Source 字段. 我们也说过, 类就好比一个模板. 当一个对象创建后, 它就拥有这个字段</p><p>当我们实例化之后, 我们就可以通过实例, 来访问新生成的对象的成员:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>helper</span><span class=p>.</span><span class=n>Source</span><span class=p>);</span>         <span class=c1>// 将 helper 的 Source 成员打印出来</span>
+</span></span></code></pre></td></tr></table></div></div><p>这个成员, 是对象所拥有的, 而不是类本身所拥有的, 所以, 下面的代码是错误的:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>ArrayHelper</span><span class=p>.</span><span class=n>Source</span><span class=p>);</span>    <span class=c1>// 会报错, 因为成员是对象的.</span>
+</span></span></code></pre></td></tr></table></div></div><p>每一个对象都有自己独自的成员, 所以, 不同实例的成员, 值是一定相不同的.</p><h2 id=5-对象的方法>5. 对象的方法</h2><p>在我们的示例代码中, 类中有写一个返回值为 int 的 GetSum 方法, 同字段一样, 每个对象都有自己独自的方法, 所以调用后, 返回值是不一定相同的.</p><p>下面是演示:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>int</span><span class=p>[]</span> <span class=n>array1</span> <span class=p>=</span> <span class=k>new</span><span class=p>[]</span> <span class=p>{</span><span class=m>1</span><span class=p>,</span> <span class=m>2</span><span class=p>,</span> <span class=m>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span><span class=p>[]</span> <span class=n>array2</span> <span class=p>=</span> <span class=k>new</span><span class=p>[]</span> <span class=p>{</span><span class=m>1</span><span class=p>,</span> <span class=m>2</span><span class=p>,</span> <span class=m>3</span><span class=p>,</span> <span class=m>4</span><span class=p>,</span> <span class=m>5</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper1</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>(</span><span class=n>array1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper2</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>(</span><span class=n>array2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>helper1</span><span class=p>.</span><span class=n>GetSum</span><span class=p>());</span>       <span class=c1>// 结果是6</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>helper2</span><span class=p>.</span><span class=n>GetSum</span><span class=p>());</span>       <span class=c1>// 结果是15</span>
+</span></span></code></pre></td></tr></table></div></div><p>同样, 属于对象的方法, 是不能通过类名来调用的, 以下代码是错误的:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>ArrayHelper</span><span class=p>.</span><span class=n>GetSum</span><span class=p>());</span>    <span class=c1>// 报错, 因为成员是对象的</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=6-类的字段>6. 类的字段:</h2><p>类也是可以有成员的, 它们独属于某个对象, 它们属于这个类. 这种成员, 被称为静态成员. 例如我们示例代码中的 InsCount 字段.</p><p>静态成员是可以被所有实例所访问的, 例如构造函数里面我们指定了为 InsCount 的值增加1, 这就意味着, 我们每实例化一个对象, 这个类的 InsCount 的值都将增加1;</p><p>访问类的静态成员, 需要通过类名来访问, 毕竟这个静态成员是属于这个类的. 不可以用实例名来访问, 因为不独属于任何一个实例.</p><p>正确示例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>ArrayHelper</span><span class=p>.</span><span class=n>InsCount</span><span class=p>);</span>     <span class=c1>// 打印类的 InsCount 字段</span>
+</span></span></code></pre></td></tr></table></div></div><p>错误示例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>helper</span><span class=p>.</span><span class=n>InsCount</span><span class=p>);</span>        <span class=c1>// 报错, 因为成员属于类而不是对象</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=7-类的方法>7. 类的方法:</h2><p>静态方法, 同静态字段一样, 属于整个类, 所有对象可访问, 只能通过类名而无法通过对象名来访问.</p><p>例如我们的示例代码中的 ResetInsCount 函数.</p><p>正确示例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>ArrayHelper</span><span class=p>.</span><span class=n>ResetInsCount</span><span class=p>();</span>
+</span></span></code></pre></td></tr></table></div></div><p>错误示例:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>ArrayHelper</span> <span class=n>helper</span> <span class=p>=</span> <span class=k>new</span> <span class=n>ArrayHelper</span><span class=p>();</span>
+</span></span><span class=line><span class=cl><span class=n>helper</span><span class=p>.</span><span class=n>ResetInsCount</span><span class=p>();</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=8-析构函数>8. 析构函数:</h2><p>析构函数与构造函数相对应, 析构函数将在对象被释放的时候执行, 例如我们代码片中的析构函数:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=p>~</span> <span class=n>ArrayHelper</span><span class=p>()</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>InsCount</span><span class=p>--;</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>即, 每当一个对象被释放, InsCount 的值都会减少1. 配合构造函数来看, 造成的结果就是, InsCount 字段将始终与当前的实例数量保持一致.</p><h2 id=9-this-关键字>9. this 关键字:</h2><p>有时候啊, 你可能写函数的参数名, 写了个跟成员一模一样的名字, 结果你想给实例成员赋值的时候, 发现实际上确是给方法的参数赋值了.</p><p>在一个类的非静态方法中, 想要访问实例的成员, 你可以用 this 来修饰以避免歧义.</p><p>下面是使用了 this 关键字的示例代码</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TestObj</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>SetValue</span><span class=p>(</span><span class=kt>int</span> <span class=k>value</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=k>value</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>GetValue</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=k>this</span><span class=p>.</span><span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=10-成员访问限制>10. 成员访问限制:</h2><p>成员有访问限制, 常用的有 公共的(public), 私有的(private), 受保护的(protected), 如果不写修饰符, 那么默认访问限制就是private, 这个我得用一个比较长的代码片来演示了.</p><div class=table-wrapper><table><thead><tr><th>修饰符</th><th>特征</th></tr></thead><tbody><tr><td>public</td><td>公有的, 无论谁都可以访问</td></tr><tr><td>internal</td><td>内部的, 位于同一程序集的可以进行访问</td></tr><tr><td>protected</td><td>受保护的, 除了这个类的成员, 子类也可以进行访问</td></tr><tr><td>private</td><td>私有的, 仅有这个类的成员可以访问</td></tr></tbody></table></div><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>using</span> <span class=nn>System</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=k>namespace</span> <span class=nn>Null.Tutorial</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>class</span> <span class=nc>TestObj</span><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kd>static</span> <span class=kt>int</span> <span class=n>insCount</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>      <span class=c1>// 没有写访问限制修饰符, 但是默认是private</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>int</span><span class=p>[]</span> <span class=n>Source</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=n>TestObj</span><span class=p>(</span><span class=kt>int</span><span class=p>[]</span> <span class=n>source</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>this</span><span class=p>.</span><span class=n>Source</span> <span class=p>=</span> <span class=n>source</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>insCount</span><span class=p>++;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>~</span><span class=n>TestObj</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>insCount</span><span class=p>--;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kt>int</span> <span class=n>GetSum</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span> <span class=n>sum</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>foreach</span><span class=p>(</span><span class=kt>var</span> <span class=n>i</span> <span class=k>in</span> <span class=n>Source</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>sum</span> <span class=p>+=</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>sum</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=kt>int</span> <span class=n>GetInstanceCount</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>insCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>class</span> <span class=nc>Program</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kd>public</span> <span class=kd>static</span> <span class=k>void</span> <span class=n>Main</span><span class=p>(</span><span class=kt>string</span><span class=p>[]</span> <span class=n>args</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>int</span><span class=p>[]</span> <span class=n>myArr</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>[]</span> <span class=p>{</span><span class=m>1</span><span class=p>,</span> <span class=m>2</span><span class=p>,</span> <span class=m>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl>            <span class=n>TestObj</span> <span class=n>objIns</span> <span class=p>=</span> <span class=k>new</span> <span class=n>TestObj</span><span class=p>(</span><span class=n>myArr</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>objIns</span><span class=p>.</span><span class=n>insCount</span><span class=p>);</span>    <span class=c1>// 报错, 因为在类之外访问私有成员</span>
+</span></span><span class=line><span class=cl>            <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>objIns</span><span class=p>.</span><span class=n>GetSum</span><span class=p>());</span>    <span class=c1>// 正常访问, 因为是public</span>
+</span></span><span class=line><span class=cl>            <span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>TestObj</span><span class=p>.</span><span class=n>GetInstanceCount</span><span class=p>());</span>   <span class=c1>// 正常访问, 因为是public</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=11-属性语法糖>11. 属性语法糖</h2><p>C# 还支持属性这种东西. 其实是语法糖. 属性类似于字段, 举个例子, 你就懂了.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>class</span> <span class=nc>TestObj</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>int</span> <span class=n>field3</span><span class=p>,</span> <span class=n>field4</span><span class=p>,</span> <span class=n>field5</span><span class=p>,</span> <span class=n>field6</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Field1</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Field2</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Field3</span> <span class=p>=&gt;</span> <span class=n>field3</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Field4</span> <span class=p>{</span> <span class=k>get</span> <span class=p>=&gt;</span> <span class=n>field4</span><span class=p>;</span> <span class=k>set</span> <span class=p>=&gt;</span> <span class=n>field4</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Field5</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>get</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=n>field5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>set</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>field5</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Field6</span> <span class=p>{</span> <span class=k>get</span> <span class=p>=&gt;</span> <span class=n>field6</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>上面的代码中, Field1 ~ Field5 都是属性.</p><ul><li>Field1 是开放(public)获取值与设置值的属性, 用法跟字段一致.</li><li>Field2 是开放(public)获取值, 但设置值是私有的(private)属性, 即, 在类外面可以直接获取值, 但无法设置.</li><li>Field3 对应私有字段 field3, 它的获取权限是 public, 设置权限是 private</li><li>Field4 对应私有字段 field4, 获取权限是 public, 设置权限是 private</li><li>Field5 是属性的完整写法, 其中包含 get 访问器与 set 访问器, 在没有指定个别访问修饰符时, 它们的权限与整个属性的权限一致.</li><li>Field6 是与私有字段 field6 相对应的, 没有指定 set 访问器的属性, 这意味着它只支持获取值, 不允许设置值, 但是类之内的成员可以直接通过对 field6 进行设置来实现更改属性值.</li></ul><h2 id=12-对象引用>12. 对象引用</h2><p>C# 和 Java 中, 有值类型和引用类型, 事实上, 一个 &ldquo;存储&rdquo; 对象的字段, 它包含的是这个对象的引用. 这个的话, C++ 程序员肯定熟悉的一批, 可不就是指针嘛.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=n>Object</span> <span class=n>obj</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Object</span><span class=p>();</span>    <span class=c1>// 创建一个对象, 并使用 obj 字段来存储对象引用</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>obj</span><span class=p>);</span>       <span class=c1>// 通过这个对象引用, 可以直接对对象进行操作.</span>
+</span></span><span class=line><span class=cl><span class=n>obj</span> <span class=p>=</span> <span class=kc>null</span><span class=p>;</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后一句, 对 obj 字段赋值 null, 肯定会有人以为, 执行完之后, 我们刚刚创建的对象就嗝屁了, 但其实是, 仅仅是这个字段的值为null了.</p><p>引用类型的字段就像一个指针, 它有自己的值, 这个值表示对象的内存地址(也有可能是句柄啥的), 总之有这个引用, 就能够找到对象所在的位置. 而给这个字段赋值为null, 也就是改变了这个指针的方向, 让它指向 0x0000, 但事实上对象还存在着.</p><p>但是呢, .NET 和 JVM 都有着 GC(Garbage Collection), 即垃圾回收机制. 有一个个步骤来回收这些没用的对象, 到最终, 这些不被引用的托管对象(即被运行时管理的对象)都会被销毁.</p><p>还有一个好玩的例子:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>int</span><span class=p>[]</span> <span class=n>myArray</span> <span class=p>=</span> <span class=k>new</span> <span class=kt>int</span><span class=p>[]</span> <span class=p>{</span><span class=m>1</span><span class=p>,</span> <span class=m>2</span><span class=p>,</span> <span class=m>3</span><span class=p>};</span>
+</span></span><span class=line><span class=cl><span class=kt>int</span><span class=p>[]</span> <span class=n>another</span> <span class=p>=</span> <span class=n>myArray</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>another</span><span class=p>[</span><span class=m>0</span><span class=p>]</span> <span class=p>=</span> <span class=m>100</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=n>Console</span><span class=p>.</span><span class=n>WriteLine</span><span class=p>(</span><span class=n>myArray</span><span class=p>[</span><span class=m>0</span><span class=p>]);</span>       <span class=c1>// 结果是100</span>
+</span></span></code></pre></td></tr></table></div></div><p>其原理就是, myArray 为最开始创建的数组的对象引用, 我们又将这个引用赋值给 another, 那么 another 跟 myArray 的值一样, 指向我们最开始创建的对象. 即, 通过 another来对数组更改, 其实跟通过 myArray 来更改无异. 因为它们表示同一个对象.</p><h2 id=13-非托管对象>13. 非托管对象</h2><p>注意, 对象的内存是非常大的, 所以如果不好好管理, 很容易造成内存泄漏. 但对于 .NET 和 Java, 这个问题小了一点, 因为大部分类型都可以被 GC 给清理掉.</p><p>但是, 还是存在一些非托管对象的, 例如用户自己分配的内存, 以及 MemoryStream 之类的, 这些内存不会被 GC 清理掉, 用户需要自己管理, 一般这种包含非托管内存的类都会继承 IDisposable 接口, 用户可以调用它们的 Dispose 方法来清理掉这个对象的非托管内存.</p><h1 id=2-一些基本认知>2. 一些基本认知:</h1><h2 id=1-静态与非静态成员访问>1. 静态与非静态成员访问:</h2><h3 id=1-非静态成员可直接访问静态成员>1. 非静态成员可直接访问静态成员:</h3><p>这个的话, 稍微想想就能理解. 例如一个厂子里刚造出一辆车, 这个车一看就知道是哪个牌子的, 所以可以轻易的找到这个厂子, 也就是说使用这个厂子里的零配件也是非常简单的, 即非静态成员(实例的成员)可直接访问静态成员(类的成员).</p><h3 id=2-静态成员无法直接访问为静态成员>2. 静态成员无法直接访问为静态成员:</h3><p>同样是汽车的例子, 这个车已经离开厂子了, 如果厂子要查看这个车的一些零配件损坏程度, 肯定是不大方便的, 因为你不知道这个车在哪, 即静态成员(类的成员)无法直接访问非静态成员(实例成员).</p><h3 id=3-通过对象引用来访问非静态成员>3. 通过对象引用来访问非静态成员:</h3><p>静态成员来访问非静态成员, 肯定有办法访问, 例如这辆车在离开厂子前留下个联系方式, 这样厂子就可以找到这辆车. 下面的代码片是一个例子, 必须有对象引用才可以对其操作.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>TestObj</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>static</span> <span class=n>List</span><span class=p>&lt;</span><span class=n>TestObj</span><span class=p>&gt;</span> <span class=n>instances</span> <span class=p>=</span> <span class=k>new</span> <span class=n>List</span><span class=p>&lt;</span><span class=n>TestObj</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>SelfValue</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>TestObj</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>instances</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=k>this</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>Value</span> <span class=p>=&gt;</span> <span class=n>SelfValue</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kd>static</span> <span class=n>ResetAllInstanceValue</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=kt>var</span> <span class=n>ins</span> <span class=k>in</span> <span class=n>instances</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>instances</span><span class=p>.</span><span class=n>SelfValue</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>喏, 这就是静态方法操作实例成员的示例. 只要你有这个对象的引用, 就可以对这个对象进行操作</p></section><footer class=article-footer><section class=article-tags><a href=/tags/%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80/>编程语言</a>
+<a href=/tags/dotnet/>Dotnet</a>
+<a href=/tags/csharp/>Csharp</a>
+<a href=/tags/java/>Java</a>
+<a href=/tags/%E9%9D%A2%E5%90%91%E5%AF%B9%E8%B1%A1%E7%BC%96%E7%A8%8B/>面向对象编程</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/20230111031653/><div class=article-details><h2 class=article-title>[.NET] 结构体布局详解与结构体内存对齐具体方式</h2></div></a></article><article><a href=/p/20210418110746/><div class=article-details><h2 class=article-title>[C#] C# 与 Java 的一些差异</h2></div></a></article><article><a href=/p/20210406223759/><div class=article-details><h2 class=article-title>[C#] 二进制, 十进制, 十六进制, 进制转换</h2></div></a></article><article><a href=/p/20210309214803/><div class=article-details><h2 class=article-title>[笔记] 记录一次该死的 “玄学“ Bug, 赶紧看看避开这个坑!!! .NET Core, Delegate.BeginInvoke, PlatformNotSupportedException</h2></div></a></article><article><a href=/p/20210219152833/><div class=article-details><h2 class=article-title>[C#] IEnumerable拼接! 将枚举器串起来~</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=SlimeNull/slimenull.github.io issue-term=pathname label=BlogComment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 SlimeNull Blogs</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.21.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
