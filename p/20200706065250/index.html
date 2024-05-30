@@ -1,0 +1,298 @@
+<!doctype html><html lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='关于文章:文章包含以下部分:对鼠标拖动实现控件移动的原理详解使用类将功能封装适用于:C# WinForm原理:每当鼠标移动时, 根据鼠标坐标计算出控件应处于的位置并将控件移动到计算出的位置, 另外, 为了标识是否正在拖动控件, 还需要订阅控件的MouseDown和MouseUp事件.当MouseDown事件触发时, 标识是否正在拖动控件的布尔变量设置为true, 当MouseUp事件触发时, 标识是否正在拖动控件的布尔变量设置为false; 在鼠标移动时, 会判断这个变量的值以'><title>[C#] 鼠标拖动实现控件移动 - 一个类实现对多个控件与窗体的鼠标拖动移动操作</title>
+<link rel=canonical href=https://slimenull.com/p/20200706065250/><link rel=stylesheet href=/scss/style.min.73438a911857e6d491e39369614d0dd0c0302dcacfb43e15034e0e48cac08c07.css><meta property='og:title' content='[C#] 鼠标拖动实现控件移动 - 一个类实现对多个控件与窗体的鼠标拖动移动操作'><meta property='og:description' content='关于文章:文章包含以下部分:对鼠标拖动实现控件移动的原理详解使用类将功能封装适用于:C# WinForm原理:每当鼠标移动时, 根据鼠标坐标计算出控件应处于的位置并将控件移动到计算出的位置, 另外, 为了标识是否正在拖动控件, 还需要订阅控件的MouseDown和MouseUp事件.当MouseDown事件触发时, 标识是否正在拖动控件的布尔变量设置为true, 当MouseUp事件触发时, 标识是否正在拖动控件的布尔变量设置为false; 在鼠标移动时, 会判断这个变量的值以'><meta property='og:url' content='https://slimenull.com/p/20200706065250/'><meta property='og:site_name' content='SlimeNull Blogs'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='csharp'><meta property='article:tag' content='WinForm'><meta property='article:tag' content='实例'><meta property='article:tag' content='源码'><meta property='article:published_time' content='2020-07-06T06:52:50+08:00'><meta property='article:modified_time' content='2020-07-06T06:52:50+08:00'><meta name=twitter:title content="[C#] 鼠标拖动实现控件移动 - 一个类实现对多个控件与窗体的鼠标拖动移动操作"><meta name=twitter:description content="关于文章:文章包含以下部分:对鼠标拖动实现控件移动的原理详解使用类将功能封装适用于:C# WinForm原理:每当鼠标移动时, 根据鼠标坐标计算出控件应处于的位置并将控件移动到计算出的位置, 另外, 为了标识是否正在拖动控件, 还需要订阅控件的MouseDown和MouseUp事件.当MouseDown事件触发时, 标识是否正在拖动控件的布尔变量设置为true, 当MouseUp事件触发时, 标识是否正在拖动控件的布尔变量设置为false; 在鼠标移动时, 会判断这个变量的值以"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_huc8456e525e5d066dd09f75fb4b271186_40528_300x0_resize_q75_box.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>SlimeNull Blogs</a></h1><h2 class=site-description>为了更好的开源世界~</h2></div></header><ol class=social-menu><li><a href=https://github.com/SlimeNull target=_blank title=GitHub rel=me><!doctype html><svg t="1702542119184" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="4136" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M692.906667 938.666667A42.666667 42.666667.0 01650.24 896V785.066667A91.733333 91.733333.0 00627.2 714.24a42.666667 42.666667.0 0126.026667-71.253333c104.106666-12.373334 200.106666-45.653334 200.106666-226.133334a170.666667 170.666667.0 00-28.586666-94.72A117.333333 117.333333.0 01807.253333 234.24a158.293333 158.293333.0 000-60.16A326.4 326.4.0 00718.08 220.586667a42.666667 42.666667.0 01-35.84 6.4 433.066667 433.066667.0 00-235.52.0 42.666667 42.666667.0 01-35.84-6.4A315.733333 315.733333.0 00320.853333 174.08a150.186667 150.186667.0 000 60.16 121.173333 121.173333.0 01-18.346666 88.746667A173.653333 173.653333.0 00273.92 418.133333C273.92 584.106666 354.133333 628.48 474.453333 643.84A42.666667 42.666667.0 01509.44 672a42.666667 42.666667.0 01-8.96 42.666667 87.893333 87.893333.0 00-23.466667 66.56V896A42.666667 42.666667.0 01391.68 896v-24.32a256 256 0 01-224.853333-89.173333A166.4 166.4.0 00117.333333 744.96a42.666667 42.666667.0 1121.333334-82.773333A210.346667 210.346667.0 01224 720.213333c42.666667 42.666667 85.333333 80.213333 166.4 64.853334a165.973333 165.973333.0 019.813333-67.413334C312.32 695.466666 186.88 632.32 186.88 418.986667a256 256 0 0142.666667-142.08 36.266667 36.266667.0 005.546666-26.453334 242.773333 242.773333.0 0114.08-136.96 42.666667 42.666667.0 0126.88-24.32c14.506667-4.266667 66.56-12.8 165.12 51.2a518.826667 518.826667.0 01242.773334.0c98.56-64 150.613333-55.893333 164.693333-51.2a42.666667 42.666667.0 0126.88 24.32A243.626667 243.626667.0 01889.6 250.88a32 32 0 004.693333 24.32A256 256 0 01936.96 417.706667c0 216.32-124.586667 279.04-213.333333 298.666666a182.613333 182.613333.0 019.386666 71.253334V896a42.666667 42.666667.0 01-40.106666 42.666667z" fill="#666" p-id="4137"/></svg></a></li><li><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili rel=me><!doctype html><svg t="1702541966104" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="16981" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M306.005333 117.632 444.330667 256h135.296l138.368-138.325333A42.666667 42.666667.0 01778.368 178.048L700.330667 256H789.333333A149.333333 149.333333.0 01938.666667 405.333333v341.333334A149.333333 149.333333.0 01789.333333 896H234.666667A149.333333 149.333333.0 0185.333333 746.666667V405.333333A149.333333 149.333333.0 01234.666667 256h88.96L245.632 177.962667a42.666667 42.666667.0 0160.373333-60.373334zm483.328 223.701333H234.666667a64 64 0 00-63.701334 57.856L170.666667 405.333333v341.333334a64 64 0 0057.856 63.701333L234.666667 810.666667h554.666666a64 64 0 0063.701334-57.856L853.333333 746.666667V405.333333a64 64 0 00-64-64zm-448 128A42.666667 42.666667.0 01384 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666666-42.666667zm341.333334.0A42.666667 42.666667.0 01725.333333 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666667-42.666667z" fill="#666" p-id="16982"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://slimenull.com/ selected></option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#关于文章>关于文章:</a><ol><li><ol><li></li></ol></li></ol></li><li><a href=#适用于>适用于:</a></li><li><a href=#原理>原理:</a></li><li><a href=#一些资料>一些资料:</a><ol><li><ol><li></li></ol></li></ol></li><li><a href=#单控件实现>单控件实现:</a></li><li><a href=#多控件实现>多控件实现:</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/%E6%A1%8C%E9%9D%A2%E7%A8%8B%E5%BA%8F/>桌面程序
+</a><a href=/categories/dotnet/ style=background-color:#512cd4;color:#fff>.NET</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/20200706065250/>[C#] 鼠标拖动实现控件移动 - 一个类实现对多个控件与窗体的鼠标拖动移动操作</a></h2><h3 class=article-subtitle>关于文章:文章包含以下部分:对鼠标拖动实现控件移动的原理详解使用类将功能封装适用于:C# WinForm原理:每当鼠标移动时, 根据鼠标坐标计算出控件应处于的位置并将控件移动到计算出的位置, 另外, 为了标识是否正在拖动控件, 还需要订阅控件的MouseDown和MouseUp事件.当MouseDown事件触发时, 标识是否正在拖动控件的布尔变量设置为true, 当MouseUp事件触发时, 标识是否正在拖动控件的布尔变量设置为false; 在鼠标移动时, 会判断这个变量的值以</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Jul 06, 2020</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 4 分钟</time></div></footer></div></header><section class=article-content><h2 id=关于文章>关于文章:</h2><ol start=0><li><h6 id=文章包含以下部分>文章包含以下部分:</h6></li><li>对鼠标拖动实现控件移动的原理详解</li><li>使用类将功能封装</li></ol><h2 id=适用于>适用于:</h2><ol start=0><li>C# WinForm</li></ol><blockquote><p>更新日志: 2020-07-07 9:05AM 更改了多控件实现的算法, 使其能够支持移动窗体</p></blockquote><h2 id=原理>原理:</h2><ol start=0><li>每当鼠标移动时, 根据鼠标坐标计算出控件应处于的位置并将控件移动到计算出的位置, 另外, 为了标识是否正在拖动控件, 还需要订阅控件的MouseDown和MouseUp事件.</li><li>当MouseDown事件触发时, 标识是否正在拖动控件的布尔变量设置为true, 当MouseUp事件触发时, 标识是否正在拖动控件的布尔变量设置为false; 在鼠标移动时, 会判断这个变量的值以决定是否应该移动控件.</li><li>为了保证鼠标相对控件的位置是不变的, 所以还需要一个Point类型的变量来标识鼠标按下控件时, 鼠标相对控件的相对位置.</li></ol><h2 id=一些资料>一些资料:</h2><ol start=0><li>获取鼠标相对屏幕的坐标 : Control.MousePosition;</li><li>获取一个 相对于屏幕的坐标 相对某个控件的相对坐标 : 控件.PointToClient(一个相对于屏幕的坐标);</li><li><h6 id=下面是方便初学者的>下面是方便初学者的:</h6></li><li>as运算符, 将某个实例作为某种类型使用, 例如:</li></ol><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=c1>// obj是一个Button转换为object类型的按钮</span>
+</span></span><span class=line><span class=cl><span class=c1>// 那么, (obj as Button).Text = &#34;新的文本&#34;; 是可用的, 它将为控件指定一个新的文本</span>
+</span></span><span class=line><span class=cl><span class=p>(</span><span class=n>obj</span> <span class=k>as</span> <span class=n>Button</span><span class=p>).</span><span class=n>Text</span> <span class=p>=</span> <span class=s>&#34;新的文本&#34;</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=c1>// 注意, as运算符的优先级低于.运算符, 所以括号不可以省去</span>
+</span></span></code></pre></td></tr></table></div></div><h2 id=单控件实现>单控件实现:</h2><ol start=0><li>新建项目, 项目类型是WinForm.</li><li>添加控件 (我这里将控件的Name设置为了ExempleButton)</li></ol><blockquote><p>浓浓的Chinglish味道, 哈哈哈</p></blockquote><p><img src=/images/20200706052109567.png loading=lazy alt=添加按钮控件>
+3. 添加相关事件(MouseDown, MouseMove, MouseUp):</p><p><img src=/images/20200706052323882.png loading=lazy alt=添加相关事件>
+4. 转到代码, 添加相关变量.</p><p><img src=/images/20200706052556910.png loading=lazy alt=添加相关变量>
+5. 添加关键代码:</p><p><img src=/images/20200706054641301.png loading=lazy alt=代码图片></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kt>bool</span> <span class=n>Moving</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>                <span class=c1>// 标识是否在拖动控件</span>
+</span></span><span class=line><span class=cl><span class=n>Point</span> <span class=n>MouseFirstLocation</span><span class=p>;</span>           <span class=c1>// 鼠标按下时, 相对于控件的坐标</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>private</span> <span class=k>void</span> <span class=n>ExempleButton_MouseDown</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>MouseEventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>Moving</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>                                                   <span class=c1>// 表示进入拖动控件的状态</span>
+</span></span><span class=line><span class=cl>    <span class=n>Point</span> <span class=n>MousePoint</span> <span class=p>=</span> <span class=n>Control</span><span class=p>.</span><span class=n>MousePosition</span><span class=p>;</span>                        <span class=c1>// 获取鼠标相对屏幕的坐标</span>
+</span></span><span class=line><span class=cl>    <span class=n>MouseFirstLocation</span> <span class=p>=</span> <span class=n>ExempleButton</span><span class=p>.</span><span class=n>PointToClient</span><span class=p>(</span><span class=n>MousePoint</span><span class=p>);</span>    <span class=c1>// 获取坐标相对于控件的相对坐标并赋值给MouseFirstLocation</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>private</span> <span class=k>void</span> <span class=n>ExempleButton_MouseMove</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>MouseEventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=k>if</span> <span class=p>(</span><span class=n>Moving</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>Point</span> <span class=n>MousePoint</span> <span class=p>=</span> <span class=n>Control</span><span class=p>.</span><span class=n>MousePosition</span><span class=p>;</span>                                                                                                   <span class=c1>// 获取鼠标相对屏幕的坐标</span>
+</span></span><span class=line><span class=cl>        <span class=n>Point</span> <span class=n>MousePointToContainer</span> <span class=p>=</span> <span class=n>ExempleButton</span><span class=p>.</span><span class=n>Parent</span><span class=p>.</span><span class=n>PointToClient</span><span class=p>(</span><span class=n>MousePoint</span><span class=p>);</span>                                                               <span class=c1>// 获取鼠标相对控件父容器的坐标</span>
+</span></span><span class=line><span class=cl>        <span class=n>Point</span> <span class=n>ControlNewLocation</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Point</span><span class=p>(</span><span class=n>MousePointToContainer</span><span class=p>.</span><span class=n>X</span> <span class=p>-</span> <span class=n>MouseFirstLocation</span><span class=p>.</span><span class=n>X</span><span class=p>,</span> <span class=n>MousePointToContainer</span><span class=p>.</span><span class=n>Y</span> <span class=p>-</span> <span class=n>MouseFirstLocation</span><span class=p>.</span><span class=n>Y</span><span class=p>);</span>       <span class=c1>// 计算控件应处于的, 新的坐标</span>
+</span></span><span class=line><span class=cl>        <span class=n>ExempleButton</span><span class=p>.</span><span class=n>Location</span> <span class=p>=</span> <span class=n>ControlNewLocation</span><span class=p>;</span>                                                                                                <span class=c1>// 移动控件</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=kd>private</span> <span class=k>void</span> <span class=n>ExempleButton_MouseUp</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>MouseEventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>Moving</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>                                                  <span class=c1>// 脱离拖动控件的状态</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>可以使用了~</li></ul><h2 id=多控件实现>多控件实现:</h2><ul><li>使用类封装功能, 类的AddControl(Control control)方法来快捷使某个控件支持鼠标拖动移动位置.</li><li>这里的原理与前面的单控件实现有些出入, 但也是通过初始鼠标坐标(这里是相对父容器而不是移动的控件)与初始坐标计算出的</li><li>这个类不仅支持窗体内的控件, 而且还支持窗体 (没有直接使用WindowsAPI)</li></ul><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>  1
+</span><span class=lnt>  2
+</span><span class=lnt>  3
+</span><span class=lnt>  4
+</span><span class=lnt>  5
+</span><span class=lnt>  6
+</span><span class=lnt>  7
+</span><span class=lnt>  8
+</span><span class=lnt>  9
+</span><span class=lnt> 10
+</span><span class=lnt> 11
+</span><span class=lnt> 12
+</span><span class=lnt> 13
+</span><span class=lnt> 14
+</span><span class=lnt> 15
+</span><span class=lnt> 16
+</span><span class=lnt> 17
+</span><span class=lnt> 18
+</span><span class=lnt> 19
+</span><span class=lnt> 20
+</span><span class=lnt> 21
+</span><span class=lnt> 22
+</span><span class=lnt> 23
+</span><span class=lnt> 24
+</span><span class=lnt> 25
+</span><span class=lnt> 26
+</span><span class=lnt> 27
+</span><span class=lnt> 28
+</span><span class=lnt> 29
+</span><span class=lnt> 30
+</span><span class=lnt> 31
+</span><span class=lnt> 32
+</span><span class=lnt> 33
+</span><span class=lnt> 34
+</span><span class=lnt> 35
+</span><span class=lnt> 36
+</span><span class=lnt> 37
+</span><span class=lnt> 38
+</span><span class=lnt> 39
+</span><span class=lnt> 40
+</span><span class=lnt> 41
+</span><span class=lnt> 42
+</span><span class=lnt> 43
+</span><span class=lnt> 44
+</span><span class=lnt> 45
+</span><span class=lnt> 46
+</span><span class=lnt> 47
+</span><span class=lnt> 48
+</span><span class=lnt> 49
+</span><span class=lnt> 50
+</span><span class=lnt> 51
+</span><span class=lnt> 52
+</span><span class=lnt> 53
+</span><span class=lnt> 54
+</span><span class=lnt> 55
+</span><span class=lnt> 56
+</span><span class=lnt> 57
+</span><span class=lnt> 58
+</span><span class=lnt> 59
+</span><span class=lnt> 60
+</span><span class=lnt> 61
+</span><span class=lnt> 62
+</span><span class=lnt> 63
+</span><span class=lnt> 64
+</span><span class=lnt> 65
+</span><span class=lnt> 66
+</span><span class=lnt> 67
+</span><span class=lnt> 68
+</span><span class=lnt> 69
+</span><span class=lnt> 70
+</span><span class=lnt> 71
+</span><span class=lnt> 72
+</span><span class=lnt> 73
+</span><span class=lnt> 74
+</span><span class=lnt> 75
+</span><span class=lnt> 76
+</span><span class=lnt> 77
+</span><span class=lnt> 78
+</span><span class=lnt> 79
+</span><span class=lnt> 80
+</span><span class=lnt> 81
+</span><span class=lnt> 82
+</span><span class=lnt> 83
+</span><span class=lnt> 84
+</span><span class=lnt> 85
+</span><span class=lnt> 86
+</span><span class=lnt> 87
+</span><span class=lnt> 88
+</span><span class=lnt> 89
+</span><span class=lnt> 90
+</span><span class=lnt> 91
+</span><span class=lnt> 92
+</span><span class=lnt> 93
+</span><span class=lnt> 94
+</span><span class=lnt> 95
+</span><span class=lnt> 96
+</span><span class=lnt> 97
+</span><span class=lnt> 98
+</span><span class=lnt> 99
+</span><span class=lnt>100
+</span><span class=lnt>101
+</span><span class=lnt>102
+</span><span class=lnt>103
+</span><span class=lnt>104
+</span><span class=lnt>105
+</span><span class=lnt>106
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=k>class</span> <span class=nc>DragMove</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>DragMove</span><span class=p>(</span><span class=n>MouseButtons</span> <span class=n>MouseButton</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>this</span><span class=p>.</span><span class=n>MouseButton</span> <span class=p>=</span> <span class=n>MouseButton</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>DragMove</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>AllMouseButton</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>object</span> <span class=n>AboutControl</span><span class=p>;</span>                                  <span class=c1>// 表示当前移动控件操作是针对哪个控件的</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>Moving</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>                                  <span class=c1>// 表示是否正在移动控件</span>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>AllMouseButton</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>                          <span class=c1>// 表示是否处理所有按钮</span>
+</span></span><span class=line><span class=cl>    <span class=n>Point</span> <span class=n>ControlStartLocation</span><span class=p>;</span>                           <span class=c1>// 表示移动操作时, 控件的初始位置</span>
+</span></span><span class=line><span class=cl>    <span class=n>Point</span> <span class=n>MouseFirstLocationAboutParent</span><span class=p>;</span>                  <span class=c1>// 表示移动操作时, 鼠标的初始位置</span>
+</span></span><span class=line><span class=cl>    <span class=n>MouseButtons</span> <span class=n>MouseButton</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>List</span><span class=p>&lt;</span><span class=n>Control</span><span class=p>&gt;</span> <span class=n>AddedControls</span> <span class=p>=</span> <span class=k>new</span> <span class=n>List</span><span class=p>&lt;</span><span class=n>Control</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>MouseDownEvent</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>MouseEventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>((</span><span class=n>e</span><span class=p>.</span><span class=n>Button</span> <span class=p>==</span> <span class=n>MouseButton</span><span class=p>)</span> <span class=p>||</span> <span class=n>AllMouseButton</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>AboutControl</span> <span class=p>=</span> <span class=n>sender</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>Moving</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>ControlStartLocation</span> <span class=p>=</span> <span class=p>(</span><span class=n>sender</span> <span class=k>as</span> <span class=n>Control</span><span class=p>).</span><span class=n>Location</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>sender</span> <span class=k>is</span> <span class=n>Form</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>MouseFirstLocationAboutParent</span> <span class=p>=</span> <span class=n>Control</span><span class=p>.</span><span class=n>MousePosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>MouseFirstLocationAboutParent</span> <span class=p>=</span> <span class=p>(</span><span class=n>sender</span> <span class=k>as</span> <span class=n>Control</span><span class=p>).</span><span class=n>Parent</span><span class=p>.</span><span class=n>PointToClient</span><span class=p>(</span><span class=n>Control</span><span class=p>.</span><span class=n>MousePosition</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>MouseMoveEvent</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>MouseEventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>sender</span> <span class=p>==</span> <span class=n>AboutControl</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>Moving</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>Point</span> <span class=n>MouseLocationNow</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=k>if</span> <span class=p>(</span><span class=n>sender</span> <span class=k>is</span> <span class=n>Form</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>MouseLocationNow</span> <span class=p>=</span> <span class=n>Control</span><span class=p>.</span><span class=n>MousePosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=k>else</span>
+</span></span><span class=line><span class=cl>                <span class=p>{</span>
+</span></span><span class=line><span class=cl>                    <span class=n>MouseLocationNow</span> <span class=p>=</span> <span class=p>(</span><span class=n>sender</span> <span class=k>as</span> <span class=n>Control</span><span class=p>).</span><span class=n>Parent</span><span class=p>.</span><span class=n>PointToClient</span><span class=p>(</span><span class=n>Control</span><span class=p>.</span><span class=n>MousePosition</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>}</span>
+</span></span><span class=line><span class=cl>                <span class=n>Point</span> <span class=n>ControlNewLocation</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Point</span><span class=p>(</span><span class=n>MouseLocationNow</span><span class=p>.</span><span class=n>X</span> <span class=p>-</span> <span class=n>MouseFirstLocationAboutParent</span><span class=p>.</span><span class=n>X</span> <span class=p>+</span> <span class=n>ControlStartLocation</span><span class=p>.</span><span class=n>X</span><span class=p>,</span> <span class=n>MouseLocationNow</span><span class=p>.</span><span class=n>Y</span> <span class=p>-</span> <span class=n>MouseFirstLocationAboutParent</span><span class=p>.</span><span class=n>Y</span> <span class=p>+</span> <span class=n>ControlStartLocation</span><span class=p>.</span><span class=n>Y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=p>(</span><span class=n>sender</span> <span class=k>as</span> <span class=n>Control</span><span class=p>).</span><span class=n>Location</span> <span class=p>=</span> <span class=n>ControlNewLocation</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>Moving</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>Moving</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=p>(</span><span class=n>AboutControl</span> <span class=k>as</span> <span class=n>Control</span><span class=p>).</span><span class=n>Location</span> <span class=p>=</span> <span class=n>ControlStartLocation</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>MouseUpEvent</span><span class=p>(</span><span class=kt>object</span> <span class=n>sender</span><span class=p>,</span> <span class=n>MouseEventArgs</span> <span class=n>e</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>sender</span> <span class=p>!=</span> <span class=n>AboutControl</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>Moving</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=p>(</span><span class=n>AboutControl</span> <span class=k>as</span> <span class=n>Control</span><span class=p>).</span><span class=n>Location</span> <span class=p>=</span> <span class=n>ControlStartLocation</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=n>Moving</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>AddControl</span><span class=p>(</span><span class=n>Control</span> <span class=n>control</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>AddedControls</span><span class=p>.</span><span class=n>Contains</span><span class=p>(</span><span class=n>control</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>control</span><span class=p>.</span><span class=n>MouseDown</span> <span class=p>+=</span> <span class=n>MouseDownEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>control</span><span class=p>.</span><span class=n>MouseMove</span> <span class=p>+=</span> <span class=n>MouseMoveEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>control</span><span class=p>.</span><span class=n>MouseUp</span> <span class=p>+=</span> <span class=n>MouseUpEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>AddedControls</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=n>control</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>RemoveControl</span><span class=p>(</span><span class=n>Control</span> <span class=n>control</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>AddedControls</span><span class=p>.</span><span class=n>Contains</span><span class=p>(</span><span class=n>control</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>control</span><span class=p>.</span><span class=n>MouseDown</span> <span class=p>-=</span> <span class=n>MouseDownEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>control</span><span class=p>.</span><span class=n>MouseMove</span> <span class=p>-=</span> <span class=n>MouseMoveEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>control</span><span class=p>.</span><span class=n>MouseUp</span> <span class=p>-=</span> <span class=n>MouseUpEvent</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>AddedControls</span><span class=p>.</span><span class=n>Remove</span><span class=p>(</span><span class=n>control</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><ul><li>这个类包含了判断鼠标按键的功能, 比如只允许右键拖动控件, 也有一些预防措施, 保证类能够正常工作的一些措施(判断控件), 也支持添加与移除控件</li></ul></section><footer class=article-footer><section class=article-tags><a href=/tags/csharp/>Csharp</a>
+<a href=/tags/winform/>WinForm</a>
+<a href=/tags/%E5%AE%9E%E4%BE%8B/>实例</a>
+<a href=/tags/%E6%BA%90%E7%A0%81/>源码</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/20210219220053/><div class=article-details><h2 class=article-title>[C#] 绘制函数图像. 可拖动, 可缩放, 可调整精度</h2></div></a></article><article><a href=/p/20230818143649/><div class=article-details><h2 class=article-title>[.NET/WPF] CommunityToolkit.Mvvm 异步指令</h2></div></a></article><article><a href=/p/20230403133618/><div class=article-details><h2 class=article-title>[WPF] 资源, 静态资源, 动态资源的使用及注意事项. 使用资源字典进行 “语言国际化“ 与 “颜色模式切换“</h2></div></a></article><article><a href=/p/20230401210013/><div class=article-details><h2 class=article-title>[WPF] 多页面程序基本跳转</h2></div></a></article><article><a href=/p/20230401165316/><div class=article-details><h2 class=article-title>[WPF] 集合元素数据绑定与模板</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=SlimeNull/slimenull.github.io issue-term=pathname label=BlogComment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 SlimeNull Blogs</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.21.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
