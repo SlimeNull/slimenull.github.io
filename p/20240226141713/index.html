@@ -1,0 +1,1689 @@
+<!doctype html><html lang=zh-CN dir=ltr><head><meta charset=utf-8><meta name=viewport content='width=device-width,initial-scale=1'><meta name=description content='类似于网页中轮播图的, 2D 与 3D 的轮转图, 包含拖拽的惯性, 拖拽结束的自动回正以及点击选择功能'><title>Unity 轮转图, 惯性, 自动回正, 点击选择</title>
+<link rel=canonical href=https://slimenull.com/p/20240226141713/><link rel=stylesheet href=/scss/style.min.73438a911857e6d491e39369614d0dd0c0302dcacfb43e15034e0e48cac08c07.css><meta property='og:title' content='Unity 轮转图, 惯性, 自动回正, 点击选择'><meta property='og:description' content='类似于网页中轮播图的, 2D 与 3D 的轮转图, 包含拖拽的惯性, 拖拽结束的自动回正以及点击选择功能'><meta property='og:url' content='https://slimenull.com/p/20240226141713/'><meta property='og:site_name' content='SlimeNull Blogs'><meta property='og:type' content='article'><meta property='article:section' content='Post'><meta property='article:tag' content='unity'><meta property='article:tag' content='note'><meta property='article:published_time' content='2024-02-26T14:17:13+08:00'><meta property='article:modified_time' content='2024-02-26T14:17:13+08:00'><meta name=twitter:title content="Unity 轮转图, 惯性, 自动回正, 点击选择"><meta name=twitter:description content="类似于网页中轮播图的, 2D 与 3D 的轮转图, 包含拖拽的惯性, 拖拽结束的自动回正以及点击选择功能"><link rel="shortcut icon" href=/favicon.png></head><body class=article-page><script>(function(){const e="StackColorScheme";localStorage.getItem(e)||localStorage.setItem(e,"auto")})()</script><script>(function(){const t="StackColorScheme",e=localStorage.getItem(t),n=window.matchMedia("(prefers-color-scheme: dark)").matches===!0;e=="dark"||e==="auto"&&n?document.documentElement.dataset.scheme="dark":document.documentElement.dataset.scheme="light"})()</script><div class="container main-container flex on-phone--column extended"><aside class="sidebar left-sidebar sticky"><button class="hamburger hamburger--spin" type=button id=toggle-menu aria-label=切换菜单>
+<span class=hamburger-box><span class=hamburger-inner></span></span></button><header><figure class=site-avatar><a href=/><img src=/img/avatar_huc8456e525e5d066dd09f75fb4b271186_40528_300x0_resize_q75_box.jpg width=300 height=300 class=site-logo loading=lazy alt=Avatar>
+</a><span class=emoji>🍥</span></figure><div class=site-meta><h1 class=site-name><a href=/>SlimeNull Blogs</a></h1><h2 class=site-description>为了更好的开源世界~</h2></div></header><ol class=social-menu><li><a href=https://github.com/SlimeNull target=_blank title=GitHub rel=me><!doctype html><svg t="1702542119184" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="4136" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M692.906667 938.666667A42.666667 42.666667.0 01650.24 896V785.066667A91.733333 91.733333.0 00627.2 714.24a42.666667 42.666667.0 0126.026667-71.253333c104.106666-12.373334 200.106666-45.653334 200.106666-226.133334a170.666667 170.666667.0 00-28.586666-94.72A117.333333 117.333333.0 01807.253333 234.24a158.293333 158.293333.0 000-60.16A326.4 326.4.0 00718.08 220.586667a42.666667 42.666667.0 01-35.84 6.4 433.066667 433.066667.0 00-235.52.0 42.666667 42.666667.0 01-35.84-6.4A315.733333 315.733333.0 00320.853333 174.08a150.186667 150.186667.0 000 60.16 121.173333 121.173333.0 01-18.346666 88.746667A173.653333 173.653333.0 00273.92 418.133333C273.92 584.106666 354.133333 628.48 474.453333 643.84A42.666667 42.666667.0 01509.44 672a42.666667 42.666667.0 01-8.96 42.666667 87.893333 87.893333.0 00-23.466667 66.56V896A42.666667 42.666667.0 01391.68 896v-24.32a256 256 0 01-224.853333-89.173333A166.4 166.4.0 00117.333333 744.96a42.666667 42.666667.0 1121.333334-82.773333A210.346667 210.346667.0 01224 720.213333c42.666667 42.666667 85.333333 80.213333 166.4 64.853334a165.973333 165.973333.0 019.813333-67.413334C312.32 695.466666 186.88 632.32 186.88 418.986667a256 256 0 0142.666667-142.08 36.266667 36.266667.0 005.546666-26.453334 242.773333 242.773333.0 0114.08-136.96 42.666667 42.666667.0 0126.88-24.32c14.506667-4.266667 66.56-12.8 165.12 51.2a518.826667 518.826667.0 01242.773334.0c98.56-64 150.613333-55.893333 164.693333-51.2a42.666667 42.666667.0 0126.88 24.32A243.626667 243.626667.0 01889.6 250.88a32 32 0 004.693333 24.32A256 256 0 01936.96 417.706667c0 216.32-124.586667 279.04-213.333333 298.666666a182.613333 182.613333.0 019.386666 71.253334V896a42.666667 42.666667.0 01-40.106666 42.666667z" fill="#666" p-id="4137"/></svg></a></li><li><a href=https://space.bilibili.com/441842015 target=_blank title=Bilibili rel=me><!doctype html><svg t="1702541966104" class="icon" viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="16981" xmlns:xlink="http://www.w3.org/1999/xlink" width="200" height="200"><path d="M306.005333 117.632 444.330667 256h135.296l138.368-138.325333A42.666667 42.666667.0 01778.368 178.048L700.330667 256H789.333333A149.333333 149.333333.0 01938.666667 405.333333v341.333334A149.333333 149.333333.0 01789.333333 896H234.666667A149.333333 149.333333.0 0185.333333 746.666667V405.333333A149.333333 149.333333.0 01234.666667 256h88.96L245.632 177.962667a42.666667 42.666667.0 0160.373333-60.373334zm483.328 223.701333H234.666667a64 64 0 00-63.701334 57.856L170.666667 405.333333v341.333334a64 64 0 0057.856 63.701333L234.666667 810.666667h554.666666a64 64 0 0063.701334-57.856L853.333333 746.666667V405.333333a64 64 0 00-64-64zm-448 128A42.666667 42.666667.0 01384 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666666-42.666667zm341.333334.0A42.666667 42.666667.0 01725.333333 512v85.333333a42.666667 42.666667.0 01-85.333333.0V512a42.666667 42.666667.0 0142.666667-42.666667z" fill="#666" p-id="16982"/></svg></a></li></ol><ol class=menu id=main-menu><li><a href=/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-home" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><polyline points="5 12 3 12 12 3 21 12 19 12"/><path d="M5 12v7a2 2 0 002 2h10a2 2 0 002-2v-7"/><path d="M9 21v-6a2 2 0 012-2h2a2 2 0 012 2v6"/></svg>
+<span>主页</span></a></li><li><a href=/archives/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-archive" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><rect x="3" y="4" width="18" height="4" rx="2"/><path d="M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8"/><line x1="10" y1="12" x2="14" y2="12"/></svg>
+<span>归档</span></a></li><li><a href=/search/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-search" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="10" cy="10" r="7"/><line x1="21" y1="21" x2="15" y2="15"/></svg>
+<span>搜索</span></a></li><li><a href=/links/><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-link" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M10 14a3.5 3.5.0 005 0l4-4a3.5 3.5.0 00-5-5l-.5.5"/><path d="M14 10a3.5 3.5.0 00-5 0l-4 4a3.5 3.5.0 005 5l.5-.5"/></svg>
+<span>链接</span></a></li><div class=menu-bottom-section><li id=i18n-switch><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-language" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"/><path d="M4 5h7"/><path d="M9 3v2c0 4.418-2.239 8-5 8"/><path d="M5 9c-.003 2.144 2.952 3.908 6.7 4"/><path d="M12 20l4-9 4 9"/><path d="M19.1 18h-6.2"/></svg>
+<select name=language onchange="window.location.href=this.selectedOptions[0].value"><option value=https://slimenull.com/ selected></option></select></li><li id=dark-mode-toggle><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-left" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="8" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-toggle-right" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="16" cy="12" r="2"/><rect x="2" y="6" width="20" height="12" rx="6"/></svg>
+<span>暗色模式</span></li></div></ol></aside><aside class="sidebar right-sidebar sticky"><section class="widget archives"><div class=widget-icon><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-hash" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><line x1="5" y1="9" x2="19" y2="9"/><line x1="5" y1="15" x2="19" y2="15"/><line x1="11" y1="4" x2="7" y2="20"/><line x1="17" y1="4" x2="13" y2="20"/></svg></div><h2 class="widget-title section-title">目录</h2><div class=widget--toc><nav id=TableOfContents><ol><li><a href=#主要逻辑>主要逻辑</a><ol><li><a href=#基础旋转>基础旋转</a></li><li><a href=#自动回正>自动回正</a></li><li><a href=#运动惯性>运动惯性</a></li><li><a href=#点击选择>点击选择</a></li></ol></li><li><a href=#物体生成>物体生成</a><ol><li><a href=#创建物体>创建物体</a></li><li><a href=#ui-特有更新>UI 特有更新</a></li></ol></li><li><a href=#其他>其他</a></li></ol></nav></div></section></aside><main class="main full-width"><article class=main-article><header class=article-header><div class=article-details><header class=article-category><a href=/categories/unity/ style=background-color:#1f2933;color:#fff>Unity
+</a><a href=/categories/tutorial/ style=background-color:#1ec3db;color:#fff>教程</a></header><div class=article-title-wrapper><h2 class=article-title><a href=/p/20240226141713/>Unity 轮转图, 惯性, 自动回正, 点击选择</a></h2><h3 class=article-subtitle>类似于网页中轮播图的, 2D 与 3D 的轮转图, 包含拖拽的惯性, 拖拽结束的自动回正以及点击选择功能</h3></div><footer class=article-time><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-calendar-time" width="56" height="56" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><path d="M11.795 21H5a2 2 0 01-2-2V7a2 2 0 012-2h12a2 2 0 012 2v4"/><circle cx="18" cy="18" r="4"/><path d="M15 3v4"/><path d="M7 3v4"/><path d="M3 11h16"/><path d="M18 16.496V18l1 1"/></svg>
+<time class=article-time--published>Feb 26, 2024</time></div><div><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-clock" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 15"/></svg>
+<time class=article-time--reading>阅读时长: 15 分钟</time></div></footer></div></header><section class=article-content><p>简单的实现 2D 以及 3D 的轮转图, 类似于 Web 中无限循环的轮播图那样.</p><p><img src=/images/unity_carousel_2d.gif loading=lazy></p><p><img src=/images/unity_carousel_3d.gif loading=lazy></p><blockquote><p>文中所有代码均已同步至 <a class=link href=https://github.com/SlimeNull/UnityTests target=_blank rel=noopener>github.com/SlimeNull/UnityTests</a></p><ul><li>3D 轮转图: <a class=link href=https://github.com/SlimeNull/UnityTests/blob/main/Assets/Scripts/Scenes/CarouselTestScene/Carousel.cs target=_blank rel=noopener>Assets/Scripts/Scenes/CarouselTestScene/Carousel.cs</a></li><li>2D 轮转图: <a class=link href=https://github.com/SlimeNull/UnityTests/blob/main/Assets/Scripts/Scenes/CarouselTestScene/UICarousel.cs target=_blank rel=noopener>Assets/Scripts/Scenes/CarouselTestScene/UICarousel.cs</a></li></ul></blockquote><br><h2 id=主要逻辑>主要逻辑</h2><p>根据我们想要的效果可知, 主要原理就是, 当鼠标拖拽时, 更新对象的位置. 我们可以通过在脚本中保存一个 &ldquo;当前旋转量&rdquo; 的变量, 当鼠标拖拽时, 更改它. 而每次拖拽, 都根据旋转量, 计算每一个对象的位置. 接下来以 3D 轮转图为例, 讲述编写思路.</p><br><h3 id=基础旋转>基础旋转</h3><p>设计对象层级关系:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-fallback data-lang=fallback><span class=line><span class=cl>- 父对象 (脚本挂载到这里)
+</span></span><span class=line><span class=cl>  |- 子对象
+</span></span><span class=line><span class=cl>  |- 子对象
+</span></span><span class=line><span class=cl>  |- 子对象
+</span></span><span class=line><span class=cl>  |- ...
+</span></span><span class=line><span class=cl>  |- 子对象
+</span></span></code></pre></td></tr></table></div></div><p>轮转图的大概逻辑框架:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 当前旋转偏移量</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 在开始时, 更新物体状态</span>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 更新子物体状态, 计算旋转, 设置位置等</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>mouseOffset</span> <span class=p>=</span> <span class=err>获取鼠标拖拽偏移量的逻辑</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	    <span class=kt>var</span> <span class=n>radianChange</span> <span class=p>=</span> <span class=err>将鼠标偏移量转换为旋转量的逻辑</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>	    
+</span></span><span class=line><span class=cl>        <span class=n>_radianOffset</span> <span class=p>+=</span> <span class=n>radianChange</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>编写从旋转角度, 更新物体状态的逻辑. 这里, 我们将一整个圆平均分为成员数量份, 并让它们平均分布. 半径的话, 我们允许用户在检视器中自定义, 所以在这里向外暴露字段即可.</p><p>需要注意的是, 在数学习惯三角函数中, 角的起始为 x 正方向, 也就是 &ldquo;右方&rdquo;, 为了使第一个子物体, 也就是旋转量为 0 的子物体在最前方, 我们在实际计算角度时, 需要整体减去半个 PI, 也就是 90 度.</p><p><img src=/images/circle_radian_rotation.gif loading=lazy></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>	<span class=cs>/// 大小</span>
+</span></span><span class=line><span class=cl>	<span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>	[field: SerializeField]</span>
+</span></span><span class=line><span class=cl>	<span class=kd>public</span> <span class=kt>float</span> <span class=n>Size</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 更新物体状态</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=kt>var</span> <span class=n>radius</span> <span class=p>=</span> <span class=n>Size</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>                        <span class=c1>// 半径</span>
+</span></span><span class=line><span class=cl>		<span class=kt>var</span> <span class=n>childCount</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>childCount</span><span class=p>;</span>        <span class=c1>// 成员数量</span>
+</span></span><span class=line><span class=cl>		<span class=kt>var</span> <span class=n>radianGap</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span> <span class=p>/</span> <span class=n>childCount</span><span class=p>;</span>    <span class=c1>// 旋转弧度间隔</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>childCount</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>		    <span class=c1>// 获取当前角度, 以及当前游戏对象</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>radian</span> <span class=p>=</span> <span class=n>radianGap</span> <span class=p>*</span> <span class=n>i</span> <span class=p>+</span> <span class=n>_radianOffset</span> <span class=p>-</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>child</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>GetChild</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 计算余弦正弦值</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>cos</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Cos</span><span class=p>(</span><span class=n>radian</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>sin</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Sin</span><span class=p>(</span><span class=n>radian</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 计算坐标</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>x</span> <span class=p>=</span> <span class=n>cos</span> <span class=p>*</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>z</span> <span class=p>=</span> <span class=n>sin</span> <span class=p>*</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 设置位置</span>
+</span></span><span class=line><span class=cl>			<span class=n>child</span><span class=p>.</span><span class=n>localPosition</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector3</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>z</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 拖拽逻辑</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>接下来实现获取鼠标拖拽偏移量, 由于 3D 空间中的对象, 距离相机远近不确定, 所以最终的鼠标偏移量我们以鼠标位置转换为世界坐标的结果为准. 在开始拖拽的时候, 记录下当前距离相机的位置与鼠标的世界坐标, 并在接下来的每一次拖拽触发时都重新计算鼠标的世界坐标, 并得出鼠标在世界中的偏移量.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_cameraDistance</span><span class=p>;</span>              <span class=c1>// 相机距离</span>
+</span></span><span class=line><span class=cl>    <span class=n>Vector3</span> <span class=n>_lastMouseWorldPosition</span><span class=p>;</span>    <span class=c1>// 上次的鼠标世界坐标</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>	<span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>	<span class=cs>/// 大小</span>
+</span></span><span class=line><span class=cl>	<span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>	[field: SerializeField]</span>
+</span></span><span class=line><span class=cl>	<span class=kd>public</span> <span class=kt>float</span> <span class=n>Size</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 更新物体状态</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 位置更新逻辑</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radius</span> <span class=p>=</span> <span class=n>Size</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 求当前鼠标坐标, 计算鼠标的偏移量</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>mousePosition</span> <span class=p>=</span> <span class=n>Input</span><span class=p>.</span><span class=n>mousePosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>mousePosition</span><span class=p>.</span><span class=n>z</span> <span class=p>=</span> <span class=n>_cameraDistance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>newMouseWorldPosition</span> <span class=p>=</span> <span class=n>Camera</span><span class=p>.</span><span class=n>main</span><span class=p>.</span><span class=n>ScreenToWorldPoint</span><span class=p>(</span><span class=n>mousePosition</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>mouseWorldOffset</span> <span class=p>=</span> <span class=n>newMouseWorldPosition</span> <span class=p>-</span> <span class=n>_lastMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 保存新的鼠标位置</span>
+</span></span><span class=line><span class=cl>        <span class=n>_lastMouseWorldPosition</span> <span class=p>=</span> <span class=n>newMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 将鼠标偏移量转换为旋转量</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radianChange</span> <span class=p>=</span> <span class=n>mouseWorldOffset</span><span class=p>.</span><span class=n>x</span> <span class=p>/</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 增加旋转</span>
+</span></span><span class=line><span class=cl>        <span class=n>_radianOffset</span> <span class=p>+=</span> <span class=n>radianChange</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 更新物体状态</span>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 通过自己的屏幕坐标, 取 z 值得到相机距离</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 当然, 这里你也可以使用向量投影来直接获取当前对象与相机的距离</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>selfScreenPosition</span> <span class=p>=</span> <span class=n>Camera</span><span class=p>.</span><span class=n>main</span><span class=p>.</span><span class=n>WorldToScreenPoint</span><span class=p>(</span><span class=n>transform</span><span class=p>.</span><span class=n>position</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>_cameraDistance</span> <span class=p>=</span> <span class=n>selfScreenPosition</span><span class=p>.</span><span class=n>z</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 求鼠标的世界坐标</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>mousePosition</span> <span class=p>=</span> <span class=n>Input</span><span class=p>.</span><span class=n>mousePosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>mousePosition</span><span class=p>.</span><span class=n>z</span> <span class=p>=</span> <span class=n>_cameraDistance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>_lastMouseWorldPosition</span> <span class=p>=</span> <span class=n>Camera</span><span class=p>.</span><span class=n>main</span><span class=p>.</span><span class=n>ScreenToWorldPoint</span><span class=p>(</span><span class=n>mousePosition</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在上面的代码中, 我们的旋转量是直接将鼠标偏移量除以半径得来的. 因为圆的周长等于弧乘半径, 反之, 如果想要根据圆上长度求角大小, 直接拿这个长度除以半径即可. 而我们这里的思路, 正是将鼠标的偏移量, 视作圆上一点的旋转距离.</p><p><img src=/images/circle_length_equals_lr.png loading=lazy></p><p>当然, 你也可以直接通过别的算法来将鼠标偏移量转换为旋转量, 这取决于你的需求. 甚至你也可以直接暴力的将鼠标的坐标偏移乘或除以一个固定的数来作为旋转量使用.</p><p>最后, 检查一下你的代码, 它们大概是这样的:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_cameraDistance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Vector3</span> <span class=n>_lastMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>Size</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>..</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在编写完基础代码之后, 我们的效果大概如下:</p><p><img src=/images/basic_carousel_3d.gif loading=lazy></p><blockquote><p>注意, 为了让 3D 场景中的物体能够接收指针拖拽的事件, 你的场景中需要有一个 &ldquo;EventSystem&rdquo; 组件, 并且主相机需要挂载 &ldquo;GraphicsRaycaster&rdquo; 组件.</p></blockquote><br><h3 id=自动回正>自动回正</h3><p>接下来我们还需要继续编写自动回正的功能, 使最近的物体旋转到前方. 大概思路就是, 保存当前最靠近前方的物体索引, 并计算其在最前方的旋转偏移量, 最后使用 DOTween 执行缓动.</p><p>因为我们使用正弦值乘半径作为物体的 z 坐标, 所以对于获取当前最前方的物体, 我们只需要看哪个物体旋转量正弦值最小即可.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 已选择的索引</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>SelectedIndex</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 更新物体状态</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>		<span class=kt>var</span> <span class=n>radius</span> <span class=p>=</span> <span class=n>Size</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=kt>var</span> <span class=n>childCount</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>childCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=kt>var</span> <span class=n>radianGap</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span> <span class=p>/</span> <span class=n>childCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>minSin</span> <span class=p>=</span> <span class=m>2f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>selectedIndex</span> <span class=p>=</span> <span class=p>-</span><span class=m>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>childCount</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>radian</span> <span class=p>=</span> <span class=n>radianGap</span> <span class=p>*</span> <span class=n>i</span> <span class=p>+</span> <span class=n>_radianOffset</span> <span class=p>-</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>child</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>GetChild</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>cos</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Cos</span><span class=p>(</span><span class=n>radian</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>sin</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Sin</span><span class=p>(</span><span class=n>radian</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>x</span> <span class=p>=</span> <span class=n>cos</span> <span class=p>*</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>			<span class=kt>var</span> <span class=n>z</span> <span class=p>=</span> <span class=n>sin</span> <span class=p>*</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>			<span class=n>child</span><span class=p>.</span><span class=n>localPosition</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector3</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>z</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 如果当前正弦值小于已保存的最小正弦值</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 则更新最小正弦值以及已选中索引</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>sin</span> <span class=p>&lt;=</span> <span class=n>minSin</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>minSin</span> <span class=p>=</span> <span class=n>sin</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>selectedIndex</span> <span class=p>=</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 更新属性</span>
+</span></span><span class=line><span class=cl>        <span class=n>SelectedIndex</span> <span class=p>=</span> <span class=n>selectedIndex</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>要获取某个子对象对应的旋转角度, 直接拿旋转间隔, 乘其索引, 再转为负数即可. 因为从第一个元素旋转到第二个元素时, 旋转角度是减少的.</p><p><img src=/images/unity_carousel_rotation2.gif loading=lazy></p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>   
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 从索引获取旋转量</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;index&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>GetRadianFromItemIndex</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>childCount</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>childCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radianGap</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span> <span class=p>/</span> <span class=n>childCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=p>-</span><span class=n>radianGap</span> <span class=p>*</span> <span class=n>index</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>那么, 选中某个元素, 将其移动到最前方的逻辑, 大概就是这样了, 使用 DOTween 做过渡就可以:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 过渡时间</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [field: SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>TransitionTime</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>0.2f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段和属性</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=c1>// 更新物体状态</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 从索引获取旋转角度</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>GetRadianFromItemIndex</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Select</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>originRadian</span> <span class=p>=</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>targetRadian</span> <span class=p>=</span> <span class=n>GetRadianFromItemIndex</span><span class=p>(</span><span class=n>index</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>DOTween</span>
+</span></span><span class=line><span class=cl>            <span class=p>.</span><span class=n>To</span><span class=p>(</span><span class=n>radian</span> <span class=p>=&gt;</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=c1>// 设置旋转量并更新物体状态</span>
+</span></span><span class=line><span class=cl>                <span class=n>_radianOffset</span> <span class=p>=</span> <span class=n>radian</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>            <span class=p>},</span> <span class=n>originRadian</span><span class=p>,</span> <span class=n>targetRadian</span><span class=p>,</span> <span class=n>TransitionTime</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>不过我们接下来还需要考虑两件事.</p><ol><li>如果我当前旋转量是一圈多, 过渡会出问题.
+举个例子, 当旋转量是两圈半时, 也就是 5 个 PI, 当我调用 Select(0) 的时候, 它会直接从 5 个 PI 过渡到 0, 在视觉上就是, 这个轮转图转了两圈半, 回到原点.</li><li>如果当前旋转到目标旋转量大于半个圆, 视觉上不好看.
+举个例子, 我需要从 180 度旋转到 370 度, 如果直接这么转, 视觉上看起来是它绕了远路, 因为从 180 转到 10 度经过的 170 当然是比 转到 370 经过的 190 度要短的.</li></ol><p>所以, 我们需要做两点修改:</p><ol><li>使当前旋转量不能大于一圈.</li><li>在进行旋转前, 将目标旋转值改为最短的目标值.</li></ol><p>其中第一点非常简单, 只需要在每一次更新物体状态前, 对当前旋转量 <code>_radianOffset</code> 对 <code>PI * 2</code> 进行求余即可.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>   
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 更新物体状态</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 变量初始化</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 在执行操作前, 保证 _radianOffset 不大于一圈</span>
+</span></span><span class=line><span class=cl>        <span class=n>_radianOffset</span> <span class=p>%=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>		<span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>childCount</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>		<span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 更新物体位置以及其他的具体逻辑</span>
+</span></span><span class=line><span class=cl>		<span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 更新属性</span>
+</span></span><span class=line><span class=cl>        <span class=n>SelectedIndex</span> <span class=p>=</span> <span class=n>selectedIndex</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>第二点, 我们只需要判断旋转差值, 如果大于半圆, 那么加上或者减去一整个圆即可.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>   
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 矫正旋转目标</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>CorrectRotationTarget</span><span class=p>(</span><span class=kt>float</span> <span class=n>origin</span><span class=p>,</span> <span class=k>ref</span> <span class=kt>float</span> <span class=n>target</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kd>const</span> <span class=kt>float</span> <span class=n>DoublePI</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 旋转差值</span>
+</span></span><span class=line><span class=cl>        <span class=kt>float</span> <span class=n>diff</span> <span class=p>=</span> <span class=p>(</span><span class=n>target</span> <span class=p>-</span> <span class=n>origin</span><span class=p>)</span> <span class=p>%</span> <span class=n>DoublePI</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>diff</span> <span class=p>&gt;</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>diff</span> <span class=p>-=</span> <span class=n>DoublePI</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span> <span class=k>if</span> <span class=p>(</span><span class=n>diff</span> <span class=p>&lt;</span> <span class=p>-</span><span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>diff</span> <span class=p>+=</span> <span class=n>DoublePI</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>        <span class=n>target</span> <span class=p>=</span> <span class=n>origin</span> <span class=p>+</span> <span class=n>diff</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后, 我们在松开鼠标, 也就是结束拖拽的时候, 调用 <code>Select</code> 方法, 选择当前最前方物体即可.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>   
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 启用自动回正</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [field: SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableAutoCorrection</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 选择</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Select</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IEndDragHandler</span><span class=p>.</span><span class=n>OnEndDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>EnableAutoCorrection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>Select</span><span class=p>(</span><span class=n>SelectedIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后, 检查你的代码, 它们大概是这样的:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_cameraDistance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Vector3</span> <span class=n>_lastMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>Size</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableAutoCorrection</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>TransitionTime</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>0.2f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>SelectedIndex</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>CorrectRotationTarget</span><span class=p>(</span><span class=kt>float</span> <span class=n>origin</span><span class=p>,</span> <span class=k>ref</span> <span class=kt>float</span> <span class=n>target</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>GetRadianFromItemIndex</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Select</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>..</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IEndDragHandler</span><span class=p>.</span><span class=n>OnEndDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>在做完上面一切工作之后, 我们最终会有一个带自动回正的轮转图. 效果如下:</p><p><img src=/images/unity_basic_carousel_auto_correction.gif loading=lazy></p><br><h3 id=运动惯性>运动惯性</h3><p>惯性的实现也是很简单的, 我们只需要保存拖拽时的速度, 在松开时使其仍然继续运动, 并不断减小速度就可以.</p><p>我们的大概思路如下:</p><ol><li>使用一个字段保存速度, 一个字段保存当前是否正在被用户拖拽. 向外公开 &ldquo;旋转阻力&rdquo; 以允许在检视器中调整阻力.</li><li>在 Update 中, 如果启用了惯性, 没有被用户拖拽, 并且速度不为 0, 则通过速度对旋转量进行增加, 并更新物体状态. 如果在一次更新中, 速度最终衰减到了 0, 那么则执行自动回正的逻辑.</li><li>在 Drag 中, 根据当前拖拽的旋转增量以及时间差, 计算并保存旋转速度.</li><li>在 EndDrag 中, 原本直接调用自动回正的逻辑, 仅在不启用惯性的时候直接执行. 因为如果启动了惯性, 在 Update 中会执行自动回正, 不需要在结束拖拽时执行.</li></ol><p>最终, 代码的框架大致如下:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段与属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianVelocity</span><span class=p>;</span>   <span class=c1>// 旋转速度</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>_dragging</span><span class=p>;</span>          <span class=c1>// 是否正在被拖拽</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 旋转阻力</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [field: SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>RadianDrag</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 启用惯性</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [field: SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableInertia</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Update</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>EnableInertia</span> <span class=p>&amp;&amp;</span> <span class=p>!</span><span class=n>_dragging</span> <span class=p>&amp;&amp;</span> <span class=n>_radianVelocity</span> <span class=p>==</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_radianOffset</span> <span class=p>+=</span> <span class=n>_radianVelocity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 使速度衰减的逻辑 (稍后进行详细的编写)</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 自动回正</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>EnableAutoCorrection</span> <span class=p>&amp;&amp;</span> <span class=n>_radianVelocity</span> <span class=p>==</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>Select</span><span class=p>(</span><span class=n>SelectedIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radius</span> <span class=p>=</span> <span class=n>Size</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>mousePosition</span> <span class=p>=</span> <span class=n>Input</span><span class=p>.</span><span class=n>mousePosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>mousePosition</span><span class=p>.</span><span class=n>z</span> <span class=p>=</span> <span class=n>_cameraDistance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>newMouseWorldPosition</span> <span class=p>=</span> <span class=n>Camera</span><span class=p>.</span><span class=n>main</span><span class=p>.</span><span class=n>ScreenToWorldPoint</span><span class=p>(</span><span class=n>mousePosition</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>mouseWorldOffset</span> <span class=p>=</span> <span class=n>newMouseWorldPosition</span> <span class=p>-</span> <span class=n>_lastMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>_lastMouseWorldPosition</span> <span class=p>=</span> <span class=n>newMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radianChange</span> <span class=p>=</span> <span class=n>mouseWorldOffset</span><span class=p>.</span><span class=n>x</span> <span class=p>/</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 直接以 radianChange 除以 Time.deltaTime 得到速度</span>
+</span></span><span class=line><span class=cl>        <span class=n>_radianVelocity</span> <span class=p>=</span> <span class=n>radianChange</span> <span class=p>/</span> <span class=n>Time</span><span class=p>.</span><span class=n>deltaTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>_radianOffset</span> <span class=p>+=</span> <span class=n>radianChange</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>        <span class=n>_dragging</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>    <span class=c1>// 设置拖拽状态</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IEndDragHandler</span><span class=p>.</span><span class=n>OnEndDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>_dragging</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>   <span class=c1>// 设置拖拽状态</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>EnableAutoCorrection</span> <span class=p>&amp;&amp;</span> <span class=p>!</span><span class=n>EnableInertia</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=c1>// 自动回正</span>
+</span></span><span class=line><span class=cl>            <span class=n>Select</span><span class=p>(</span><span class=n>SelectedIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>速度的衰减, 我们这里通过将速度拆解成两个量来做处理, &ldquo;方向&rdquo; 和 &ldquo;大小&rdquo;. 然后对大小做减法, 最后再重新拼接.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段与属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Update</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>EnableInertia</span> <span class=p>&amp;&amp;</span> <span class=p>!</span><span class=n>_dragging</span> <span class=p>&amp;&amp;</span> <span class=n>_radianVelocity</span> <span class=p>!=</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_radianOffset</span> <span class=p>+=</span> <span class=n>_radianVelocity</span> <span class=p>*</span> <span class=n>Time</span><span class=p>.</span><span class=n>deltaTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 拆解</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>radianVelocitySign</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Sign</span><span class=p>(</span><span class=n>_radianVelocity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>radianVelocitySize</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Abs</span><span class=p>(</span><span class=n>_radianVelocity</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 减小速度</span>
+</span></span><span class=line><span class=cl>            <span class=n>radianVelocitySize</span> <span class=p>-=</span> <span class=n>RadianDrag</span> <span class=p>*</span> <span class=n>Time</span><span class=p>.</span><span class=n>deltaTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>radianVelocitySize</span> <span class=p>&lt;</span> <span class=m>0</span><span class=p>)</span>   <span class=c1>// 速度大小不能为负值</span>
+</span></span><span class=line><span class=cl>                <span class=n>radianVelocitySize</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 重新拼接</span>
+</span></span><span class=line><span class=cl>            <span class=n>_radianVelocity</span> <span class=p>=</span> <span class=n>radianVelocitySign</span> <span class=p>*</span> <span class=n>radianVelocitySize</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=c1>// 自动回正</span>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>EnableAutoCorrection</span> <span class=p>&amp;&amp;</span> <span class=n>_radianVelocity</span> <span class=p>==</span> <span class=m>0</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>Select</span><span class=p>(</span><span class=n>SelectedIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>于是, 我们成功为轮转图添加了惯性功能. 最后检查代码, 它们大概是这样的:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianVelocity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_cameraDistance</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>Vector3</span> <span class=n>_lastMouseWorldPosition</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>Size</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>5</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>RadianDrag</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableInertia</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableAutoCorrection</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>TransitionTime</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>0.2f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>SelectedIndex</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Update</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>CorrectRotationTarget</span><span class=p>(</span><span class=kt>float</span> <span class=n>origin</span><span class=p>,</span> <span class=k>ref</span> <span class=kt>float</span> <span class=n>target</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>GetRadianFromItemIndex</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Select</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>..</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IEndDragHandler</span><span class=p>.</span><span class=n>OnEndDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>于是, 你就可以得到在文章最开始展示的, 完整轮转图的效果了:</p><p><img src=/images/unity_carousel_3d.gif loading=lazy></p><br><h3 id=点击选择>点击选择</h3><p>最后, 我们希望为轮转图添加鼠标单击选择的功能, 实现起来很方便, 因为我们已经编写好选择某元素的方法 <code>Select</code> 了. 那么, 只需要实现 <code>IPointerClickHandler</code>, 并判断是否点击了某个子元素, 然后调用 <code>Select</code> 方法即可.</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>Carousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段与属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 允许点击选择</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [field: SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>AllowClickSelection</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IPointerClickHandler</span><span class=p>.</span><span class=n>OnPointerClick</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(!</span><span class=n>AllowClickSelection</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=k>return</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>childCount</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>childCount</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>childCount</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>renderer</span> <span class=p>=</span> <span class=n>transform</span><span class=p>.</span><span class=n>GetChild</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>eventData</span><span class=p>.</span><span class=n>pointerPressRaycast</span><span class=p>.</span><span class=n>gameObject</span> <span class=p>==</span> <span class=n>renderer</span><span class=p>.</span><span class=n>gameObject</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>Select</span><span class=p>(</span><span class=n>i</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=k>break</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>添加完上述代码之后, 我们就得到了可以单击选择的轮转图了.</p><p><img src=/images/unity_carousel_click_selection.gif loading=lazy></p><br><h2 id=物体生成>物体生成</h2><p>对于 UI 上的轮转图, 我们以展示 Sprite 为例, 为了方便, 我们不需要像原本那样实现在父物体下放置好物体, 而是根据用户指定的 Sprite, 自动生成游戏对象, 自动挂载所需组件, 设置属性.</p><br><h3 id=创建物体>创建物体</h3><p>我们打算让脚本向外暴露出一个 <code>Sprite[]</code> 供设置要展示的图片, 那么在接下来的逻辑中, 就需要实现:</p><ol><li>初始化时, 创建所需的游戏对象, 挂载 Image 组件以供显示图片</li><li>当外部对图片数组进行赋值时, 重新更新状态, 使显示是正确的</li><li>由于 Canvas 在 Screen Space - Overlay 模式下不存在近大远小, 所以我们需要提供根据前后顺序, 自动进行缩放的功能</li></ol><p>那么, 我们需要做的添加和变更的有这些:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span><span class=lnt>64
+</span><span class=lnt>65
+</span><span class=lnt>66
+</span><span class=lnt>67
+</span><span class=lnt>68
+</span><span class=lnt>69
+</span><span class=lnt>70
+</span><span class=lnt>71
+</span><span class=lnt>72
+</span><span class=lnt>73
+</span><span class=lnt>74
+</span><span class=lnt>75
+</span><span class=lnt>76
+</span><span class=lnt>77
+</span><span class=lnt>78
+</span><span class=lnt>79
+</span><span class=lnt>80
+</span><span class=lnt>81
+</span><span class=lnt>82
+</span><span class=lnt>83
+</span><span class=lnt>84
+</span><span class=lnt>85
+</span><span class=lnt>86
+</span><span class=lnt>87
+</span><span class=lnt>88
+</span><span class=lnt>89
+</span><span class=lnt>90
+</span><span class=lnt>91
+</span><span class=lnt>92
+</span><span class=lnt>93
+</span><span class=lnt>94
+</span><span class=lnt>95
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>UICarousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他字段和属性</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=n>Sprite</span><span class=p>[]</span> <span class=n>_images</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>bool</span> <span class=n>_scaleImages</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>_minScale</span> <span class=p>=</span> <span class=m>0.3f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>List</span><span class=p>&lt;</span><span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span><span class=p>&gt;</span> <span class=n>_imageComponents</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 懒加载的, 用于获取 RectTransform 的属性</span>
+</span></span><span class=line><span class=cl>    <span class=n>RectTransform</span> <span class=n>_selfRectTransform</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=n>RectTransform</span> <span class=n>SelfRectTransform</span> <span class=p>=&gt;</span> <span class=n>_selfRectTransform</span> <span class=p>??=</span> <span class=n>GetComponent</span><span class=p>&lt;</span><span class=n>RectTransform</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 要展示的图片</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>Sprite</span><span class=p>[]</span> <span class=n>Images</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>get</span> <span class=p>=&gt;</span> <span class=n>_images</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>        <span class=k>set</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_images</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>UpdateImagesStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 图片尺寸 (用于生成 Image 物体设置大小)</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl><span class=na>    [field: SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>Vector2</span> <span class=n>ImageSize</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector2</span><span class=p>(</span><span class=m>100</span><span class=p>,</span> <span class=m>100</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>///是否根据图像的前后关系调整图像大小  &lt;br/&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 如果是 Overlay, 不存在近大远小, 则需要开启这个, 但是如果是 WorldSpace 的 Canvas 并且设置了缩放使其在场景内, 则不需要启用这个</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>ScaleImages</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>get</span> <span class=p>=&gt;</span> <span class=n>_scaleImages</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=k>set</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_scaleImages</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>UpdateImagesStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 最小缩放比例 (最后方的图像的缩放系数会是这个值)</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>MinScale</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>get</span> <span class=p>=&gt;</span> <span class=n>_minScale</span><span class=p>;</span> 
+</span></span><span class=line><span class=cl>        <span class=k>set</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=n>_minScale</span> <span class=p>=</span> <span class=k>value</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=n>UpdateImagesStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Awake</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 初始化</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>_images</span> <span class=k>is</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>_images</span> <span class=p>=</span> <span class=n>Array</span><span class=p>.</span><span class=n>Empty</span><span class=p>&lt;</span><span class=n>Sprite</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateRenderers</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 根据图像创建 Image 对象, 并自动设置属性</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;image&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span> <span class=n>CreateRendererFor</span><span class=p>(</span><span class=n>Sprite</span> <span class=n>image</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 更新 Sprite 的渲染器</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateRenderers</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 旋转主逻辑</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 根据 &#34;旋转偏移量&#34; 设置所有图像的位置, 大小, 以及前后关系</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>根据 Sprite 创建 Image 的逻辑:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>UICarousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 根据图像创建 Image 对象, 并自动设置属性</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;image&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;returns&gt;&lt;/returns&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span> <span class=n>CreateRendererFor</span><span class=p>(</span><span class=n>Sprite</span> <span class=n>image</span><span class=p>)</span> 
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>GameObject</span> <span class=n>gameObject</span> <span class=p>=</span> <span class=k>new</span><span class=p>(</span><span class=s>&#34;Image&#34;</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>gameObject</span><span class=p>.</span><span class=n>transform</span><span class=p>.</span><span class=n>SetParent</span><span class=p>(</span><span class=n>transform</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>rectTransform</span> <span class=p>=</span> <span class=n>gameObject</span><span class=p>.</span><span class=n>AddComponent</span><span class=p>&lt;</span><span class=n>RectTransform</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>renderer</span> <span class=p>=</span> <span class=n>gameObject</span><span class=p>.</span><span class=n>AddComponent</span><span class=p>&lt;</span><span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 设置</span>
+</span></span><span class=line><span class=cl>        <span class=n>rectTransform</span><span class=p>.</span><span class=n>SetSizeWithCurrentAnchors</span><span class=p>(</span><span class=n>RectTransform</span><span class=p>.</span><span class=n>Axis</span><span class=p>.</span><span class=n>Horizontal</span><span class=p>,</span> <span class=n>ImageSize</span><span class=p>.</span><span class=n>x</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>rectTransform</span><span class=p>.</span><span class=n>SetSizeWithCurrentAnchors</span><span class=p>(</span><span class=n>RectTransform</span><span class=p>.</span><span class=n>Axis</span><span class=p>.</span><span class=n>Vertical</span><span class=p>,</span> <span class=n>ImageSize</span><span class=p>.</span><span class=n>y</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=n>renderer</span><span class=p>.</span><span class=n>sprite</span> <span class=p>=</span> <span class=n>image</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=k>return</span> <span class=n>renderer</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>更新 Sprite 渲染器的逻辑(删除或创建 Image):</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>UICarousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 更新 Sprite 的渲染器</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateRenderers</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>_imageComponents</span> <span class=k>is</span> <span class=kc>null</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=n>_imageComponents</span> <span class=p>=</span> <span class=k>new</span> <span class=n>List</span><span class=p>&lt;</span><span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span><span class=p>&gt;(</span><span class=n>GetComponentsInChildren</span><span class=p>&lt;</span><span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span><span class=p>&gt;());</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>        <span class=k>if</span> <span class=p>(</span><span class=n>_imageComponents</span><span class=p>.</span><span class=n>Count</span> <span class=p>&lt;</span> <span class=n>_images</span><span class=p>.</span><span class=n>Length</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>_imageComponents</span><span class=p>.</span><span class=n>Count</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>                <span class=n>_imageComponents</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>sprite</span> <span class=p>=</span> <span class=n>_images</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=k>while</span> <span class=p>(</span><span class=n>_imageComponents</span><span class=p>.</span><span class=n>Count</span> <span class=p>&lt;</span> <span class=n>_images</span><span class=p>.</span><span class=n>Length</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>                <span class=n>_imageComponents</span><span class=p>.</span><span class=n>Add</span><span class=p>(</span><span class=n>CreateRendererFor</span><span class=p>(</span><span class=n>_images</span><span class=p>[</span><span class=n>_imageComponents</span><span class=p>.</span><span class=n>Count</span><span class=p>]));</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=k>else</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>_images</span><span class=p>.</span><span class=n>Length</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>                <span class=n>_imageComponents</span><span class=p>[</span><span class=n>i</span><span class=p>].</span><span class=n>sprite</span> <span class=p>=</span> <span class=n>_images</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>            <span class=k>while</span> <span class=p>(</span><span class=n>_imageComponents</span><span class=p>.</span><span class=n>Count</span> <span class=p>&gt;</span> <span class=n>_images</span><span class=p>.</span><span class=n>Length</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>int</span> <span class=n>lastIndex</span> <span class=p>=</span> <span class=n>_imageComponents</span><span class=p>.</span><span class=n>Count</span> <span class=p>-</span> <span class=m>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>                <span class=c1>// destroy the last</span>
+</span></span><span class=line><span class=cl>                <span class=n>Destroy</span><span class=p>(</span><span class=n>_imageComponents</span><span class=p>[</span><span class=n>lastIndex</span><span class=p>].</span><span class=n>gameObject</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>                <span class=c1>// remove the last</span>
+</span></span><span class=line><span class=cl>                <span class=n>_imageComponents</span><span class=p>.</span><span class=n>RemoveAt</span><span class=p>(</span><span class=n>lastIndex</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><br><h3 id=ui-特有更新>UI 特有更新</h3><p>更新物体状态的主逻辑(移动图片, 缩放图片, 调整图片层级关系):</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span><span class=lnt>55
+</span><span class=lnt>56
+</span><span class=lnt>57
+</span><span class=lnt>58
+</span><span class=lnt>59
+</span><span class=lnt>60
+</span><span class=lnt>61
+</span><span class=lnt>62
+</span><span class=lnt>63
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>UICarousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 旋转主逻辑</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 根据 &#34;旋转偏移量&#34; 设置所有图像的位置, 大小, 以及前后关系</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateRenderers</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>scaleGap</span> <span class=p>=</span> <span class=m>1</span> <span class=p>-</span> <span class=n>MinScale</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radianGap</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span> <span class=p>/</span> <span class=n>_images</span><span class=p>.</span><span class=n>Length</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>selfSizeDelta</span> <span class=p>=</span> <span class=n>SelfRectTransform</span><span class=p>.</span><span class=n>sizeDelta</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>radius</span> <span class=p>=</span> <span class=n>selfSizeDelta</span><span class=p>.</span><span class=n>x</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>imageCount</span> <span class=p>=</span> <span class=n>_images</span><span class=p>.</span><span class=n>Length</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>halfPi</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>/</span> <span class=m>2</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>minSin</span> <span class=p>=</span> <span class=m>1f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>selectedImageIndex</span> <span class=p>=</span> <span class=p>-</span><span class=m>1</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>_radianOffset</span> <span class=p>%=</span> <span class=p>(</span><span class=n>Mathf</span><span class=p>.</span><span class=n>PI</span> <span class=p>*</span> <span class=m>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=k>for</span> <span class=p>(</span><span class=kt>int</span> <span class=n>i</span> <span class=p>=</span> <span class=m>0</span><span class=p>;</span> <span class=n>i</span> <span class=p>&lt;</span> <span class=n>imageCount</span><span class=p>;</span> <span class=n>i</span><span class=p>++)</span>
+</span></span><span class=line><span class=cl>        <span class=p>{</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>scaleShrink</span> <span class=p>=</span> <span class=n>scaleGap</span> <span class=p>*</span> <span class=n>i</span> <span class=p>/</span> <span class=p>(</span><span class=n>imageCount</span> <span class=p>-</span> <span class=m>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>renderer</span> <span class=p>=</span> <span class=n>_imageComponents</span><span class=p>[</span><span class=n>i</span><span class=p>];</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=kt>float</span> <span class=n>cos</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Cos</span><span class=p>(</span><span class=n>radianGap</span> <span class=p>*</span> <span class=n>i</span> <span class=p>+</span> <span class=n>_radianOffset</span> <span class=p>-</span> <span class=n>halfPi</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=kt>float</span> <span class=n>sin</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Sin</span><span class=p>(</span><span class=n>radianGap</span> <span class=p>*</span> <span class=n>i</span> <span class=p>+</span> <span class=n>_radianOffset</span> <span class=p>-</span> <span class=n>halfPi</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>x</span> <span class=p>=</span> <span class=n>cos</span> <span class=p>*</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=kt>var</span> <span class=n>z</span> <span class=p>=</span> <span class=n>sin</span> <span class=p>*</span> <span class=n>radius</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>sin</span> <span class=p>&lt;=</span> <span class=n>minSin</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>selectedImageIndex</span> <span class=p>=</span> <span class=n>i</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>                <span class=n>minSin</span> <span class=p>=</span> <span class=n>sin</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=n>renderer</span><span class=p>.</span><span class=n>transform</span><span class=p>.</span><span class=n>localPosition</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector3</span><span class=p>(</span><span class=n>x</span><span class=p>,</span> <span class=m>0</span><span class=p>,</span> <span class=n>z</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>            <span class=k>if</span> <span class=p>(</span><span class=n>ScaleImages</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=kt>var</span> <span class=n>scale</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Lerp</span><span class=p>(</span><span class=n>MinScale</span><span class=p>,</span> <span class=m>1</span><span class=p>,</span> <span class=p>((-</span><span class=n>sin</span><span class=p>)</span> <span class=p>+</span> <span class=m>1</span><span class=p>)</span> <span class=p>/</span> <span class=m>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>                <span class=n>renderer</span><span class=p>.</span><span class=n>transform</span><span class=p>.</span><span class=n>localScale</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector3</span><span class=p>(</span><span class=n>scale</span><span class=p>,</span> <span class=n>scale</span><span class=p>,</span> <span class=n>scale</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>            <span class=k>else</span>
+</span></span><span class=line><span class=cl>            <span class=p>{</span>
+</span></span><span class=line><span class=cl>                <span class=n>renderer</span><span class=p>.</span><span class=n>transform</span><span class=p>.</span><span class=n>localScale</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector3</span><span class=p>(</span><span class=m>1</span><span class=p>,</span> <span class=m>1</span><span class=p>,</span> <span class=m>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>            <span class=p>}</span>
+</span></span><span class=line><span class=cl>        <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 根据大小, 调整顺序, 因为小的在后面, 所以直接根据大小, 调用调整顺序方法</span>
+</span></span><span class=line><span class=cl>        <span class=k>foreach</span> <span class=p>(</span><span class=kt>var</span> <span class=n>com</span> <span class=k>in</span> <span class=n>_imageComponents</span><span class=p>.</span><span class=n>OrderBy</span><span class=p>(</span><span class=n>com</span> <span class=p>=&gt;</span> <span class=n>com</span><span class=p>.</span><span class=n>rectTransform</span><span class=p>.</span><span class=n>localScale</span><span class=p>.</span><span class=n>x</span><span class=p>))</span>
+</span></span><span class=line><span class=cl>            <span class=n>com</span><span class=p>.</span><span class=n>transform</span><span class=p>.</span><span class=n>SetAsLastSibling</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=c1>// 记录当前选择索引以及图像</span>
+</span></span><span class=line><span class=cl>        <span class=n>SelectedIndex</span> <span class=p>=</span> <span class=n>selectedImageIndex</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>其中, 缩放图片中用到了 <code>Mathf.Lerp</code> 函数, 在 &ldquo;比例&rdquo; 参数中, 传入了 <code>(-sin + 1) / 2</code> 这样的值. 这是因为, 正弦在我们的算法中本来就关系到物体的前后关系, 所以直接对正弦值做处理, 就能得到最终值域为 0 到 1, 可用于 Lerp 的参数了.</p><ol><li><code>sin</code>: 从远到近, 值从 1 到 -1</li><li><code>-sin</code>: 从远到近, 值从 -1 到 1</li><li><code>-sin + 1</code>: 从远到近, 值从 0 到 2</li><li><code>(-sin + 1) / 2</code>: 从远到近, 值从 0 到 1</li><li><code>Mathf.Lerp(MinScale, 1, (-sin + 1) / 2)</code>: 从远到近, 值从 <code>MinScale</code> 到 1</li></ol><p>而之所以需要调整顺序, 也是因为在 UI 中, 遮挡关系不由 Z 轴决定, 而是由 UI 层级以及它们在面板中的先后关系决定的.</p><p>另外, 我们也应该删去对鼠标的坐标转换之类的东西, 因为是 UI 层上的拖拽, 所以在 Drag 中只需要使用事件数据的鼠标移动量就可以了:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>UICarousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=c1>// 字段和属性</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 删去 _cameraDistance 和 _lastMouseWorldPosition</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// 拖拽时, 计算实际角度偏移量, 并更新图像状态</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;/summary&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=cs>/// &lt;param name=&#34;eventData&#34;&gt;&lt;/param&gt;</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=kt>var</span> <span class=n>selfSizeDelta</span> <span class=p>=</span> <span class=n>SelfRectTransform</span><span class=p>.</span><span class=n>sizeDelta</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=kt>float</span> <span class=n>normalizedOffset</span> <span class=p>=</span> <span class=n>eventData</span><span class=p>.</span><span class=n>delta</span><span class=p>.</span><span class=n>x</span> <span class=p>/</span> <span class=p>(</span><span class=n>selfSizeDelta</span><span class=p>.</span><span class=n>x</span> <span class=p>/</span> <span class=m>2</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>        <span class=kt>float</span> <span class=n>radianChange</span> <span class=p>=</span> <span class=n>Mathf</span><span class=p>.</span><span class=n>Asin</span><span class=p>(</span><span class=n>normalizedOffset</span> <span class=p>%</span> <span class=m>1</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>_radianOffset</span> <span class=p>+=</span> <span class=n>radianChange</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>        <span class=n>_radianVelocity</span> <span class=p>=</span> <span class=n>radianChange</span> <span class=p>/</span> <span class=n>Time</span><span class=p>.</span><span class=n>deltaTime</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>        <span class=n>UpdateObjectStatus</span><span class=p>();</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span>
+</span></span><span class=line><span class=cl>    <span class=p>{</span>
+</span></span><span class=line><span class=cl>        <span class=c1>// 删去了坐标转换逻辑</span>
+</span></span><span class=line><span class=cl>        
+</span></span><span class=line><span class=cl>        <span class=n>_dragging</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=c1>// 其他逻辑</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>最后, 检查代码, 它们应该是大概这样的:</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span><span class=lnt>45
+</span><span class=lnt>46
+</span><span class=lnt>47
+</span><span class=lnt>48
+</span><span class=lnt>49
+</span><span class=lnt>50
+</span><span class=lnt>51
+</span><span class=lnt>52
+</span><span class=lnt>53
+</span><span class=lnt>54
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-csharp data-lang=csharp><span class=line><span class=cl><span class=na>[RequireComponent(typeof(RectTransform))]</span>
+</span></span><span class=line><span class=cl><span class=kd>public</span> <span class=k>class</span> <span class=nc>UICarousel</span> <span class=p>:</span> <span class=n>MonoBehavior</span><span class=p>,</span> <span class=n>IDragHandler</span><span class=p>,</span> <span class=n>IBeginDragHandler</span><span class=p>,</span> <span class=n>IEndDragHandler</span><span class=p>,</span> <span class=n>IPointerClickHandler</span>
+</span></span><span class=line><span class=cl><span class=p>{</span>
+</span></span><span class=line><span class=cl>    <span class=n>RectTransform</span> <span class=n>_selfRectTransform</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianOffset</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kt>float</span> <span class=n>_radianVelocity</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kt>bool</span> <span class=n>_dragging</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=n>Sprite</span><span class=p>[]</span> <span class=n>_images</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>bool</span> <span class=n>_scaleImages</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl><span class=na>
+</span></span></span><span class=line><span class=cl><span class=na>    [SerializeField]</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>_minScale</span> <span class=p>=</span> <span class=m>0.3f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>List</span><span class=p>&lt;</span><span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span><span class=p>&gt;</span> <span class=n>_imageComponents</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=n>RectTransform</span> <span class=n>SelfRectTransform</span> <span class=p>=&gt;</span> <span class=n>_selfRectTransform</span> <span class=p>??=</span> <span class=n>GetComponent</span><span class=p>&lt;</span><span class=n>RectTransform</span><span class=p>&gt;();</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>Sprite</span><span class=p>[]</span> <span class=n>Images</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=n>Vector2</span> <span class=n>ImageSize</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=k>new</span> <span class=n>Vector2</span><span class=p>(</span><span class=m>100</span><span class=p>,</span> <span class=m>100</span><span class=p>);</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>RadianDrag</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>10</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>ScaleImages</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>MinScale</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>AllowClickSelection</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>false</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableInertia</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>bool</span> <span class=n>EnableAutoCorrection</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=kc>true</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>float</span> <span class=n>TransitionTime</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span> <span class=p>=</span> <span class=m>0.2f</span><span class=p>;</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=kt>int</span> <span class=n>SelectedIndex</span> <span class=p>{</span> <span class=k>get</span><span class=p>;</span> <span class=kd>private</span> <span class=k>set</span><span class=p>;</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Awake</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Start</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>Update</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=n>UnityEngine</span><span class=p>.</span><span class=n>UI</span><span class=p>.</span><span class=n>Image</span> <span class=n>CreateRendererFor</span><span class=p>(</span><span class=n>Sprite</span> <span class=n>image</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateRenderers</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>UpdateObjectStatus</span><span class=p>()</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=k>void</span> <span class=n>CorrectRotationTarget</span><span class=p>(</span><span class=kt>float</span> <span class=n>origin</span><span class=p>,</span> <span class=k>ref</span> <span class=kt>float</span> <span class=n>target</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=kd>private</span> <span class=kt>float</span> <span class=n>GetRadianOffsetFromIndex</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    
+</span></span><span class=line><span class=cl>    <span class=kd>public</span> <span class=k>void</span> <span class=n>Select</span><span class=p>(</span><span class=kt>int</span> <span class=n>index</span><span class=p>)</span> <span class=p>{</span> <span class=p>....</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IDragHandler</span><span class=p>.</span><span class=n>OnDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>..</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IBeginDragHandler</span><span class=p>.</span><span class=n>OnBeginDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IEndDragHandler</span><span class=p>.</span><span class=n>OnEndDrag</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl>    <span class=k>void</span> <span class=n>IPointerClickHandler</span><span class=p>.</span><span class=n>OnPointerClick</span><span class=p>(</span><span class=n>PointerEventData</span> <span class=n>eventData</span><span class=p>)</span> <span class=p>{</span> <span class=p>...</span> <span class=p>}</span>
+</span></span><span class=line><span class=cl><span class=p>}</span>
+</span></span></code></pre></td></tr></table></div></div><p>于是, 最终我们就能得到一个可点选, 带惯性, 带自动回正的 2D 轮转图了.</p><p><img src=/images/unity_carousel_2d_click_selection.gif loading=lazy></p><br><h2 id=其他>其他</h2><p>从效果上来看, 我们编写的轮转图已经完美了, 但仔细看的话, 还是有一些逻辑瑕疵的.</p><ol><li>即使我拖拽轮转图并停止, 旋转速度的值也有可能不为 0
+这就导致当开启惯性的时候, 无论如何, 在松开鼠标的时候, 它都会 &ldquo;动&rdquo; 一下.</li><li>当鼠标拖拽到屏幕边缘的时候, 鼠标在移动, 但是屏幕上鼠标的位置不改变
+这会导致旋转速度被设为 0, 进而导致, 虽然松开了鼠标, 但是因为没有触发惯性, 因而没有执行自动回正的逻辑. 因为启用惯性时, 只有速度从一个非 0 值变成 0 值, 才会执行自动回正.</li></ol><p>这上面的问题, 我懒得改了, 改起来的思路的话, 也很简单, 如下:</p><ol><li>将速度计算的逻辑扔 Update 里面, 并计算相对上一帧的旋转量, 即可解决问题 1</li><li>在结束拖拽时, 同时判断速度是否为 0, 如果为 0 就意味着惯性逻辑不执行, 那么这时, 直接执行自动回正逻辑即可.</li></ol><p>最后, 关于本文章中脚本的源代码, 直接在 <a class=link href=https://github.com/SlimeNull/UnityTests target=_blank rel=noopener>github.com/SlimeNull/UnityTests</a> 中下载即可. 文章中因为涉及到逐步骤以及思路的讲解, 所以代码并不完整. 不过你跟着做的话, 也是能写出来完整的代码的.</p><p>使用方式的话, 3D 轮转图是直接挂父对象上, 然后手动创建子对象. 在运行时会自动设置子对象位置. 2D 轮转图的话, 不需要手动创建子对象, 直接在 &ldquo;检视器&rdquo; 中设置要展示的图片, 在启动时便会自动创建对象.</p><hr><p>文章原始链接: <a class=link href=https://slimenull.com/p/20240226141713 target=_blank rel=noopener>https://slimenull.com/p/20240226141713</a></p></section><footer class=article-footer><section class=article-tags><a href=/tags/unity/>Unity</a>
+<a href=/tags/note/>Note</a></section><section class=article-copyright><svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-copyright" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentcolor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z"/><circle cx="12" cy="12" r="9"/><path d="M14.5 9a3.5 4 0 100 6"/></svg>
+<span>Licensed under CC BY-NC-SA 4.0</span></section></footer></article><aside class=related-content--wrapper><h2 class=section-title>相关文章</h2><div class=related-content><div class="flex article-list--tile"><article><a href=/p/20240306132352/><div class=article-details><h2 class=article-title>Unity 小地图, 实时与静态, 地图标记, 点击导航, 路线显示, 风格化</h2></div></a></article><article><a href=/p/20231213153716/><div class=article-details><h2 class=article-title>[Unity] 基于迭代器的协程底层原理详解</h2></div></a></article><article><a href=/p/20231031081556/><div class=article-details><h2 class=article-title>[Unity] 个人编码规范与命名准则参考</h2></div></a></article><article><a href=/p/20230831150236/><div class=article-details><h2 class=article-title>[Unity, 笔记] 在 Inspector 中显示结构体, 结构体的序列化</h2></div></a></article><article><a href=/p/20230828202236/><div class=article-details><h2 class=article-title>[Unity] 单例设计模式, 可供继承的单例组件模板类</h2></div></a></article></div></div></aside><script src=https://utteranc.es/client.js repo=SlimeNull/slimenull.github.io issue-term=pathname label=BlogComment crossorigin=anonymous async></script><style>.utterances{max-width:unset}</style><script>let utterancesLoaded=!1;function setUtterancesTheme(e){let t=document.querySelector(".utterances iframe");t&&t.contentWindow.postMessage({type:"set-theme",theme:`github-${e}`},"https://utteranc.es")}addEventListener("message",e=>{if(e.origin!=="https://utteranc.es")return;utterancesLoaded=!0,setUtterancesTheme(document.documentElement.dataset.scheme)}),window.addEventListener("onColorSchemeChange",e=>{if(!utterancesLoaded)return;setUtterancesTheme(e.detail)})</script><footer class=site-footer><section class=copyright>&copy;
+2020 -
+2024 SlimeNull Blogs</section><section class=powerby>Built with <a href=https://gohugo.io/ target=_blank rel=noopener>Hugo</a><br>主题 <b><a href=https://github.com/CaiJimmy/hugo-theme-stack target=_blank rel=noopener data-version=3.21.0>Stack</a></b> 由 <a href=https://jimmycai.com target=_blank rel=noopener>Jimmy</a> 设计</section></footer><div class=pswp tabindex=-1 role=dialog aria-hidden=true><div class=pswp__bg></div><div class=pswp__scroll-wrap><div class=pswp__container><div class=pswp__item></div><div class=pswp__item></div><div class=pswp__item></div></div><div class="pswp__ui pswp__ui--hidden"><div class=pswp__top-bar><div class=pswp__counter></div><button class="pswp__button pswp__button--close" title="Close (Esc)"></button>
+<button class="pswp__button pswp__button--share" title=Share></button>
+<button class="pswp__button pswp__button--fs" title="Toggle fullscreen"></button>
+<button class="pswp__button pswp__button--zoom" title="Zoom in/out"></button><div class=pswp__preloader><div class=pswp__preloader__icn><div class=pswp__preloader__cut><div class=pswp__preloader__donut></div></div></div></div></div><div class="pswp__share-modal pswp__share-modal--hidden pswp__single-tap"><div class=pswp__share-tooltip></div></div><button class="pswp__button pswp__button--arrow--left" title="Previous (arrow left)">
+</button>
+<button class="pswp__button pswp__button--arrow--right" title="Next (arrow right)"></button><div class=pswp__caption><div class=pswp__caption__center></div></div></div></div></div><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.js integrity="sha256-ePwmChbbvXbsO02lbM3HoHbSHTHFAeChekF1xKJdleo=" crossorigin=anonymous defer></script><script src=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe-ui-default.min.js integrity="sha256-UKkzOn/w1mBxRmLLGrSeyB4e1xbrp4xylgAWb3M42pU=" crossorigin=anonymous defer></script><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/default-skin/default-skin.min.css crossorigin=anonymous><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/photoswipe@4.1.3/dist/photoswipe.min.css crossorigin=anonymous></main></div><script src=https://cdn.jsdelivr.net/npm/node-vibrant@3.1.6/dist/vibrant.min.js integrity="sha256-awcR2jno4kI5X0zL8ex0vi2z+KMkF24hUW8WePSA9HM=" crossorigin=anonymous></script><script type=text/javascript src=/ts/main.js defer></script><script>(function(){const e=document.createElement("link");e.href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700&display=swap",e.type="text/css",e.rel="stylesheet",document.head.appendChild(e)})()</script></body></html>
