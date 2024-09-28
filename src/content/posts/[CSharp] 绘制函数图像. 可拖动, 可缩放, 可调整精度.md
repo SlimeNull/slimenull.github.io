@@ -251,8 +251,8 @@ namespace Null.FuncDraw
 
 #### 还有一些要用的内容:
 
-CSDN 文章: [C# 中的 Range 函数](/p/20210219070741/)
-CSDN 文章: [C# IEnumerable 连接, 将迭代器串起来](/p/20210219152833/)
+CSDN 文章: [C# 中的 Range 函数](/posts/20210219070741/)
+CSDN 文章: [C# IEnumerable 连接, 将迭代器串起来](/posts/20210219152833/)
 
 #### 更新记录:
 
