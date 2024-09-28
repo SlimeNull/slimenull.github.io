@@ -62,7 +62,28 @@ onMount(() => {
 
 const togglePanel = () => {
   let panel = document.getElementById('search-panel')
-  panel?.classList.toggle('float-panel-closed')
+
+  if (!panel) {
+    return;
+  }
+
+  if (!panel.classList.contains('float-panel-closed')) {
+    panel.classList.add('float-panel-closed');
+  } else {
+    panel.classList.remove('float-panel-closed');
+    panel.querySelector("input")?.focus();
+  }
+}
+
+const closePanel = () => {
+  let panel = document.getElementById('search-panel')
+  panel?.classList.add('float-panel-closed')
+}
+
+const closePanelIfKeyIsEscape = (evt: KeyboardEvent) => {
+  if (evt.code == "Escape") {
+    closePanel()
+  }
 }
 
 $: search(keywordDesktop, true)
@@ -88,8 +109,7 @@ $: search(keywordMobile, false)
 </button>
 
 <!-- search panel -->
-<div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem]
-top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
+<div id="search-panel" class="float-panel float-panel-closed search-panel absolute md:w-[30rem] top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
 
     <!-- search bar inside panel for phone/tablet -->
     <div id="search-bar-inside" class="flex relative lg:hidden transition-all items-center h-11 rounded-xl
@@ -98,8 +118,8 @@ top-20 left-4 md:left-[unset] right-4 shadow-2xl rounded-2xl p-2">
   ">
         <slot name="search-icon"></slot>
         <input placeholder="Search" bind:value={keywordMobile}
-               class="pl-10 absolute inset-0 text-sm bg-transparent outline-0
-               focus:w-60 text-black/50 dark:text-white/50"
+               class="pl-10 absolute inset-0 text-sm bg-transparent outline-0 focus:w-60 text-black/50 dark:text-white/50"
+               on:keydown={closePanelIfKeyIsEscape}
         >
     </div>
 

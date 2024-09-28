@@ -7,6 +7,11 @@ import { getCategoryList } from '../../utils/content-utils'
 import { getCategoryUrl } from '../../utils/url-utils'
 import ButtonLink from '../control/ButtonLink.astro'
 
+interface Props {
+  class?: string
+  style?: string
+}
+
 const categories = await getCategoryList()
 
 const COLLAPSED_HEIGHT = '7.5rem'
@@ -14,10 +19,6 @@ const COLLAPSE_THRESHOLD = 5
 
 const isCollapsed = categories.length >= COLLAPSE_THRESHOLD
 
-interface Props {
-  class?: string
-  style?: string
-}
 const className = Astro.props.class
 const style = Astro.props.style
 ---
