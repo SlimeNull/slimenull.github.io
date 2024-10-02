@@ -4,7 +4,7 @@ published: 2024-10-03T03:50:00+08:00
 slug: '202410030950'
 description: '直接在 csproj 中添加 Microsoft.AspNetCore.App 的框架引用即可'
 image: ''
-tags: [ '.NET', 'C#', 'WPF', 'ASP.NET Core', 'Web' ]
+tags: [ '.NET', 'CSharp', 'WPF', 'ASP.NET Core', 'Web' ]
 category: '.NET'
 ---
 
