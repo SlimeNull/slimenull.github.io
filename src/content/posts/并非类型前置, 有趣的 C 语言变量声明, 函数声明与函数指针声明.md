@@ -4,8 +4,8 @@ published: 2024-10-07T04:06:00
 slug: '202410070406'
 description: 'C 语言并非类型前置, 也更不可能是类型后置, 它更像是... 类型乱置'
 image: ''
-tags: []
-category: ''
+tags: ['C', "编程语言"]
+category: 'C'
 draft: false 
 lang: ''
 ---
