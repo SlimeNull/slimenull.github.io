@@ -1,6 +1,6 @@
 ---
 title: '如何优雅的在一个解决方案内使 C# 项目引用 C++ 库项目'
-published: 2024-10-06T06:03:00+08:00
+published: 2024-10-06T06:03:00
 slug: '202410060603'
 description: '指定 ProjectReference 的 ReferenceOutputAssembly 为 false, 并使用自定义 Target, 并添加 Copy 项以自动拷贝库构建输出'
 image: ''

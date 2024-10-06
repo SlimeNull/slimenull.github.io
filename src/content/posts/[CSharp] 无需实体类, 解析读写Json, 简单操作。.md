@@ -1,7 +1,7 @@
 ---
 title: '[C#] 无需实体类, 解析读写Json, 简单操作。'
 slug: '20200702232419'
-published: 2020-07-02T23:24:19+08:00
+published: 2020-07-02T23:24:19
 tags:
   - csharp
   - json

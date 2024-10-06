@@ -1,7 +1,7 @@
 ---
 title: '[Linux] 执行但不阻塞 以‘后台‘模式启动程序或脚本'
 slug: '20201218011610'
-published: 2020-12-18T01:16:10+08:00
+published: 2020-12-18T01:16:10
 tags:
   - linux
   - shell

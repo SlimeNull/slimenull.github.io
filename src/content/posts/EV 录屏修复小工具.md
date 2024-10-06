@@ -1,7 +1,7 @@
 ---
 title: 'EV 录屏修复小工具'
 slug: '20230815153735'
-published: 2023-08-15T15:37:35+08:00
+published: 2023-08-15T15:37:35
 tags:
   - dotnet
   - csharp

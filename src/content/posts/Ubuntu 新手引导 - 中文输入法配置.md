@@ -1,7 +1,7 @@
 ---
 title: 'Ubuntu 新手引导 - 中文输入法配置'
 slug: '20201217233937'
-published: 2020-12-17T23:39:37+08:00
+published: 2020-12-17T23:39:37
 tags:
   - ubuntu
   - linux

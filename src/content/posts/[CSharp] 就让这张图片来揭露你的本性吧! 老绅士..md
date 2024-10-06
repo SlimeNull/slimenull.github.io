@@ -1,7 +1,7 @@
 ---
 title: '[C#] 就让这张图片来揭露你的本性吧! 老绅士.'
 slug: '20210221230837'
-published: 2021-02-21T23:08:37+08:00
+published: 2021-02-21T23:08:37
 tags:
   - dotnet
   - csharp

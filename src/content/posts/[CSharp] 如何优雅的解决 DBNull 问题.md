@@ -1,7 +1,7 @@
 ---
 title: '[C#] 如何优雅的解决 DBNull 问题'
 slug: '20210714233802'
-published: 2021-07-14T23:38:02+08:00
+published: 2021-07-14T23:38:02
 tags:
   - 数据库
   - dotnet

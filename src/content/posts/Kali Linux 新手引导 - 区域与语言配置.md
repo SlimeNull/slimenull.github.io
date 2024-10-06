@@ -1,7 +1,7 @@
 ---
 title: 'Kali Linux 新手引导 - 区域与语言配置'
 slug: '20201207165005'
-published: 2020-12-07T16:50:05+08:00
+published: 2020-12-07T16:50:05
 tags:
   - linux
   - debian

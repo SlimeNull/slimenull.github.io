@@ -1,7 +1,7 @@
 ---
 title: "[C#] 任意频率 PCM 正弦波生成与 WAV 格式文件保存"
 slug: "202408191228"
-published: 2024-08-19T12:27:26+08:00
+published: 2024-08-19T12:27:26
 hidden: false
 comments: false
 draft: false

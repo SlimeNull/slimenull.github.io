@@ -1,7 +1,7 @@
 ---
 title: '[C#] C# 与 Java 的一些差异'
 slug: '20210418110746'
-published: 2021-04-18T11:07:46+08:00
+published: 2021-04-18T11:07:46
 tags:
   - csharp
   - java

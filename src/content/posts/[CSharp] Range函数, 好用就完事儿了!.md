@@ -1,7 +1,7 @@
 ---
 title: '[C#] Range函数, 好用就完事儿了!'
 slug: '20210219070741'
-published: 2021-02-19T07:07:41+08:00
+published: 2021-02-19T07:07:41
 tags:
   - csharp
   - dotnet

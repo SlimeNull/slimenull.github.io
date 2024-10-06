@@ -1,7 +1,7 @@
 ---
 title: '[C#] 单文件编译 - 编译时嵌入dll'
 slug: '20210203065600'
-published: 2021-02-03T06:56:00+08:00
+published: 2021-02-03T06:56:00
 tags:
   - 'visual studio'
   - csharp

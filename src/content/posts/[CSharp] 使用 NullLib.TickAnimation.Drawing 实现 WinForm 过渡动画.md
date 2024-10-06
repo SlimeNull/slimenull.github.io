@@ -1,7 +1,7 @@
 ---
 title: '[C#] 使用 NullLib.TickAnimation.Drawing 实现 WinForm 过渡动画'
 slug: '20210630024505'
-published: 2021-06-30T02:45:05+08:00
+published: 2021-06-30T02:45:05
 tags:
   - csharp
   - 算法

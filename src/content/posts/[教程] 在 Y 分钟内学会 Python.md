@@ -1,7 +1,7 @@
 ---
 title: '[教程] 在 Y 分钟内学会 Python'
 slug: '20210505184421'
-published: 2021-05-05T18:44:21+08:00
+published: 2021-05-05T18:44:21
 tags:
   - python
 category: '教程'

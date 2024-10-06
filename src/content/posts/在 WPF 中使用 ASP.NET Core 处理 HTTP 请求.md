@@ -1,6 +1,6 @@
 ---
 title: 在 WPF 中使用 ASP.NET Core 处理 HTTP 请求
-published: 2024-10-03T03:50:00+08:00
+published: 2024-10-03T03:50:00
 slug: '202410030950'
 description: '直接在 csproj 中添加 Microsoft.AspNetCore.App 的框架引用即可'
 image: ''

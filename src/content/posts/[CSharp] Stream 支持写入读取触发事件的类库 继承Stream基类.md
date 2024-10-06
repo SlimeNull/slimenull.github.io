@@ -1,7 +1,7 @@
 ---
 title: '[C#] Stream 支持写入读取触发事件的类库 继承Stream基类'
 slug: '20210203030237'
-published: 2021-02-03T03:02:37+08:00
+published: 2021-02-03T03:02:37
 tags:
   - csharp
 category: '.NET'

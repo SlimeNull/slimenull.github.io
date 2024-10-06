@@ -1,7 +1,7 @@
 ---
 title: '[WPF] 集合元素数据绑定与模板'
 slug: '20230401165316'
-published: 2023-04-01T16:53:16+08:00
+published: 2023-04-01T16:53:16
 tags:
   - wpf
   - xaml

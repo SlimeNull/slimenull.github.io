@@ -1,7 +1,7 @@
 ---
 title: '[C#] 音乐播放 3 种方式 Demo 与 MCI 音乐播放器封装类.'
 slug: '20210211104239'
-published: 2021-02-11T10:42:39+08:00
+published: 2021-02-11T10:42:39
 tags:
   - dotnet
   - csharp

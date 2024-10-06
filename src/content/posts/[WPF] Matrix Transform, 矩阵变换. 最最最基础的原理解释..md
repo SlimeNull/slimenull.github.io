@@ -1,7 +1,7 @@
 ---
 title: '[WPF] Matrix Transform, 矩阵变换. 最最最基础的原理解释.'
 slug: '20210308115948'
-published: 2021-03-08T11:59:48+08:00
+published: 2021-03-08T11:59:48
 tags:
   - 线性代数
   - 计算机图形学

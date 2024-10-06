@@ -1,7 +1,7 @@
 ---
 title: '[C#] 简易的聊天气泡(很简单的实现)'
 slug: '20200422081050'
-published: 2020-04-22T08:10:50+08:00
+published: 2020-04-22T08:10:50
 tags:
   - dotnet
   - csharp

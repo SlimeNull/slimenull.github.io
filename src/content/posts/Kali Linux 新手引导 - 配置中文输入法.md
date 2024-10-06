@@ -1,7 +1,7 @@
 ---
 title: 'Kali Linux 新手引导 - 配置中文输入法'
 slug: '20201207203524'
-published: 2020-12-07T20:35:24+08:00
+published: 2020-12-07T20:35:24
 tags:
   - kali linux
   - debian

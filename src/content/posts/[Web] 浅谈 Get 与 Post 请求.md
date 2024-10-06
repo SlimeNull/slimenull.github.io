@@ -1,7 +1,7 @@
 ---
 title: '[Web] 浅谈 Get 与 Post 请求'
 slug: '20210105173252'
-published: 2021-01-05T17:32:52+08:00
+published: 2021-01-05T17:32:52
 tags:
   - html5
   - web

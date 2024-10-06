@@ -1,7 +1,7 @@
 ---
 title: '「干货」 装机如此简单！Windows 与 Linux 通用装机方法。(无需VM虚拟机)'
 slug: '20201213001156'
-published: 2020-12-13T00:11:56+08:00
+published: 2020-12-13T00:11:56
 tags:
   - 运维
 category: '扫盲'

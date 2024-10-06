@@ -1,7 +1,7 @@
 ---
 title: '[C#/VB.NET] C# 与 VB.NET 的类库跨语言引用.'
 slug: '20210215015702'
-published: 2021-02-15T01:57:02+08:00
+published: 2021-02-15T01:57:02
 tags:
   - csharp
   - dotnet

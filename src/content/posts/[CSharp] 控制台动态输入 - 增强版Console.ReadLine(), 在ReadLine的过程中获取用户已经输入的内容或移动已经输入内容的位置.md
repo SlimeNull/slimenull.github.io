@@ -1,7 +1,7 @@
 ---
 title: '[C#] 控制台动态输入 - 增强版Console.ReadLine(), 在ReadLine的过程中获取用户已经输入的内容或移动已经输入内容的位置'
 slug: '20201230223307'
-published: 2020-12-30T22:33:07+08:00
+published: 2020-12-30T22:33:07
 tags:
   - dotnet
   - csharp

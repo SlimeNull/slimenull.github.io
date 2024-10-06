@@ -1,7 +1,7 @@
 ---
 title: '[Unity] 碰撞器, 触发器, 刚体,Dynamic, Kinematic, Static, OnCollision, OnTrigger 全讲'
 slug: '20220927145127'
-published: 2022-09-27T14:51:27+08:00
+published: 2022-09-27T14:51:27
 tags:
   - unity
   - csharp

@@ -2,7 +2,7 @@
 title: "[WPF] EleCho.WpfSuite, 控件, 布局容器, 过渡动画, 标记拓展以及实用工具"
 slug: "20240523162351"
 description: 关于 WPF Suite 的介绍与使用方法
-published: 2024-05-23T16:23:51+08:00
+published: 2024-05-23T16:23:51
 hidden: false
 comments: true
 draft: false

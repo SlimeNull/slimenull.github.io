@@ -1,7 +1,7 @@
 ---
 title: '[C#] 关于 Linq 拓展函数对迭代对象进行更改不生效的问题'
 slug: '20210409100935'
-published: 2021-04-09T10:09:35+08:00
+published: 2021-04-09T10:09:35
 tags:
   - dotnet
   - csharp
