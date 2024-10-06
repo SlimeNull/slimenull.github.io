@@ -21,6 +21,20 @@ export type SiteConfig = {
     }
   }
 
+  giscus: {
+    repo: string
+    repo_id: string
+    category: string
+    category_id: string
+    mapping: string
+    strict: boolean
+    reactions_enabled: boolean
+    emit_metadata: boolean
+    input_position: string
+    theme: string
+    lang: string
+    loading: string
+  }
   favicon: Favicon[]
 }
 

@@ -1,0 +1,22 @@
+---
+import { siteConfig } from '../../config'
+---
+
+<div id="giscus-comments">
+    <script src="https://giscus.app/client.js"
+            data-repo={siteConfig.giscus.repo}
+            data-repo-id={siteConfig.giscus.repo_id}
+            data-category={siteConfig.giscus.category}
+            data-category-id={siteConfig.giscus.category_id}
+            data-mapping={siteConfig.giscus.mapping}
+            data-strict={siteConfig.giscus.strict ? 1 : 0}
+            data-reactions-enabled={siteConfig.giscus.reactions_enabled ? 1 : 0}
+            data-emit-metadata={siteConfig.giscus.emit_metadata ? 1 : 0}
+            data-input-position={siteConfig.giscus.input_position}
+            data-theme={siteConfig.giscus.theme}
+            data-lang={siteConfig.giscus.lang}
+            data-loading={siteConfig.giscus.loading}
+            crossorigin="anonymous"
+            async >
+    </script>
+</div>

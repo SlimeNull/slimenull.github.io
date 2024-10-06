@@ -1,8 +1,11 @@
 ---
 import path from 'node:path'
 import { getCollection } from 'astro:content'
+import ButtonLink from '@components/control/ButtonLink.astro'
 import License from '@components/misc/License.astro'
 import Markdown from '@components/misc/Markdown.astro'
+import Giscus from '@components/widget/Giscus.astro'
+import WidgetLayout from '@components/widget/WidgetLayout.astro'
 import I18nKey from '@i18n/i18nKey'
 import { i18n } from '@i18n/translation'
 import MainGridLayout from '@layouts/MainGridLayout.astro'
@@ -13,8 +16,6 @@ import PostMetadata from '../../components/PostMeta.astro'
 import ImageWrapper from '../../components/misc/ImageWrapper.astro'
 import { profileConfig, siteConfig } from '../../config'
 import { formatDateToYYYYMMDD } from '../../utils/date-utils'
-import ButtonLink from '@components/control/ButtonLink.astro'
-import WidgetLayout from '@components/widget/WidgetLayout.astro'
 
 export async function getStaticPaths() {
   const blogEntries = await getCollection('posts', ({ data }) => {
@@ -133,23 +134,8 @@ const toc = headings.filter((heading) => heading.depth <= 3 && !(heading.slug ==
         </a>
     </div>
 
-    <div id="giscus-comments">
-        <script src="https://giscus.app/client.js"
-                data-repo="SlimeNull/slimenull.github.io"
-                data-repo-id="R_kgDOM4gKuQ"
-                data-category="Comments"
-                data-category-id="DIC_kwDOM4gKuc4Ci4Xj"
-                data-mapping="pathname"
-                data-strict="0"
-                data-reactions-enabled="1"
-                data-emit-metadata="0"
-                data-input-position="top"
-                data-theme="preferred_color_scheme"
-                data-lang="zh-CN"
-                data-loading="lazy"
-                crossorigin="anonymous"
-                async>
-</script>
+    <div class="mt-8">
+        <Giscus />
     </div>
 
 </MainGridLayout>
