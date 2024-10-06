@@ -12,6 +12,8 @@ lang: ''
 
 如果在一个解决方案内, 有一个 C# 项目, 需要使用另一个 C++ 库项目构建出的 dll...
 
+本文章示例代码已上传至 GitHub 仓库: [SlimeNull/CSharpUseCppLibraryProject](https://github.com/SlimeNull/CSharpUseCppLibraryProject)
+
 > 注意, 此文章中需要使用的 C# 项目, 最好是 SDK 样式 csproj, 参考: 
 > - [.NET 升级助手概述 - .NET Core | Microsoft Learn](https://learn.microsoft.com/zh-cn/dotnet/core/porting/upgrade-assistant-overview)
 > - [如何在 VS 中创建 SDK 样式的 .NET Framework 项目](https://stackoverflow.com/questions/63055430/how-to-create-an-sdk-style-net-framework-project-in-vs)
