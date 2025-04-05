@@ -1,5 +1,5 @@
 ---
-title: '[踩坑记录] DirectX 无法使用 Map 取得纹理数据.md'
+title: '[踩坑记录] DirectX 无法使用 Map 取得纹理数据'
 published: 2025-04-05
 slug: '20250405205300'
 description: ''
