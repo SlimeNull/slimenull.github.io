@@ -1,7 +1,7 @@
 ---
 title: "深入 WPF 列表虚拟化与树虚拟化"
 published: 2024-10-29T14:20:00
-slug: 20241029142000
+slug: '20241029142000'
 description: '高性能 = ScrollViewer + ItemsControl + VirtualizingPanel'
 image: ''
 tags: ['.NET', 'CSharp', 'WPF']
