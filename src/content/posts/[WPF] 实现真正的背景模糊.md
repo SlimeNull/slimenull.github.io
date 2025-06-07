@@ -157,6 +157,11 @@ public class BackgroundPresenter : FrameworkElement
         .GetMethod("OnRender", BindingFlags.Instance | BindingFlags.NonPublic)!
         .CreateDelegate<Action<UIElement, DrawingContext>>();
 
+    private static readonly GetContentBoundsDelegate _methodGetContentBounds = typeof(VisualBrush)
+        .GetMethod("GetContentBounds", BindingFlags.Instance | BindingFlags.NonPublic)!
+        .CreateDelegate<GetContentBoundsDelegate>();
+
+    private delegate void GetContentBoundsDelegate(VisualBrush visualBrush, out Rect bounds);
     private readonly Stack<UIElement> _parentStack = new();
 
     private static void ForceRender(UIElement target)
@@ -166,21 +171,14 @@ public class BackgroundPresenter : FrameworkElement
         _onRenderMethod.Invoke(target, drawingContext);
     }
 
-    private static void DrawVisual(DrawingContext drawingContext, Visual visual, Point relatedXY, Size size)
+    private static void DrawVisual(DrawingContext drawingContext, Visual visual, Point relatedXY)
     {
+        var visualBrush = new VisualBrush(visual);
+        _methodGetContentBounds.Invoke(visualBrush, out var contentBounds);
+
         drawingContext.DrawRectangle(
-            new VisualBrush(visual)
-            {
-                AutoLayoutContent = false,
-            }, null,
-            new Rect(relatedXY.X, relatedXY.Y, size.Width, size.Height));
-    }
-
-    private static void DrawUIElement(DrawingContext drawingContext, UIElement self, UIElement element)
-    {
-        var relatedXY = element.TranslatePoint(default, self);
-
-        DrawVisual(drawingContext, element, relatedXY, element.RenderSize);
+            visualBrush, null,
+            new Rect(relatedXY.X + contentBounds.X, contentBounds.Y, contentBounds.Width, contentBounds.Height));
     }
 
     protected override Geometry GetLayoutClip(Size layoutSlotSize)
@@ -278,7 +276,7 @@ public class BackgroundPresenter : FrameworkElement
                 var drawingVisual = new DrawingVisual();
                 _contentOfDrawingVisual.SetValue(drawingVisual, parentDrawingContent);
 
-                DrawVisual(drawingContext, drawingVisual, parentRelatedXY, currentParent.RenderSize);
+                DrawVisual(drawingContext, drawingVisual, parentRelatedXY);
             }
 
             if (currentParent is Panel parentPanelToRender)
@@ -300,7 +298,7 @@ public class BackgroundPresenter : FrameworkElement
 
                     if (child.IsVisible)
                     {
-                        DrawUIElement(drawingContext, self, child);
+                        DrawVisual(drawingContext, child, childRelatedXY);
                     }
                 }
             }
