@@ -149,6 +149,9 @@ public class BackgroundPresenter : FrameworkElement
     private static readonly FieldInfo _contentOfDrawingVisual = typeof(DrawingVisual)
         .GetField("_content", BindingFlags.Instance | BindingFlags.NonPublic)!;
 
+    private static readonly FieldInfo _offsetOfVisual = typeof(Visual)
+        .GetField("_offset", BindingFlags.Instance | BindingFlags.NonPublic)!;
+
     private static readonly Func<UIElement, DrawingContext> _renderOpenMethod = typeof(UIElement)
         .GetMethod("RenderOpen", BindingFlags.Instance | BindingFlags.NonPublic)!
         .CreateDelegate<Func<UIElement, DrawingContext>>();
@@ -171,14 +174,17 @@ public class BackgroundPresenter : FrameworkElement
         _onRenderMethod.Invoke(target, drawingContext);
     }
 
-    private static void DrawVisual(DrawingContext drawingContext, Visual visual, Point relatedXY)
+    private static void DrawVisual(DrawingContext drawingContext, Visual visual, Point relatedXY, Size renderSize)
     {
         var visualBrush = new VisualBrush(visual);
+        var visualOffset = (Vector)_offsetOfVisual.GetValue(visual)!;
+
         _methodGetContentBounds.Invoke(visualBrush, out var contentBounds);
+        relatedXY -= visualOffset;
 
         drawingContext.DrawRectangle(
             visualBrush, null,
-            new Rect(relatedXY.X + contentBounds.X, contentBounds.Y, contentBounds.Width, contentBounds.Height));
+            new Rect(relatedXY.X + contentBounds.X, relatedXY.Y + contentBounds.Y, contentBounds.Width, contentBounds.Height));
     }
 
     protected override Geometry GetLayoutClip(Size layoutSlotSize)
@@ -276,7 +282,7 @@ public class BackgroundPresenter : FrameworkElement
                 var drawingVisual = new DrawingVisual();
                 _contentOfDrawingVisual.SetValue(drawingVisual, parentDrawingContent);
 
-                DrawVisual(drawingContext, drawingVisual, parentRelatedXY);
+                DrawVisual(drawingContext, drawingVisual, parentRelatedXY, currentParent.RenderSize);
             }
 
             if (currentParent is Panel parentPanelToRender)
@@ -298,7 +304,7 @@ public class BackgroundPresenter : FrameworkElement
 
                     if (child.IsVisible)
                     {
-                        DrawVisual(drawingContext, child, childRelatedXY);
+                        DrawVisual(drawingContext, child, childRelatedXY, child.RenderSize);
                     }
                 }
             }
