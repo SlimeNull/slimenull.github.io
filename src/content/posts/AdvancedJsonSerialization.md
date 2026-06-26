@@ -1,10 +1,10 @@
 ---
-title: '高级 JSON 序列化, 基于反射和动态代理将复杂的, 带循环引用的, 多态的数据序列化与反序列化'
+title: 'JSON 高级序列化: 循环引用、多态、接口代理、自动构造、转换、集合填充'
 published: 2026-06-26
 description: '基于反射和动态代理将复杂的, 带循环引用的, 多态的数据序列化与反序列化. 通过自定义转换器, 实现几乎任意数据类型的序列化与反序列化.'
-image: ''
-tags: ['csharp', 'JSON']
-category: ''
+image: 'advanced-json-serialization-cover.svg'
+tags: ['.NET', 'CSharp', 'System.Text.Json', 'JSON', '序列化', '反射', '动态代理']
+category: '.NET'
 draft: false 
 lang: ''
 ---

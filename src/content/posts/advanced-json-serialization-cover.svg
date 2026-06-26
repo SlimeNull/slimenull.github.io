@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">System.Text.Json 复杂对象图序列化</title>
+  <desc id="desc">A cover image showing JSON blocks connected as an object graph.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172033"/>
+      <stop offset="0.55" stop-color="#1f2937"/>
+      <stop offset="1" stop-color="#0f766e"/>
+    </linearGradient>
+    <linearGradient id="card" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#ffffff" stop-opacity="0.18"/>
+      <stop offset="1" stop-color="#ffffff" stop-opacity="0.08"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="18" flood-color="#020617" flood-opacity="0.32"/>
+    </filter>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <path d="M0 510 C180 448 267 568 444 510 C631 449 714 346 901 408 C1030 451 1096 403 1200 344 L1200 630 L0 630 Z" fill="#14b8a6" opacity="0.16"/>
+  <g fill="none" stroke="#93c5fd" stroke-width="5" opacity="0.72">
+    <path d="M359 292 C457 200 560 196 658 292"/>
+    <path d="M667 353 C569 451 460 457 362 352"/>
+    <path d="M527 178 L527 452"/>
+    <path d="M762 254 C838 245 892 280 922 350"/>
+  </g>
+  <g filter="url(#shadow)">
+    <rect x="150" y="202" width="280" height="178" rx="24" fill="url(#card)" stroke="#ffffff" stroke-opacity="0.24"/>
+    <rect x="470" y="112" width="286" height="178" rx="24" fill="url(#card)" stroke="#ffffff" stroke-opacity="0.24"/>
+    <rect x="455" y="356" width="304" height="166" rx="24" fill="url(#card)" stroke="#ffffff" stroke-opacity="0.24"/>
+    <rect x="812" y="264" width="250" height="162" rx="24" fill="url(#card)" stroke="#ffffff" stroke-opacity="0.24"/>
+  </g>
+  <g font-family="Consolas, 'Cascadia Code', monospace" font-size="30" fill="#e5f3ff">
+    <text x="190" y="258">{ "$id": "1",</text>
+    <text x="190" y="304">  "type": "IA",</text>
+    <text x="190" y="350">  "ref": "2" }</text>
+    <text x="510" y="168">{ "$id": "2",</text>
+    <text x="510" y="214">  "$type": "IB",</text>
+    <text x="510" y="260">  "next": "3" }</text>
+    <text x="498" y="415">{ "$ref": "1",</text>
+    <text x="498" y="461">  "proxy": true }</text>
+    <text x="852" y="328">Parse(string)</text>
+    <text x="852" y="374">Reflection</text>
+  </g>
+  <g font-family="Inter, 'Segoe UI', sans-serif" fill="#ffffff">
+    <text x="150" y="92" font-size="42" font-weight="700">System.Text.Json</text>
+    <text x="150" y="143" font-size="30" opacity="0.86">complex object graph serialization</text>
+  </g>
+</svg>
