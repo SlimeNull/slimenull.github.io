@@ -11,9 +11,19 @@ lang: ''
 
 你的领导突然要你做跨进程的插件开发, 但项目已经有一套 API 抽象了,
 你不希望重新再抽一套, 于是决定将原有进程内插件的复杂数据抽象, 序列化成 JSON, 再通过命名管道发送到另一个进程.
-但问题是, 这套数据是复杂的, 带循环引用的, 多态的, 基于接口的. 并且你不希望再接受短再写一次接口的实现类.
+但问题是, 这套数据是复杂的, 带循环引用的, 多态的, 基于接口的. 并且你不希望为了跨进程通信再写一次接口的实现类.
 
 > 本文基于 System.Text.Json, 并且需要使用 Castle.Core 中的动态代理
+
+本文解决的是这类问题:
+
+- 对象之间存在互相引用, 不能因为循环引用导致序列化失败
+- 成员类型是接口, 反序列化时没有现成实现类可以 new
+- 对象运行时类型比声明类型更具体, 序列化时不能丢失派生类型成员
+- 某些值类型只有 `Parse(string)`, 不想为每个类型单独写转换器
+- 某些类型没有无参构造函数, 或者集合属性只读, 但反序列化时仍然希望还原数据
+
+简单说, 我们不是要做一个普通的 DTO JSON 序列化, 而是要尽量把一张复杂的对象图保存下来, 之后再还原成能够继续使用的对象图.
 
 ## 如何解决循环引用
 
@@ -26,7 +36,7 @@ class B { public A Other { get; set; } }
 
 它们明显互相引用, 但你希望能够正确的序列化它, 那么使用 System.Text.Json 中的 ReferenceHandler.Preserve 可以轻易解决这个需求.
 
-在 JsonSerialzierOptions 中指定 ReferenceHandler, 你就可以直接跑通下面明显带有循环引用的对象序列化了
+在 JsonSerializerOptions 中指定 ReferenceHandler, 你就可以直接跑通下面明显带有循环引用的对象序列化了
 
 ```cs
 using System.Text.Json;
@@ -43,7 +53,7 @@ var jsonSerializerOptions = new JsonSerializerOptions()
 };
 
 var json = JsonSerializer.Serialize(a, jsonSerializerOptions);
-Console.WriteLine(json)
+Console.WriteLine(json);
 ```
 
 它将输出:
@@ -70,15 +80,15 @@ Console.WriteLine(objRoot.Other.Other.GetHashCode());
 
 JSON 反序列化的时候, 如果我们使用了自定义的转换器, 即便当前对象是前面对象的引用, System.Text.Json 也会调用我们的转换器.
 
-这会导致在我们在自定义转换器中使用 `Utf8JsonReader` 读取到的节点只是一个带有 `$ref` 属性的空节点, 但在转换其中, 我们还没办法拿到 `ReferenceHolder` 来手动解析对象引用.
-并且, 即便我们不手动通过 `reader` 解析, 而是在转换器内继续调用 `JsonSerializer.Deserialize` 并传入原有 `reader`, `typeToConvert` 和 `option`, 由于这是两次调用, 它也没办法成功解析引用.
+这会导致在我们在自定义转换器中使用 `Utf8JsonReader` 读取到的节点只是一个带有 `$ref` 属性的空节点, 但在转换器中, 我们还没办法拿到 `ReferenceResolver` 来手动解析对象引用.
+并且, 即便我们不手动通过 `reader` 解析, 而是在转换器内继续调用 `JsonSerializer.Deserialize` 并传入原有 `reader`, `typeToConvert` 和 `options`, 由于这是两次调用, 它也没办法成功解析引用.
 
-所以: 我们需要自己定义一个 ReferenceHandler`, 以做到:
+所以: 我们需要自己定义一个 `ReferenceHandler`, 以做到:
 
 1. 使其在多次 `Deserialize` 调用中能够共享引用解析存储
 2. 能够让我们自己的转换器解析引用
 
-所以, 我们需要创建一个和 `ReferenceHandler.Preserve` 行为一致的, 但是多次调用 `CreateResolver` 时只返回同意对象的实现. 并且为了避免反序列化的时候拿到 "上一次反序列化" 时加入的引用, 它还应当有 `Reset` 方法用于重置存储.
+所以, 我们需要创建一个和 `ReferenceHandler.Preserve` 行为一致的, 但是多次调用 `CreateResolver` 时只返回同一个对象的实现. 并且为了避免反序列化的时候拿到 "上一次反序列化" 时加入的引用, 它还应当有 `Reset` 方法用于重置存储.
 
 > 文档参考: [如何在 System.Text.Json 中保留引用并处理或忽略循环引用](https://learn.microsoft.com/zh-cn/dotnet/standard/serialization/system-text-json/preserve-references)
 
@@ -176,6 +186,28 @@ class SingletonReferenceHandler : ReferenceHandler
 
 1. 在转换器内调用 `Serialize` / `Deserialize` 的时候, 它们共享引用, 就不会出现 id 冲突或者无法解析引用的情况了
 2. 在转换器内添加引用或解引用的时候, 调用上面写的静态方法即可.
+
+使用时建议把这个 `SingletonReferenceHandler` 当成一次序列化或反序列化流程的上下文对象, 每次开始前都调用一次 `Reset`:
+
+```cs
+var referenceHandler = new SingletonReferenceHandler();
+
+var options = new JsonSerializerOptions()
+{
+    ReferenceHandler = referenceHandler,
+    WriteIndented = true
+};
+
+referenceHandler.Reset();
+var json = JsonSerializer.Serialize(rootObject, options);
+
+referenceHandler.Reset();
+var restored = JsonSerializer.Deserialize<RootObject>(json, options);
+```
+
+这里有一个容易踩坑的地方: `JsonSerializerOptions` 可以复用, 但引用解析器中的对象映射不能跨业务请求复用. 如果不 `Reset`, 下一次反序列化可能会拿到上一次 JSON 中注册过的对象, 结果就非常玄学.
+
+> 当然, 如果你每次序列化或反序列化时都创建新的 Options 对象, 并且每次都创建新的 ReferenceHandler 对象, 那上面说的问题也就不存在了
 
 
 值得一提的是, 之所以我们不直接在 `SingletonReferenceHandler` 中使用 `ReferenceHandler.Preserve.CreateResolver` 而是自己写一个 resolver 并实例化它,
@@ -333,6 +365,84 @@ public class InterfaceProxyConverter : JsonConverter<object>
 }
 ```
 
+这个转换器的核心思路是:
+
+1. `CanConvert` 只处理接口类型, 并且要求这个接口属于 `TypesToProxy` 指定的接口体系
+2. `Read` 先把当前 JSON 对象读成 `JsonObject`, 这样后续可以按属性名取值
+3. 如果 JSON 里是 `{ "$ref": "..." }`, 就直接从 `SingletonReferenceHandler` 中解析已有对象
+4. 如果 JSON 里有 `$type`, 就把目标接口切换成 `$type` 指向的接口
+5. 使用 Castle DynamicProxy 创建一个没有实际目标对象的接口代理
+6. 属性 getter 被调用时, 代理从 JSON 中取出对应属性节点, 再用 `JsonSerializer.Deserialize` 递归还原属性值
+
+`WallAllProperties` 看起来有些奇怪, 但它很重要. 它会在代理创建后主动访问所有属性, 让子对象尽早反序列化出来. 这样当对象图里存在 A 引用 B, B 又引用 A 时, 引用表中能尽快注册完整对象, 后续 `$ref` 才能正确解析.
+
+举个接口反序列化的例子:
+
+```cs
+public interface INode
+{
+    string Name { get; }
+    INode? Parent { get; }
+    IReadOnlyList<INode> Children { get; }
+}
+
+public interface IFolderNode : INode
+{
+    string Path { get; }
+}
+
+var referenceHandler = new SingletonReferenceHandler();
+
+var interfaceProxyConverter = new InterfaceProxyConverter();
+interfaceProxyConverter.TypesToProxy.Add(typeof(INode));
+interfaceProxyConverter.TypeLookupAssemblies.Add(typeof(INode).Assembly);
+
+var options = new JsonSerializerOptions()
+{
+    ReferenceHandler = referenceHandler,
+    WriteIndented = true,
+    Converters =
+    {
+        interfaceProxyConverter
+    }
+};
+
+var json = """
+{
+  "$id": "1",
+  "$type": "IFolderNode",
+  "Name": "root",
+  "Path": "/",
+  "Parent": null,
+  "Children": {
+    "$id": "2",
+    "$values": [
+      {
+        "$id": "3",
+        "$type": "IFolderNode",
+        "Name": "child",
+        "Path": "/child",
+        "Parent": { "$ref": "1" },
+        "Children": {
+          "$id": "4",
+          "$values": []
+        }
+      }
+    ]
+  }
+}
+""";
+
+referenceHandler.Reset();
+var node = JsonSerializer.Deserialize<INode>(json, options)!;
+
+Console.WriteLine(node.Name);                       // root
+Console.WriteLine(node.Children[0].Name);           // child
+Console.WriteLine(node.Children[0].Parent == node); // True
+```
+
+注意, 上面的 `$type` 写的是接口名, 所以 `TypeLookupAssemblies` 中必须能找到这个接口. 如果类型有命名空间, 需要写完整名称, 例如 `Demo.IFolderNode`.
+
 
 ## 大量自定义类型的自定义转换
 
@@ -421,6 +531,59 @@ public class CommonParseConverter : JsonConverter<object>
 ```
 
 上面的转换器支持任意带有静态 Parse(string) 的类型.
+
+例如:
+
+```cs
+public readonly struct Double2
+{
+    public double X { get; }
+    public double Y { get; }
+
+    public Double2(double x, double y)
+    {
+        X = x;
+        Y = y;
+    }
+
+    public static Double2 Parse(string text)
+    {
+        var parts = text.Split(',');
+        return new Double2(
+            double.Parse(parts[0], CultureInfo.InvariantCulture),
+            double.Parse(parts[1], CultureInfo.InvariantCulture));
+    }
+
+    public override string ToString()
+        => $"{X.ToString(CultureInfo.InvariantCulture)},{Y.ToString(CultureInfo.InvariantCulture)}";
+}
+
+public class TransformInfo
+{
+    public Double2 Position { get; set; }
+}
+
+var options = new JsonSerializerOptions()
+{
+    Converters =
+    {
+        new CommonParseConverter()
+    }
+};
+
+var obj = JsonSerializer.Deserialize<TransformInfo>(
+    """{ "Position": "10.5,20.25" }""",
+    options)!;
+
+Console.WriteLine(obj.Position.X); // 10.5
+```
+
+它的原理很直接: `CanConvert` 通过反射查找目标类型是否有公开静态 `Parse(string)` 方法, 有就让这个转换器接管. 读取 JSON 时要求当前 token 是字符串, 然后调用 `Parse`. 写入 JSON 时则调用 `ToString`.
+
+这里要注意两点:
+
+1. `ToString` 和 `Parse` 的格式必须互相匹配, 否则序列化后就反序列化不回去了
+2. 最好使用 `CultureInfo.InvariantCulture`, 不要让小数点格式受系统区域设置影响
 
 ## 自动处理类型和接口多态
 
@@ -584,6 +747,43 @@ Console.WriteLine(json2);
 {"MemberC":"def","MemberA":"abc","$type":"IC"}
 ```
 
+这个转换器处理的是声明类型和运行时类型不一致的问题.
+
+正常情况下, 如果你用基类或接口变量保存派生类对象:
+
+```cs
+IA value = new C() { MemberA = "abc", MemberC = "def" };
+```
+
+`JsonSerializer.Serialize(value)` 只知道声明类型是 `IA`, 它没有理由自动把 `C` 或 `IC` 上的成员也写进去. 所以我们在序列化时主动做两件事:
+
+1. 找到真正要序列化的类型, 对类来说是运行时类型, 对接口来说是最具体的接口
+2. 把这个类型的完整名称写入 `$type`, 反序列化时再用这个名称找回类型
+
+如果是接口多态, `IsForInterface = true` 会让转换器调用 `FindMaxInterface`, 从对象实现的接口中找到最具体的那个接口. 这样输出的是接口契约里的成员, 而不是实现类里所有公开属性. 这在跨进程插件场景很有用, 因为另一边通常只关心接口, 不应该依赖实现类细节.
+
+实际项目中, 推荐这样配置:
+
+```cs
+var polymorphicConverter = new AutoPolymorphicConverter<IA>()
+{
+    IsForInterface = true
+};
+polymorphicConverter.TypeLookupAssemblies.Add(typeof(IA).Assembly);
+
+var options = new JsonSerializerOptions()
+{
+    ReferenceHandler = new SingletonReferenceHandler(),
+    WriteIndented = true,
+    Converters =
+    {
+        polymorphicConverter
+    }
+};
+```
+
+如果序列化结果会跨进程或跨版本传输, 不建议直接暴露任意程序集中的任意类型. `TypeLookupAssemblies` 本质上就是一个白名单, 反序列化时只从这些程序集里查类型, 这样至少不会随便从所有已加载程序集里解析类型.
+
 ## 自动调用目标类型构造函数
 
 如果你某个类型没有公开的构造函数, 还希望反序列化它, 可以使用 System.Text.Json 中自带的 `JsonConstructor` 特性.
@@ -679,10 +879,48 @@ public class CustomConstructorConverter : JsonConverter<object>
 
 值得一提的是, 构造函数的参数名称必须和属性名称一致, 大小写不敏感. 否则转换器无法为构造函数准备参数值.
 
+例如:
+
+```cs
+public class UserInfo
+{
+    [JsonConstructor]
+    public UserInfo(string name, int age)
+    {
+        Name = name;
+        Age = age;
+    }
+
+    public string Name { get; }
+    public int Age { get; }
+}
+
+var options = new JsonSerializerOptions()
+{
+    ReferenceHandler = new SingletonReferenceHandler(),
+    Converters =
+    {
+        new CustomConstructorConverter()
+    }
+};
+
+var user = JsonSerializer.Deserialize<UserInfo>(
+    """{ "Name": "slime", "Age": 18 }""",
+    options)!;
+
+Console.WriteLine(user.Name);
+```
+
+它的原理是先把整个对象读成 `JsonObject`, 再根据构造函数参数名到 JSON 属性里找值. 找到之后, 对每个参数类型继续调用 `JsonSerializer.Deserialize`, 最后通过 `ConstructorInfo.Invoke` 创建对象.
+
+为什么要先读成 `JsonObject`, 而不是直接一边读一边构造? 因为构造函数参数顺序不一定和 JSON 属性顺序一致. 先读成对象树之后, 就可以按属性名匹配参数, 不依赖 JSON 的字段顺序.
+
+这个转换器只处理构造函数参数, 不会在构造之后继续给其它可写属性赋值. 如果你的类型既有构造函数参数, 又有额外可写属性, 需要继续补充一段属性赋值逻辑, 或者保持类型设计简单一点: 需要反序列化的成员都进入构造函数.
+
 ## 只读集合类型的数据成员填充
 
 如果正常情况下你有一个集合是只读的, 并且你还希望反序列化的时候把成员填充进已有的集合中, 那么使用 `JsonObjectCreationHandling.Populate` 就可以做到.
-但是很遗憾, 这个功能同样跟 `ReferenceHandler` 所以又到了我们最喜欢的手搓 JsonConverter 时刻!
+但是很遗憾, 这个功能同样跟 `ReferenceHandler` 存在兼容问题, 所以又到了我们最喜欢的手搓 JsonConverter 时刻!
 
 ```cs
 public class AutoPopulateMemberCollectionConverter<T> : JsonConverter<T>
@@ -824,3 +1062,49 @@ public class AutoPopulateMemberCollectionConverter<T> : JsonConverter<T>
 那么在反序列化的时候, 在 `Converters` 列表最前方添加一个 `AutoPopulateMemberCollectionConverter<A>` 就可以了.
 
 如果放到后面, 类型实例化可能会优先被其他转换器执行, 导致无法自动填充成员. 此转换器会自动使用后续转换器来转换, 得出值之后, 再进行填充.
+
+使用示例:
+
+```cs
+public class Menu
+{
+    public string Name { get; set; } = "";
+    public List<MenuItem> Items { get; } = new();
+}
+
+public class MenuItem
+{
+    public string Text { get; set; } = "";
+}
+
+var options = new JsonSerializerOptions()
+{
+    ReferenceHandler = new SingletonReferenceHandler(),
+    Converters =
+    {
+        new AutoPopulateMemberCollectionConverter<Menu>()
+    }
+};
+
+var menu = JsonSerializer.Deserialize<Menu>(
+    """
+    {
+      "Name": "File",
+      "Items": [
+        { "Text": "Open" },
+        { "Text": "Save" }
+      ]
+    }
+    """,
+    options)!;
+
+Console.WriteLine(menu.Items.Count); // 2
+```
+
+这个转换器分成两步:
+
+1. 先临时移除自己, 让 `System.Text.Json` 用默认逻辑把对象主体创建出来
+2. 再检查对象的只读集合属性, 如果 JSON 中有对应数组, 就把数组中的元素逐个反序列化并添加到已有集合里
+
+也就是说, 它不是替代整个对象的反序列化流程, 而是在默认流程之后补一刀. 这样它可以少管很多事情, 例如普通属性赋值, 构造函数选择, 数字字符串转换等都交给原本的序列化器处理.
+
