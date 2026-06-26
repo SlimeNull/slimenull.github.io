@@ -1108,3 +1108,279 @@ Console.WriteLine(menu.Items.Count); // 2
 
 也就是说, 它不是替代整个对象的反序列化流程, 而是在默认流程之后补一刀. 这样它可以少管很多事情, 例如普通属性赋值, 构造函数选择, 数字字符串转换等都交给原本的序列化器处理.
 
+## 将所有转换器组合起来
+
+上面这些转换器并不是都能同时用于序列化和反序列化.
+
+例如:
+
+- `InterfaceProxyConverter` 只支持读, 它的作用是反序列化接口代理, `Write` 直接抛出 `NotSupportedException`
+- `CustomConstructorConverter` 只支持读, 它的作用是调用目标类型的构造函数, `Write` 也直接抛出 `NotSupportedException`
+- `AutoPopulateMemberCollectionConverter<T>` 主要解决读的时候填充只读集合
+- `CommonParseConverter` 读写都支持
+- `AutoPolymorphicConverter<T>` 读写都支持, 但序列化时主要负责写入 `$type`, 反序列化时还需要通过 `TypeLookupAssemblies` 找回类型
+
+所以实际使用时, 不应该强行把所有转换器都丢到同一个 `JsonSerializerOptions` 里. 更合理的方式是准备两套 Options:
+
+1. 一套用于序列化, 只放写入阶段需要的转换器
+2. 一套用于反序列化, 只放读取阶段需要的转换器
+
+假设有这样的模型:
+
+```cs
+public class A : IA
+{
+    public string? MemberA { get; set; }
+    public IA? Other { get; set; }
+    public string? SomePropertyOnlyInClass { get; set; }
+    public List<int> SomeCollection { get; } = new();
+    public CustomContructorClass? CCCValue { get; set; }
+    public Int2 Vector { get; set; }
+}
+
+public class B : A, IB
+{
+    public string? MemberB { get; set; }
+}
+
+public class C : A, IC
+{
+    public string? MemberC { get; set; }
+}
+
+public class CustomContructorClass
+{
+    public CustomContructorClass(string a, string b)
+    {
+        A = a;
+        B = b;
+    }
+
+    public string A { get; }
+    public string B { get; }
+}
+
+public record struct Int2(int X, int Y)
+{
+    public static Int2 Parse(string s)
+    {
+        var parts = s.Split(',');
+        return new Int2(int.Parse(parts[0]), int.Parse(parts[1]));
+    }
+
+    public override string ToString()
+        => $"{X},{Y}";
+}
+
+public interface IA
+{
+    string? MemberA { get; set; }
+    IA? Other { get; set; }
+}
+
+public interface IB : IA
+{
+    string? MemberB { get; set; }
+}
+
+public interface IC : IA
+{
+    string? MemberC { get; set; }
+}
+```
+
+再创建一份带循环引用的对象:
+
+```cs
+A complexObject = new C()
+{
+    MemberA = "ValueA",
+    SomePropertyOnlyInClass = "QWQ",
+    SomeCollection =
+    {
+        1, 2, 3, 4, 5
+    },
+    CCCValue = new CustomContructorClass("A", "B"),
+    Vector = new Int2(10, 20)
+};
+
+B complexObject2 = new B()
+{
+    MemberA = "ValueA",
+    MemberB = "ValueB",
+    SomePropertyOnlyInClass = "AWA",
+    SomeCollection =
+    {
+        7, 8, 9, 10
+    }
+};
+
+complexObject.Other = complexObject2;
+complexObject2.Other = complexObject;
+```
+
+然后准备同一个 `SingletonReferenceHandler`, 以及两套 Options:
+
+```cs
+var singletonReferenceHandler = new SingletonReferenceHandler();
+
+var serializeOptions = new JsonSerializerOptions()
+{
+    WriteIndented = true,
+    ReferenceHandler = singletonReferenceHandler,
+    Converters =
+    {
+        new CommonParseConverter(),
+        new AutoPolymorphicConverter<A>(),
+        new AutoPolymorphicConverter<IA>() { IsForInterface = true },
+    }
+};
+
+var deserializeOptions = new JsonSerializerOptions()
+{
+    ReferenceHandler = singletonReferenceHandler,
+    Converters =
+    {
+        new AutoPopulateMemberCollectionConverter<A>(),
+        new CommonParseConverter(),
+        new AutoPolymorphicConverter<A>()
+        {
+            TypeLookupAssemblies = { typeof(A).Assembly }
+        },
+        new AutoPolymorphicConverter<IA>()
+        {
+            IsForInterface = true,
+            TypeLookupAssemblies = { typeof(A).Assembly }
+        },
+        new InterfaceProxyConverter()
+        {
+            TypesToProxy = { typeof(IA) },
+            TypeLookupAssemblies = { typeof(A).Assembly }
+        },
+        new CustomConstructorConverter(),
+    }
+};
+```
+
+这里最关键的是: 序列化和反序列化都使用同一个 `SingletonReferenceHandler`, 但每次开始一次新的操作前都要 `Reset`.
+
+```cs
+singletonReferenceHandler.Reset();
+var json = JsonSerializer.Serialize(complexObject, serializeOptions);
+
+singletonReferenceHandler.Reset();
+var deserializedObject = JsonSerializer.Deserialize<A>(json, deserializeOptions);
+
+singletonReferenceHandler.Reset();
+var json2 = JsonSerializer.Serialize(deserializedObject, serializeOptions);
+```
+
+第一次序列化可能得到这样的 JSON:
+
+```json
+{
+  "$id": "1",
+  "MemberC": null,
+  "MemberA": "ValueA",
+  "Other": {
+    "$id": "2",
+    "MemberB": "ValueB",
+    "MemberA": "ValueA",
+    "Other": {
+      "$ref": "1",
+      "$type": "AdvancedJsonSerialization.IC"
+    },
+    "$type": "AdvancedJsonSerialization.IB"
+  },
+  "SomePropertyOnlyInClass": "QWQ",
+  "SomeCollection": {
+    "$id": "3",
+    "$values": [
+      1,
+      2,
+      3,
+      4,
+      5
+    ]
+  },
+  "CCCValue": {
+    "$id": "4",
+    "A": "A",
+    "B": "B"
+  },
+  "Vector": "10,20",
+  "$type": "AdvancedJsonSerialization.C"
+}
+```
+
+这个 JSON 中同时包含了几个关键信息:
+
+1. `$id` 和 `$ref` 保存了对象引用关系
+2. `$type` 保存了运行时类型或更具体的接口类型
+3. `SomeCollection` 使用 `$values` 保存集合内容
+4. `CCCValue` 虽然没有无参构造函数, 但 JSON 中保留了构造函数所需的属性
+5. `Vector` 被写成字符串, 反序列化时通过 `Int2.Parse` 读回
+
+如果反序列化之后再使用同一套 `serializeOptions` 序列化一次, 得到的 JSON 应当和前面基本一致. 这就说明循环引用, 多态类型, 接口代理, 构造函数对象, 只读集合和 `Parse` 类型都被正确还原了.
+
+## 两套 Options 的转换器顺序
+
+序列化 Options 的顺序比较简单:
+
+```cs
+Converters =
+{
+    new CommonParseConverter(),
+    new AutoPolymorphicConverter<A>(),
+    new AutoPolymorphicConverter<IA>() { IsForInterface = true },
+}
+```
+
+`CommonParseConverter` 负责把 `Int2` 这类类型写成字符串. `AutoPolymorphicConverter<A>` 负责类多态, 也就是把实际的 `C` 写出来. `AutoPolymorphicConverter<IA>` 负责接口多态, 也就是当成员声明为 `IA` 但实际对象实现了 `IB` 或 `IC` 时, 写入更具体的接口类型.
+
+反序列化 Options 的顺序更重要:
+
+```cs
+Converters =
+{
+    new AutoPopulateMemberCollectionConverter<A>(),
+    new CommonParseConverter(),
+    new AutoPolymorphicConverter<A>()
+    {
+        TypeLookupAssemblies = { typeof(A).Assembly }
+    },
+    new AutoPolymorphicConverter<IA>()
+    {
+        IsForInterface = true,
+        TypeLookupAssemblies = { typeof(A).Assembly }
+    },
+    new InterfaceProxyConverter()
+    {
+        TypesToProxy = { typeof(IA) },
+        TypeLookupAssemblies = { typeof(A).Assembly }
+    },
+    new CustomConstructorConverter(),
+}
+```
+
+`AutoPopulateMemberCollectionConverter<A>` 要放在前面, 因为它需要包住 `A` 的默认反序列化流程, 等对象创建完成后再填充只读集合.
+
+`CommonParseConverter` 需要在遇到 `Int2` 这种字符串值类型时接管读取.
+
+两个 `AutoPolymorphicConverter` 分别处理类和接口上的 `$type`. 读侧一定要设置 `TypeLookupAssemblies`, 否则它只读到了类型名称, 但不知道应该去哪一个程序集里找这个类型.
+
+`InterfaceProxyConverter` 放在多态转换器后面, 用来真正创建接口代理. 它同样需要 `TypesToProxy` 和 `TypeLookupAssemblies`: 前者限制哪些接口可以代理, 后者用于根据 `$type` 找到更具体的接口类型.
+
+`CustomConstructorConverter` 放在后面兜底处理没有无参构造函数的类型. 在上面的例子里, `CustomContructorClass` 就是通过它还原的.
+
+## 局限和注意事项
+
+这套方案的重点是保存和恢复复杂对象图, 不是替代所有 DTO.
+
+首先, 要分清楚哪些转换器能写, 哪些转换器能读. 如果把 `InterfaceProxyConverter` 或 `CustomConstructorConverter` 放进序列化 Options, 并且刚好命中它们的 `CanConvert`, 就会因为 `Write` 抛出 `NotSupportedException` 而失败.
+
+其次, `TypeLookupAssemblies` 不只是为了让代码能跑, 它也相当于类型解析范围的限制. 不要对外部不可信 JSON 开放任意类型解析. 如果 JSON 来自不可信来源, 最好在程序集限制之外再做一层类型白名单.
+
+另外, `SingletonReferenceHandler` 不是全局缓存. 它只是为了让一次序列化或反序列化流程中的多次 `JsonSerializer` 调用共享同一个引用解析器. 每次开始新的序列化或反序列化前都应该调用 `Reset`, 或者直接为每次操作创建新的 Handler 和 Options.
+
+最后, 动态代理只适合这种“属性接口”模型. 如果接口里有普通方法, 当前 `InterfaceInterceptor` 并不会处理方法调用. 真要跨进程调用方法, 应该额外设计 RPC 或消息协议, 不应该指望 JSON 反序列化自动解决方法执行.
