@@ -3,11 +3,12 @@
 import MainGridLayout from '../layouts/MainGridLayout.astro'
 
 import { getEntry } from 'astro:content'
-import { i18n } from '../i18n/translation'
-import I18nKey from '../i18n/i18nKey'
 import Markdown from '@components/misc/Markdown.astro'
 
 const friendsPost = await getEntry('spec', 'friends')
+if (!friendsPost) {
+  throw new Error('Missing spec/friends content entry')
+}
 
 const { Content } = await friendsPost.render()
 ---

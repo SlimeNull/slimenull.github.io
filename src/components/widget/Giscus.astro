@@ -1,9 +1,9 @@
 ---
-import { siteConfig } from '../../config'
+import { siteConfig } from "../../config";
 ---
 
 <div id="giscus-comments">
-    <script src="https://giscus.app/client.js"
+    <script is:inline src="https://giscus.app/client.js"
             data-repo={siteConfig.giscus.repo}
             data-repo-id={siteConfig.giscus.repo_id}
             data-category={siteConfig.giscus.category}
@@ -17,6 +17,6 @@ import { siteConfig } from '../../config'
             data-lang={siteConfig.giscus.lang}
             data-loading={siteConfig.giscus.loading}
             crossorigin="anonymous"
-            async >
+            async>
     </script>
 </div>
