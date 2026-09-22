@@ -1,0 +1,18 @@
+---
+// src/components/RedirectFromGitHubPages.astro
+const siteUrl = Astro.site ? Astro.site.toString() : "";
+---
+
+<script is:inline define:vars={{ siteUrl }}>
+    (function () {
+        if (window.location.hostname === "slimenull.github.io") {
+            const base = siteUrl.replace(/\/$/, "");
+            window.location.replace(
+                base +
+                    window.location.pathname +
+                    window.location.search +
+                    window.location.hash,
+            );
+        }
+    })();
+</script>
